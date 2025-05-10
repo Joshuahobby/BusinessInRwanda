@@ -1,0 +1,661 @@
+import { useState } from "react";
+import { Link, useLocation } from "wouter";
+import { Helmet } from "react-helmet";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "@/context/AuthContext";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { 
+  BarChart, 
+  Users, 
+  Briefcase, 
+  FileText, 
+  Plus, 
+  Eye, 
+  Edit, 
+  Trash2, 
+  Clock,
+  Building,
+  PieChart,
+  Calendar
+} from "lucide-react";
+import { Job, Application } from "@shared/schema";
+import { format } from "date-fns";
+
+// Custom type for applications with job and applicant details
+type ApplicationWithDetails = Application & {
+  job: Job;
+  applicant: {
+    id: number;
+    fullName: string;
+    email: string;
+    profilePicture?: string;
+  };
+};
+
+const EmployerDashboard = () => {
+  const { user } = useAuth();
+  const [, navigate] = useLocation();
+  const [activeTab, setActiveTab] = useState("overview");
+
+  // Redirect if not authenticated or not an employer
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
+
+  // Fetch employer's posted jobs
+  const { data: jobs = [], isLoading: isLoadingJobs } = useQuery<Job[]>({
+    queryKey: ['/api/employer/jobs'],
+  });
+
+  // Fetch applications for employer's jobs
+  const { data: applications = [], isLoading: isLoadingApplications } = useQuery<ApplicationWithDetails[]>({
+    queryKey: ['/api/employer/applications'],
+  });
+
+  // Fetch company profile data
+  const { data: company, isLoading: isLoadingCompany } = useQuery({
+    queryKey: ['/api/employer/company'],
+  });
+
+  // Get counts for dashboard stats
+  const activeJobsCount = jobs.filter(job => job.isActive).length;
+  const totalApplicationsCount = applications.length;
+  const newApplicationsCount = applications.filter(app => app.status === 'applied').length;
+  const interviewsCount = applications.filter(app => app.status === 'interview_scheduled').length;
+
+  // Determine if company profile is complete
+  const isCompanyProfileComplete = !!company;
+
+  return (
+    <>
+      <Helmet>
+        <title>Employer Dashboard - Business In Rwanda</title>
+        <meta name="description" content="Manage your job postings, view applicants, and track your hiring process." />
+      </Helmet>
+
+      <div className="bg-neutral-50 min-h-screen py-8">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col md:flex-row gap-6">
+            {/* Sidebar */}
+            <div className="w-full md:w-1/4">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center space-x-4">
+                    <Avatar className="h-12 w-12">
+                      <AvatarImage src={user.profilePicture} alt={user.fullName} />
+                      <AvatarFallback className="bg-[#0A3D62] text-white">
+                        {user.fullName.split(' ').map(n => n[0]).join('')}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <CardTitle className="text-lg">{user.fullName}</CardTitle>
+                      <CardDescription>{user.email}</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {!isCompanyProfileComplete && (
+                    <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md text-sm">
+                      <p className="text-amber-800 font-medium mb-2">Complete your company profile</p>
+                      <p className="text-amber-700 mb-2">
+                        Improve your visibility to job seekers by adding your company details.
+                      </p>
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="text-amber-600 border-amber-300 hover:bg-amber-100 hover:text-amber-800"
+                        onClick={() => navigate("/company/create")}
+                      >
+                        Complete Profile
+                      </Button>
+                    </div>
+                  )}
+
+                  <nav className="space-y-1">
+                    <Button
+                      variant={activeTab === "overview" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveTab("overview")}
+                    >
+                      <BarChart className="h-4 w-4 mr-2" />
+                      Overview
+                    </Button>
+                    <Button
+                      variant={activeTab === "jobs" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveTab("jobs")}
+                    >
+                      <Briefcase className="h-4 w-4 mr-2" />
+                      Manage Jobs
+                    </Button>
+                    <Button
+                      variant={activeTab === "applications" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveTab("applications")}
+                    >
+                      <FileText className="h-4 w-4 mr-2" />
+                      Applications
+                    </Button>
+                    <Button
+                      variant={activeTab === "company" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveTab("company")}
+                    >
+                      <Building className="h-4 w-4 mr-2" />
+                      Company Profile
+                    </Button>
+                  </nav>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Main Content */}
+            <div className="w-full md:w-3/4">
+              <Tabs value={activeTab} onValueChange={setActiveTab}>
+                {/* Overview Tab */}
+                <TabsContent value="overview">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-xl font-heading">Dashboard Overview</CardTitle>
+                      <CardDescription>
+                        Your hiring activity and statistics at a glance
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <Card>
+                          <CardContent className="pt-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-neutral-500">Active Jobs</p>
+                                <h3 className="text-2xl font-bold">{activeJobsCount}</h3>
+                              </div>
+                              <div className="bg-blue-100 p-2 rounded-full">
+                                <Briefcase className="h-5 w-5 text-[#0A3D62]" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardContent className="pt-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-neutral-500">Total Applications</p>
+                                <h3 className="text-2xl font-bold">{totalApplicationsCount}</h3>
+                              </div>
+                              <div className="bg-green-100 p-2 rounded-full">
+                                <Users className="h-5 w-5 text-[#00A86B]" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardContent className="pt-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-neutral-500">New Applications</p>
+                                <h3 className="text-2xl font-bold">{newApplicationsCount}</h3>
+                              </div>
+                              <div className="bg-red-100 p-2 rounded-full">
+                                <FileText className="h-5 w-5 text-[#BD2031]" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardContent className="pt-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-neutral-500">Scheduled Interviews</p>
+                                <h3 className="text-2xl font-bold">{interviewsCount}</h3>
+                              </div>
+                              <div className="bg-purple-100 p-2 rounded-full">
+                                <Calendar className="h-5 w-5 text-purple-600" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-base font-medium">Recent Applications</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            {isLoadingApplications ? (
+                              <div className="space-y-4">
+                                {[1, 2, 3].map((_, i) => (
+                                  <div key={i} className="h-12 animate-pulse bg-neutral-100 rounded-md"></div>
+                                ))}
+                              </div>
+                            ) : applications.length > 0 ? (
+                              <div className="space-y-4">
+                                {applications.slice(0, 5).map((application) => (
+                                  <div key={application.id} className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                      <Avatar className="h-8 w-8">
+                                        <AvatarImage src={application.applicant.profilePicture} alt={application.applicant.fullName} />
+                                        <AvatarFallback className="bg-neutral-200 text-neutral-700 text-xs">
+                                          {application.applicant.fullName.split(' ').map(n => n[0]).join('')}
+                                        </AvatarFallback>
+                                      </Avatar>
+                                      <div>
+                                        <p className="text-sm font-medium">{application.applicant.fullName}</p>
+                                        <p className="text-xs text-neutral-500">{application.job.title}</p>
+                                      </div>
+                                    </div>
+                                    <Badge variant={
+                                      application.status === 'applied' ? 'default' : 
+                                      application.status === 'reviewed' ? 'secondary' : 
+                                      application.status === 'interview_scheduled' ? 'outline' : 
+                                      application.status === 'hired' ? 'success' : 'destructive'
+                                    }>
+                                      {application.status.replace('_', ' ')}
+                                    </Badge>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="text-center py-6 text-neutral-500">
+                                <FileText className="h-10 w-10 mx-auto mb-2 text-neutral-300" />
+                                <p>No applications yet</p>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+
+                        <Card>
+                          <CardHeader>
+                            <CardTitle className="text-base font-medium">Job Performance</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            {isLoadingJobs ? (
+                              <div className="space-y-4">
+                                {[1, 2, 3].map((_, i) => (
+                                  <div key={i} className="h-12 animate-pulse bg-neutral-100 rounded-md"></div>
+                                ))}
+                              </div>
+                            ) : jobs.length > 0 ? (
+                              <div className="space-y-4">
+                                {jobs.slice(0, 5).map((job) => (
+                                  <div key={job.id} className="space-y-2">
+                                    <div className="flex justify-between items-center">
+                                      <p className="text-sm font-medium">{job.title}</p>
+                                      <Badge variant={job.isActive ? 'success' : 'secondary'}>
+                                        {job.isActive ? 'Active' : 'Inactive'}
+                                      </Badge>
+                                    </div>
+                                    <div className="flex items-center text-xs text-neutral-500 space-x-4">
+                                      <div className="flex items-center">
+                                        <Users className="h-3 w-3 mr-1" />
+                                        <span>
+                                          {applications.filter(a => a.jobId === job.id).length} Applicants
+                                        </span>
+                                      </div>
+                                      <div className="flex items-center">
+                                        <Clock className="h-3 w-3 mr-1" />
+                                        <span>
+                                          Posted {format(new Date(job.createdAt), 'MMM d, yyyy')}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="text-center py-6 text-neutral-500">
+                                <Briefcase className="h-10 w-10 mx-auto mb-2 text-neutral-300" />
+                                <p>No jobs posted yet</p>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Jobs Tab */}
+                <TabsContent value="jobs">
+                  <Card>
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                      <div>
+                        <CardTitle className="text-xl font-heading">Manage Jobs</CardTitle>
+                        <CardDescription>View and manage your job listings</CardDescription>
+                      </div>
+                      <Link href="/post-job">
+                        <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Post New Job
+                        </Button>
+                      </Link>
+                    </CardHeader>
+                    <CardContent>
+                      {isLoadingJobs ? (
+                        <div className="space-y-4">
+                          {[1, 2, 3].map((_, i) => (
+                            <div key={i} className="h-24 animate-pulse bg-neutral-100 rounded-md"></div>
+                          ))}
+                        </div>
+                      ) : jobs.length > 0 ? (
+                        <div className="space-y-4">
+                          {jobs.map((job) => (
+                            <Card key={job.id} className="overflow-hidden">
+                              <CardContent className="p-0">
+                                <div className="p-4 sm:p-6">
+                                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                                    <div>
+                                      <h3 className="text-lg font-medium">{job.title}</h3>
+                                      <p className="text-sm text-neutral-500 flex items-center gap-2 mt-1">
+                                        <Calendar className="h-4 w-4" />
+                                        Posted on {format(new Date(job.createdAt), 'MMM d, yyyy')}
+                                      </p>
+                                    </div>
+                                    <Badge 
+                                      variant={job.isActive ? 'default' : 'secondary'}
+                                      className={job.isActive ? 'bg-[#00A86B]' : ''}
+                                    >
+                                      {job.isActive ? 'Active' : 'Inactive'}
+                                    </Badge>
+                                  </div>
+
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    <div className="flex items-center">
+                                      <Briefcase className="h-4 w-4 text-neutral-500 mr-2" />
+                                      <span className="text-sm">
+                                        {job.type.replace('_', ' ')}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center">
+                                      <Users className="h-4 w-4 text-neutral-500 mr-2" />
+                                      <span className="text-sm">
+                                        {applications.filter(a => a.jobId === job.id).length} Applicants
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center">
+                                      <Clock className="h-4 w-4 text-neutral-500 mr-2" />
+                                      <span className="text-sm">
+                                        {job.deadline ? (
+                                          <>Expires {format(new Date(job.deadline), 'MMM d, yyyy')}</>
+                                        ) : (
+                                          <>No Deadline</>
+                                        )}
+                                      </span>
+                                    </div>
+                                  </div>
+
+                                  <Separator className="my-4" />
+
+                                  <div className="flex flex-wrap justify-end gap-2">
+                                    <Button variant="outline" size="sm">
+                                      <Eye className="h-4 w-4 mr-2" />
+                                      View Applicants
+                                    </Button>
+                                    <Button variant="outline" size="sm">
+                                      <Edit className="h-4 w-4 mr-2" />
+                                      Edit
+                                    </Button>
+                                    <Button variant="outline" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Remove
+                                    </Button>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-12">
+                          <Briefcase className="h-12 w-12 mx-auto mb-4 text-neutral-300" />
+                          <h3 className="text-lg font-medium mb-2">No jobs posted yet</h3>
+                          <p className="text-neutral-500 mb-6">
+                            Start attracting the best talent by posting your first job
+                          </p>
+                          <Link href="/post-job">
+                            <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                              Post Your First Job
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Applications Tab */}
+                <TabsContent value="applications">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-xl font-heading">Applications</CardTitle>
+                      <CardDescription>
+                        Review and manage applications to your job postings
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <Tabs defaultValue="all">
+                        <TabsList className="mb-4">
+                          <TabsTrigger value="all">All</TabsTrigger>
+                          <TabsTrigger value="new">New</TabsTrigger>
+                          <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
+                          <TabsTrigger value="interview">Interview</TabsTrigger>
+                          <TabsTrigger value="hired">Hired</TabsTrigger>
+                          <TabsTrigger value="rejected">Rejected</TabsTrigger>
+                        </TabsList>
+
+                        <TabsContent value="all">
+                          {isLoadingApplications ? (
+                            <div className="space-y-4">
+                              {[1, 2, 3].map((_, i) => (
+                                <div key={i} className="h-24 animate-pulse bg-neutral-100 rounded-md"></div>
+                              ))}
+                            </div>
+                          ) : applications.length > 0 ? (
+                            <div className="space-y-4">
+                              {applications.map((application) => (
+                                <Card key={application.id}>
+                                  <CardContent className="p-4 sm:p-6">
+                                    <div className="flex flex-col sm:flex-row gap-4">
+                                      <div className="sm:w-1/4">
+                                        <div className="flex items-center gap-3 mb-3">
+                                          <Avatar>
+                                            <AvatarImage 
+                                              src={application.applicant.profilePicture} 
+                                              alt={application.applicant.fullName}
+                                            />
+                                            <AvatarFallback className="bg-neutral-200 text-neutral-700">
+                                              {application.applicant.fullName.split(' ').map(n => n[0]).join('')}
+                                            </AvatarFallback>
+                                          </Avatar>
+                                          <div>
+                                            <h3 className="font-medium">{application.applicant.fullName}</h3>
+                                            <p className="text-sm text-neutral-500">{application.applicant.email}</p>
+                                          </div>
+                                        </div>
+                                        <Badge variant={
+                                          application.status === 'applied' ? 'default' : 
+                                          application.status === 'reviewed' ? 'secondary' : 
+                                          application.status === 'interview_scheduled' ? 'outline' : 
+                                          application.status === 'hired' ? 'success' : 'destructive'
+                                        }>
+                                          {application.status.replace('_', ' ')}
+                                        </Badge>
+                                      </div>
+                                      <div className="sm:w-3/4">
+                                        <div className="mb-3">
+                                          <h4 className="font-medium">{application.job.title}</h4>
+                                          <p className="text-sm text-neutral-500">
+                                            Applied {format(new Date(application.appliedAt), 'MMM d, yyyy')}
+                                          </p>
+                                        </div>
+                                        {application.coverLetter && (
+                                          <div className="mb-3">
+                                            <h5 className="text-sm font-medium mb-1">Cover Letter</h5>
+                                            <p className="text-sm text-neutral-600 line-clamp-2">
+                                              {application.coverLetter}
+                                            </p>
+                                          </div>
+                                        )}
+                                        <div className="flex flex-wrap gap-2">
+                                          {application.resumeUrl && (
+                                            <Button variant="outline" size="sm">
+                                              <FileText className="h-4 w-4 mr-2" />
+                                              View Resume
+                                            </Button>
+                                          )}
+                                          <Button variant="outline" size="sm">
+                                            Update Status
+                                          </Button>
+                                          <Button variant="outline" size="sm">
+                                            Contact
+                                          </Button>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </CardContent>
+                                </Card>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="text-center py-12">
+                              <FileText className="h-12 w-12 mx-auto mb-4 text-neutral-300" />
+                              <h3 className="text-lg font-medium mb-2">No applications yet</h3>
+                              <p className="text-neutral-500">
+                                You haven't received any applications for your job listings yet
+                              </p>
+                            </div>
+                          )}
+                        </TabsContent>
+
+                        {/* Additional tab content for filtered views would go here */}
+                      </Tabs>
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
+                {/* Company Profile Tab */}
+                <TabsContent value="company">
+                  <Card>
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                      <div>
+                        <CardTitle className="text-xl font-heading">Company Profile</CardTitle>
+                        <CardDescription>
+                          Manage your company information and branding
+                        </CardDescription>
+                      </div>
+                      {company ? (
+                        <Button variant="outline">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit Profile
+                        </Button>
+                      ) : (
+                        <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Create Profile
+                        </Button>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      {isLoadingCompany ? (
+                        <div className="space-y-4">
+                          <div className="h-24 animate-pulse bg-neutral-100 rounded-md"></div>
+                          <div className="h-48 animate-pulse bg-neutral-100 rounded-md"></div>
+                        </div>
+                      ) : company ? (
+                        <div>
+                          <div className="flex flex-col md:flex-row gap-6 mb-6">
+                            <div className="md:w-1/4">
+                              <div className="bg-neutral-100 rounded-md p-6 flex items-center justify-center h-48">
+                                {company.logo ? (
+                                  <img 
+                                    src={company.logo} 
+                                    alt={`${company.name} logo`} 
+                                    className="max-h-36 max-w-full"
+                                  />
+                                ) : (
+                                  <Building className="h-16 w-16 text-neutral-400" />
+                                )}
+                              </div>
+                            </div>
+                            <div className="md:w-3/4">
+                              <h2 className="text-2xl font-bold mb-2">{company.name}</h2>
+                              <div className="space-y-3 text-sm">
+                                <div className="flex gap-2">
+                                  <span className="font-medium min-w-[100px]">Industry:</span>
+                                  <span>{company.industry}</span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="font-medium min-w-[100px]">Location:</span>
+                                  <span>{company.location}</span>
+                                </div>
+                                {company.website && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Website:</span>
+                                    <a 
+                                      href={company.website} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-[#0A3D62] hover:underline"
+                                    >
+                                      {company.website}
+                                    </a>
+                                  </div>
+                                )}
+                                {company.employeeCount && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Size:</span>
+                                    <span>{company.employeeCount} employees</span>
+                                  </div>
+                                )}
+                                {company.founded && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Founded:</span>
+                                    <span>{company.founded}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-6">
+                            <h3 className="text-lg font-medium mb-3">Company Description</h3>
+                            <p className="text-neutral-700 whitespace-pre-line">
+                              {company.description}
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center py-12">
+                          <Building className="h-12 w-12 mx-auto mb-4 text-neutral-300" />
+                          <h3 className="text-lg font-medium mb-2">No company profile yet</h3>
+                          <p className="text-neutral-500 mb-6">
+                            Create a company profile to attract top talent and showcase your brand
+                          </p>
+                          <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                            Create Company Profile
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default EmployerDashboard;
