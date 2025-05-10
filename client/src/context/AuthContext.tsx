@@ -158,10 +158,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     await logoutMutation.mutateAsync();
   };
 
+  // Ensure user is always of type User | null to match the context type
+  const safeUser: User | null = user || null;
+
   return (
     <AuthContext.Provider
       value={{
-        user,
+        user: safeUser,
         isLoading,
         isAuthenticated,
         login,

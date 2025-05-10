@@ -94,7 +94,7 @@ const PostJob = () => {
     resolver: zodResolver(postJobSchema),
     defaultValues: {
       title: "",
-      companyId: company?.id,
+      companyId: company?.id || 0, // Default to 0 for TypeScript, will be updated when company loads
       location: "",
       type: "full_time",
       description: "",
@@ -301,7 +301,7 @@ const PostJob = () => {
                                     {isLoadingCategories ? (
                                       <SelectItem value="loading">Loading categories...</SelectItem>
                                     ) : categories.length > 0 ? (
-                                      categories.map((category) => (
+                                      categories.map((category: Category & { count: number }) => (
                                         <SelectItem key={category.id} value={category.name}>
                                           {category.name}
                                         </SelectItem>
