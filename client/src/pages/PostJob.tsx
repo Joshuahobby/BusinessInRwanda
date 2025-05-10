@@ -299,7 +299,7 @@ const PostJob = () => {
                                   </FormControl>
                                   <SelectContent>
                                     {isLoadingCategories ? (
-                                      <SelectItem value="">Loading categories...</SelectItem>
+                                      <SelectItem value="loading">Loading categories...</SelectItem>
                                     ) : categories.length > 0 ? (
                                       categories.map((category) => (
                                         <SelectItem key={category.id} value={category.name}>
