@@ -19,11 +19,8 @@ const JobDetail = () => {
   const { toast } = useToast();
   const { isAuthenticated, isJobSeeker } = useAuth();
   
-  // Add console logs for debugging
-  console.log('match:', match);
-  
-  // Fix for TypeScript error by properly validating match
-  const jobId = match && match.params ? parseInt(match.params.id) : null;
+  // Extract job ID from the match
+  const jobId = match ? parseInt(match.params.id) : null;
 
   // Fetch job details
   const { data: job, isLoading, error } = useQuery<Job>({

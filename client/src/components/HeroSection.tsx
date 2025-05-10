@@ -35,7 +35,7 @@ const HeroSection = () => {
   const handleLocationChange = (value: string) => {
     setSearchParams(prev => ({
       ...prev,
-      location: value
+      location: value === 'all' ? '' : value
     }));
   };
 
@@ -75,12 +75,12 @@ const HeroSection = () => {
                 <Label htmlFor="location" className="text-neutral-700 text-sm font-medium mb-1 block">Where</Label>
                 <div className="relative">
                   <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400 z-10" />
-                  <Select onValueChange={handleLocationChange} value={searchParams.location}>
+                  <Select onValueChange={handleLocationChange} value={searchParams.location || 'all'}>
                     <SelectTrigger className="pl-9">
                       <SelectValue placeholder="All locations" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="">All locations</SelectItem>
+                      <SelectItem value="all">All locations</SelectItem>
                       <SelectItem value="kigali">Kigali</SelectItem>
                       <SelectItem value="northern">Northern Province</SelectItem>
                       <SelectItem value="southern">Southern Province</SelectItem>
