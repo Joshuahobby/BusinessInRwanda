@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { z } from "zod";
-import { insertJobSchema } from "@shared/schema";
+import { insertJobSchema, Category, Company } from "@shared/schema";
 import { JobType, ExperienceLevel } from "@/lib/types";
 import {
   Card,
@@ -80,12 +80,12 @@ const PostJob = () => {
   }
 
   // Fetch company data
-  const { data: company, isLoading: isLoadingCompany } = useQuery({
+  const { data: company, isLoading: isLoadingCompany } = useQuery<Company>({
     queryKey: ['/api/employer/company'],
   });
 
   // Fetch categories for the dropdown
-  const { data: categories = [], isLoading: isLoadingCategories } = useQuery({
+  const { data: categories = [], isLoading: isLoadingCategories } = useQuery<(Category & { count: number })[]>({
     queryKey: ['/api/categories'],
   });
 
