@@ -14,13 +14,14 @@ import { MapPin, Calendar, Clock, Briefcase, DollarSign, Building, Share2, Bookm
 import { formatDistanceToNow } from 'date-fns';
 
 const JobDetail = () => {
-  const [match] = useRoute<{ id: string }>('/job/:id');
+  // Use the useRoute hook from wouter to get route parameters
+  const [, params] = useRoute<{ id: string }>('/job/:id');
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { isAuthenticated, isJobSeeker } = useAuth();
   
-  // Extract job ID from the match
-  const jobId = match ? parseInt(match.params.id) : null;
+  // Extract job ID from params, if available
+  const jobId = params ? parseInt(params.id) : null;
 
   // Fetch job details
   const { data: job, isLoading, error } = useQuery<Job>({
