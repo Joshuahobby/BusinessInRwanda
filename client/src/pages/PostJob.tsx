@@ -9,7 +9,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { z } from "zod";
 import { insertJobSchema, Category, Company } from "@shared/schema";
-import { JobType, ExperienceLevel } from "@/lib/types";
 import {
   Card,
   CardContent,
@@ -68,20 +67,10 @@ const PostJob = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Redirect if not authenticated or not an employer
-  if (!isAuthenticated) {
-    navigate("/login");
-    return null;
-  }
-
-  if (!isEmployer()) {
-    navigate("/");
-    return null;
-  }
-
-  // Fetch company data
+  // Always define hooks first, before any conditional returns
   const { data: company, isLoading: isLoadingCompany } = useQuery<Company>({
     queryKey: ['/api/employer/company'],
+    enabled: isAuthenticated && isEmployer(), // Only run query if authenticated and employer
   });
 
   // Fetch categories for the dropdown
@@ -108,11 +97,6 @@ const PostJob = () => {
       agreeToTerms: false,
     },
   });
-
-  // When company data loads, update form
-  if (company && !form.getValues().companyId) {
-    form.setValue("companyId", company.id);
-  }
 
   // Create job mutation
   const createJobMutation = useMutation({
@@ -150,6 +134,22 @@ const PostJob = () => {
     setIsSubmitting(true);
     await createJobMutation.mutateAsync(data);
   };
+
+  // When company data loads, update form
+  if (company && !form.getValues().companyId) {
+    form.setValue("companyId", company.id);
+  }
+
+  // Redirect if not authenticated or not an employer
+  if (!isAuthenticated) {
+    navigate("/login");
+    return null;
+  }
+
+  if (!isEmployer()) {
+    navigate("/");
+    return null;
+  }
 
   // Show message if no company profile exists
   if (!isLoadingCompany && !company) {
@@ -380,15 +380,14 @@ const PostJob = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Application Deadline (Optional)</FormLabel>
-                                <div className="relative">
-                                  <FormControl>
+                                <FormControl>
+                                  <div className="flex">
                                     <Input 
                                       type="date"
                                       {...field}
                                     />
-                                  </FormControl>
-                                  <Calendar className="absolute right-3 top-2.5 h-4 w-4 text-neutral-400" />
-                                </div>
+                                  </div>
+                                </FormControl>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -412,13 +411,34 @@ const PostJob = () => {
                               <FormLabel>Job Description*</FormLabel>
                               <FormControl>
                                 <Textarea 
-                                  placeholder="Provide a detailed description of the job"
-                                  className="min-h-32"
+                                  placeholder="Enter a detailed description of the job"
+                                  className="min-h-[120px]"
                                   {...field}
                                 />
                               </FormControl>
                               <FormDescription>
-                                Include information about the role, company culture, and benefits
+                                Provide details about the role, company, and what makes this position unique
+                              </FormDescription>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={form.control}
+                          name="requirements"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Requirements*</FormLabel>
+                              <FormControl>
+                                <Textarea 
+                                  placeholder="List the qualifications, skills, and experience required"
+                                  className="min-h-[120px]"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormDescription>
+                                Include education level, years of experience, technical skills, etc.
                               </FormDescription>
                               <FormMessage />
                             </FormItem>
@@ -433,29 +453,14 @@ const PostJob = () => {
                               <FormLabel>Responsibilities (Optional)</FormLabel>
                               <FormControl>
                                 <Textarea 
-                                  placeholder="List the main duties and responsibilities"
-                                  className="min-h-24"
+                                  placeholder="List the key responsibilities and duties"
+                                  className="min-h-[120px]"
                                   {...field}
                                 />
                               </FormControl>
-                              <FormMessage />
-                            </FormItem>
-                          )}
-                        />
-
-                        <FormField
-                          control={form.control}
-                          name="requirements"
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel>Requirements*</FormLabel>
-                              <FormControl>
-                                <Textarea 
-                                  placeholder="List required skills, qualifications, and experience"
-                                  className="min-h-24"
-                                  {...field}
-                                />
-                              </FormControl>
+                              <FormDescription>
+                                Describe the day-to-day tasks and long-term projects
+                              </FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
@@ -465,16 +470,16 @@ const PostJob = () => {
 
                     <Separator />
 
-                    {/* Job Settings */}
+                    {/* Terms & Status */}
                     <div>
-                      <h3 className="text-lg font-medium mb-4">Job Settings</h3>
+                      <h3 className="text-lg font-medium mb-4">Terms & Status</h3>
                       
-                      <div>
+                      <div className="space-y-4">
                         <FormField
                           control={form.control}
                           name="isActive"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 mb-4">
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                               <FormControl>
                                 <Checkbox
                                   checked={field.value}
@@ -483,7 +488,7 @@ const PostJob = () => {
                               </FormControl>
                               <div className="space-y-1 leading-none">
                                 <FormLabel>
-                                  Publish job immediately
+                                  Make job active immediately
                                 </FormLabel>
                                 <FormDescription>
                                   If unchecked, the job will be saved as a draft
@@ -493,19 +498,11 @@ const PostJob = () => {
                           )}
                         />
 
-                        <Alert className="bg-amber-50 text-amber-800 border-amber-200">
-                          <Info className="h-4 w-4" />
-                          <AlertTitle>Important</AlertTitle>
-                          <AlertDescription>
-                            By posting this job, you agree to abide by Business In Rwanda's terms of service and confirm that this job listing complies with Rwanda's labor laws.
-                          </AlertDescription>
-                        </Alert>
-
                         <FormField
                           control={form.control}
                           name="agreeToTerms"
                           render={({ field }) => (
-                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 mt-4">
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0">
                               <FormControl>
                                 <Checkbox
                                   checked={field.value}
@@ -528,13 +525,20 @@ const PostJob = () => {
                       </div>
                     </div>
                     
-                    <CardFooter className="px-0 pt-4">
+                    <CardFooter className="flex justify-between border-t pt-6 px-0">
+                      <Button 
+                        type="button" 
+                        variant="outline"
+                        onClick={() => navigate("/employer/dashboard")}
+                      >
+                        Cancel
+                      </Button>
                       <Button 
                         type="submit" 
-                        className="bg-[#0A3D62] hover:bg-[#082C46] w-full"
+                        className="bg-[#0A3D62] hover:bg-[#082C46]"
                         disabled={isSubmitting}
                       >
-                        {isSubmitting ? "Posting Job..." : "Post Job"}
+                        {isSubmitting ? "Posting..." : "Post Job"}
                       </Button>
                     </CardFooter>
                   </form>

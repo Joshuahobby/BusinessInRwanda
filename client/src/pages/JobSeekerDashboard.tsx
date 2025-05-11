@@ -48,21 +48,23 @@ const JobSeekerDashboard = () => {
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Redirect if not authenticated
-  if (!user) {
-    navigate("/login");
-    return null;
-  }
-
-  // Fetch job seeker profile
+  // Fetch job seeker profile - always define hooks before early returns
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['/api/jobseeker/profile'],
+    enabled: !!user, // Only run query if user is logged in
   });
 
   // Fetch applications
   const { data: applications = [], isLoading: isLoadingApplications } = useQuery<ApplicationWithJob[]>({
     queryKey: ['/api/jobseeker/applications'],
+    enabled: !!user, // Only run query if user is logged in
   });
+  
+  // Redirect if not authenticated
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
 
   // Fetch recommended jobs
   const { data: recommendedJobs = [], isLoading: isLoadingRecommendedJobs } = useQuery<Job[]>({
