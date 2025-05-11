@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -17,7 +17,9 @@ type CompanyWithJobs = Company & {
 
 const CompanyProfile = () => {
   const [match] = useRoute<{ id: string }>("/company/:id");
-  const companyId = match?.params.id ? parseInt(match.params.id) : null;
+  
+  // Safely handle route params - make sure match and params exist
+  const companyId = match && match.params && match.params.id ? parseInt(match.params.id) : null;
 
   // Fetch company data
   const { data: company, isLoading, error } = useQuery<CompanyWithJobs>({
