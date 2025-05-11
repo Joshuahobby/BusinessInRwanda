@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -42,26 +42,29 @@ const EmployerDashboard = () => {
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Redirect if not authenticated or not an employer
-  if (!user) {
-    navigate("/login");
-    return null;
-  }
-
-  // Fetch employer's posted jobs
+  // Fetch employer's posted jobs - define hooks before conditional returns
   const { data: jobs = [], isLoading: isLoadingJobs } = useQuery<Job[]>({
     queryKey: ['/api/employer/jobs'],
+    enabled: !!user, // Only run query if user is logged in
   });
 
   // Fetch applications for employer's jobs
   const { data: applications = [], isLoading: isLoadingApplications } = useQuery<ApplicationWithDetails[]>({
     queryKey: ['/api/employer/applications'],
+    enabled: !!user, // Only run query if user is logged in
   });
 
   // Fetch company profile data
   const { data: company, isLoading: isLoadingCompany } = useQuery({
     queryKey: ['/api/employer/company'],
+    enabled: !!user, // Only run query if user is logged in
   });
+  
+  // Redirect if not authenticated or not an employer
+  if (!user) {
+    navigate("/login");
+    return null;
+  }
 
   // Get counts for dashboard stats
   const activeJobsCount = jobs.filter(job => job.isActive).length;
