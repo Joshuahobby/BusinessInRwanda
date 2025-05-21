@@ -55,10 +55,18 @@ const Register = () => {
     try {
       setIsLoading(true);
       
+      // In a real application with email verification, we would:
+      // 1. Register the user with "verified: false" status
+      // 2. Generate a verification token and send an email with verification link
+      // 3. Show the verification screen
+      
+      // Simulate the API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
       // Store registration data to display on verification screen
       setRegisteredEmail(data.email);
       
-      // Register with Firebase
+      // For demo purposes, we'll simulate a successful registration
       await registerWithEmail(
         data.email,
         data.password,
@@ -66,7 +74,7 @@ const Register = () => {
         data.role
       );
       
-      // Show verification screen
+      // Show verification screen instead of navigating away
       setRegistrationComplete(true);
       
       toast({
@@ -75,7 +83,7 @@ const Register = () => {
       });
       
     } catch (error) {
-      // Error handling is done in FirebaseAuthContext
+      // Error handling is done in AuthContext
       toast({
         title: "Registration failed",
         description: "Please try again later",
@@ -112,18 +120,6 @@ const Register = () => {
   const handleTabChange = (value: string) => {
     setActiveTab(value as 'job_seeker' | 'employer');
     form.setValue('role', value as 'job_seeker' | 'employer');
-  };
-
-  const handleGoogleSignIn = async () => {
-    try {
-      setIsLoading(true);
-      await loginWithGoogle();
-      navigate('/');
-    } catch (error) {
-      // Error handling is done in FirebaseAuthContext
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -171,7 +167,17 @@ const Register = () => {
                       <Button 
                         variant="outline" 
                         className="w-full flex items-center justify-center"
-                        onClick={handleGoogleSignIn}
+                        onClick={async () => {
+                          try {
+                            setIsLoading(true);
+                            await loginWithGoogle();
+                            navigate('/'); // Redirect to home after successful login
+                          } catch (error) {
+                            // Error handling is done in FirebaseAuthContext
+                          } finally {
+                            setIsLoading(false);
+                          }
+                        }}
                         type="button"
                         disabled={isLoading}
                       >
@@ -357,57 +363,21 @@ const Register = () => {
                         <span className="text-sm">Verification email sent!</span>
                       </div>
                     )}
-                    
-                    <div className="mt-6">
-                      <Button 
-                        variant="default" 
-                        className="w-full" 
-                        onClick={() => navigate('/')}
-                      >
-                        Go to homepage
-                      </Button>
-                    </div>
                   </div>
                 </CardContent>
+                <CardFooter>
+                  <div className="w-full">
+                    <Button 
+                      variant="link" 
+                      className="w-full"
+                      onClick={() => navigate('/login')}
+                    >
+                      Continue to login
+                    </Button>
+                  </div>
+                </CardFooter>
               </Card>
             )}
-          </div>
-        </div>
-      </div>
-
-      <div className="bg-white border-t border-neutral-200 mt-16">
-        <div className="container mx-auto px-4 py-8">
-          <h3 className="text-xl font-semibold mb-4">Why Join Business In Rwanda?</h3>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-neutral-50 p-6 rounded-lg">
-              <h4 className="text-lg font-medium mb-2">For Job Seekers</h4>
-              <ul className="list-disc pl-5 space-y-2 text-neutral-700">
-                <li>Access to top jobs from Rwanda's best employers</li>
-                <li>Easy application process with profile tracking</li>
-                <li>Career resources and skill development tools</li>
-                <li>Job alerts tailored to your skills and preferences</li>
-              </ul>
-            </div>
-            
-            <div className="bg-neutral-50 p-6 rounded-lg">
-              <h4 className="text-lg font-medium mb-2">For Employers</h4>
-              <ul className="list-disc pl-5 space-y-2 text-neutral-700">
-                <li>Connect with qualified talent quickly and efficiently</li>
-                <li>Showcase your company culture and benefits</li>
-                <li>Streamlined candidate screening and management</li>
-                <li>Insights and analytics on your recruitment process</li>
-              </ul>
-            </div>
-            
-            <div className="bg-neutral-50 p-6 rounded-lg">
-              <h4 className="text-lg font-medium mb-2">Community Benefits</h4>
-              <ul className="list-disc pl-5 space-y-2 text-neutral-700">
-                <li>Support Rwanda's economic development</li>
-                <li>Connect with industry professionals and peers</li>
-                <li>Stay informed about market trends and opportunities</li>
-                <li>Participate in events, workshops, and networking</li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
