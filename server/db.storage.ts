@@ -9,7 +9,8 @@ import {
 import { JobSearchParams } from "@/lib/types";
 import { IStorage } from "./storage";
 import { db } from "./db";
-import { eq, like, and, or, desc, sql } from "drizzle-orm";
+import { eq, like, and, or, SQL, ilike, asc, desc, inArray, sql } from "drizzle-orm";
+import crypto from "crypto";
 
 // Database storage implementation
 export class DatabaseStorage implements IStorage {
@@ -25,11 +26,18 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(userData: InsertUser): Promise<User> {
-    const [user] = await db.insert(users).values(userData).returning();
+    // Make sure we have an ID (from Replit auth) or generate one
+    const userDataWithId = {
+      ...userData,
+      id: userData.id || crypto.randomUUID(),
+      updatedAt: new Date()
+    };
+    
+    const [user] = await db.insert(users).values(userDataWithId).returning();
     return user;
   }
   
-  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+  async updateUser(id: string, userData: Partial<User>): Promise<User> {
     const { id: userId, ...updateData } = userData;
     const [updatedUser] = await db
       .update(users)
@@ -40,6 +48,7 @@ export class DatabaseStorage implements IStorage {
         ...(updateData.phone !== undefined && { phone: updateData.phone }),
         ...(updateData.bio !== undefined && { bio: updateData.bio }),
         ...(updateData.location !== undefined && { location: updateData.location }),
+        updatedAt: new Date()
       })
       .where(eq(users.id, id))
       .returning();
@@ -52,7 +61,7 @@ export class DatabaseStorage implements IStorage {
     return company;
   }
 
-  async getCompanyByUserId(userId: number): Promise<Company | undefined> {
+  async getCompanyByUserId(userId: string): Promise<Company | undefined> {
     const [company] = await db.select().from(companies).where(eq(companies.userId, userId));
     return company;
   }
@@ -86,7 +95,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Job seeker profile operations
-  async getJobSeekerProfile(userId: number): Promise<JobSeekerProfile | undefined> {
+  async getJobSeekerProfile(userId: string): Promise<JobSeekerProfile | undefined> {
     const [profile] = await db
       .select()
       .from(jobSeekerProfiles)
