@@ -24,7 +24,7 @@ import {
   DialogFooter,
   DialogDescription
 } from '@/components/ui/dialog';
-import { useAuth } from '@/context/AuthContext';
+import { useFirebaseAuth } from '@/context/FirebaseAuthContext';
 import Icon from '@/components/ui/icon';
 
 const FindJobs = () => {
@@ -42,7 +42,7 @@ const FindJobs = () => {
   const [savedSearches, setSavedSearches] = useState<{name: string, params: JobSearchParams}[]>([]);
   
   const { toast } = useToast();
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, currentUser } = useFirebaseAuth();
 
   // Parse initial search params from URL
   useEffect(() => {

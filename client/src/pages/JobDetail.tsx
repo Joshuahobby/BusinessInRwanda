@@ -1,7 +1,7 @@
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useRoute, useLocation } from 'wouter';
 import { Helmet } from 'react-helmet-async';
-import { useAuth } from '@/context/AuthContext';
+import { useFirebaseAuth } from '@/context/FirebaseAuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { Job } from '@shared/schema';
