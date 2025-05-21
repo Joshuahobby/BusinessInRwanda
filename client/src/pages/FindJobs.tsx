@@ -344,14 +344,14 @@ const FindJobs = () => {
                   <div>
                     <Label className="font-medium mb-2 block">Job Category</Label>
                     <Select 
-                      value={searchParams.category || ''} 
-                      onValueChange={(value) => handleFilterChange('category', value)}
+                      value={searchParams.category || 'all-categories'} 
+                      onValueChange={(value) => handleFilterChange('category', value === 'all-categories' ? '' : value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="All Categories" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="">All Categories</SelectItem>
+                        <SelectItem value="all-categories">All Categories</SelectItem>
                         {categories.map(category => (
                           <SelectItem key={category.name} value={category.name}>
                             {category.name} ({category.count})
