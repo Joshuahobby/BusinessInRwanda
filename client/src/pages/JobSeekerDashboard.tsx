@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/context/AuthContext";
+import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -44,24 +44,24 @@ type ApplicationWithJob = Application & {
 };
 
 const JobSeekerDashboard = () => {
-  const { user } = useAuth();
+  const { currentUser } = useFirebaseAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
 
   // Fetch job seeker profile - always define hooks before early returns
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['/api/jobseeker/profile'],
-    enabled: !!user, // Only run query if user is logged in
+    enabled: !!currentUser, // Only run query if user is logged in
   });
 
   // Fetch applications
   const { data: applications = [], isLoading: isLoadingApplications } = useQuery<ApplicationWithJob[]>({
     queryKey: ['/api/jobseeker/applications'],
-    enabled: !!user, // Only run query if user is logged in
+    enabled: !!currentUser, // Only run query if user is logged in
   });
   
   // Redirect if not authenticated
-  if (!user) {
+  if (!currentUser) {
     navigate("/login");
     return null;
   }
