@@ -143,8 +143,9 @@ export function setupSocialAuth(app: Express) {
     }
   });
 
-  // Add Google authentication routes with full URL for callback
+  // Add Google authentication routes with dynamic callback URL based on request
   app.get("/api/auth/google", (req, res, next) => {
+    // Get the current hostname dynamically from the request
     const protocol = req.headers['x-forwarded-proto'] || req.protocol;
     const host = req.headers.host;
     const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
@@ -152,20 +153,22 @@ export function setupSocialAuth(app: Express) {
     // Log for debugging
     console.log(`Google auth request with callback URL: ${callbackURL}`);
     
-    // Use the standard authentication without customizing the callback URL
-    // This will use the callback URL configured in the Google OAuth setup
     passport.authenticate("google", {
       scope: ['profile', 'email']
     })(req, res, next);
   });
 
   app.get("/api/auth/google/callback", (req, res, next) => {
+    // Get the current hostname dynamically from the request
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers.host;
+    
     // Log callback receipt for debugging
-    console.log(`Google auth callback received`);
+    console.log(`Google auth callback received at ${protocol}://${host}/api/auth/google/callback`);
     
     passport.authenticate("google", {
       failureRedirect: '/login?error=google-auth-failed'
-    }, (err, user) => {
+    }, (err: any, user: any) => {
       if (err) {
         console.error('Auth error:', err);
         return res.redirect('/login?error=auth-error');
