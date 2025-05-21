@@ -1,0 +1,115 @@
+                <TabsContent value="company">
+                  <Card>
+                    <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
+                      <div>
+                        <CardTitle className="text-xl font-heading">Company Profile</CardTitle>
+                        <CardDescription>
+                          Manage your company information and branding
+                        </CardDescription>
+                      </div>
+                      {company ? (
+                        <Button variant="outline">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit Profile
+                        </Button>
+                      ) : (
+                        <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Create Profile
+                        </Button>
+                      )}
+                    </CardHeader>
+                    <CardContent>
+                      {isLoadingCompany ? (
+                        <div className="space-y-4">
+                          <div className="h-24 animate-pulse bg-neutral-100 rounded-md"></div>
+                          <div className="h-48 animate-pulse bg-neutral-100 rounded-md"></div>
+                        </div>
+                      ) : company ? (
+                        <div>
+                          <div className="flex flex-col md:flex-row gap-6 mb-6">
+                            <div className="md:w-1/4">
+                              <div className="bg-neutral-100 rounded-md p-6 flex items-center justify-center h-48">
+                                {company.logo ? (
+                                  <img 
+                                    src={company.logo} 
+                                    alt={`${company.name} logo`} 
+                                    className="max-h-36 max-w-full"
+                                  />
+                                ) : (
+                                  <Building className="h-16 w-16 text-neutral-400" />
+                                )}
+                              </div>
+                            </div>
+                            <div className="md:w-3/4">
+                              <h2 className="text-2xl font-bold mb-2">{company.name}</h2>
+                              <div className="space-y-3 text-sm">
+                                <div className="flex gap-2">
+                                  <span className="font-medium min-w-[100px]">Industry:</span>
+                                  <span>{company.industry}</span>
+                                </div>
+                                <div className="flex gap-2">
+                                  <span className="font-medium min-w-[100px]">Location:</span>
+                                  <span>{company.location}</span>
+                                </div>
+                                {company.website && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Website:</span>
+                                    <a 
+                                      href={company.website} 
+                                      target="_blank" 
+                                      rel="noopener noreferrer"
+                                      className="text-[#0A3D62] hover:underline"
+                                    >
+                                      {company.website}
+                                    </a>
+                                  </div>
+                                )}
+                                {company.employeeCount && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Size:</span>
+                                    <span>{company.employeeCount} employees</span>
+                                  </div>
+                                )}
+                                {company.founded && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Founded:</span>
+                                    <span>{company.founded}</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="mt-6">
+                            <h3 className="text-lg font-medium mb-3">Company Description</h3>
+                            <p className="text-neutral-700 whitespace-pre-line">
+                              {company.description}
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="text-center py-12">
+                          <Building className="h-12 w-12 mx-auto mb-4 text-neutral-300" />
+                          <h3 className="text-lg font-medium mb-2">No company profile yet</h3>
+                          <p className="text-neutral-500 mb-6">
+                            Create a company profile to attract top talent and showcase your brand
+                          </p>
+                          <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                            Create Company Profile
+                          </Button>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+              </Tabs>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
+export default EmployerDashboard;
