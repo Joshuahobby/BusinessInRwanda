@@ -1,0 +1,49 @@
+react-dom.development.js:29895 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg:1 
+            
+            
+            Failed to load resource: the server responded with a status of 400 ()
+
+                
+          
+          
+          
+         Microsoft Edge is moving towards a new experience that allows users to choose to browse without third-party cookies.
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+firebase-sync:1 
+            
+            
+            Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+FirebaseAuthContext.tsx:78  Error syncing with backend: Error: Failed to sync user data with backend
+    at FirebaseAuthContext.tsx:72:19
+(anonymous) @ FirebaseAuthContext.tsx:78
+
+                
+          
+          
+          
+         Microsoft Edge is moving towards a new experience that allows users to choose to browse without third-party cookies.
+popup.ts:302  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ popup.ts:302
+popup.ts:302  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ popup.ts:302
+popup.ts:50  Cross-Origin-Opener-Policy policy would block the window.close call.
+close @ popup.ts:50
+cleanUp @ popup.ts:288
+unregisterAndCleanUp @ abstract_popup_redirect_operation.ts:147
+resolve @ abstract_popup_redirect_operation.ts:132
+onAuthEvent @ abstract_popup_redirect_operation.ts:103
+popup.ts:50  Cross-Origin-Opener-Policy policy would block the window.close call.
+close @ popup.ts:50
+cleanUp @ popup.ts:288
+unregisterAndCleanUp @ abstract_popup_redirect_operation.ts:147
+resolve @ abstract_popup_redirect_operation.ts:132
+onAuthEvent @ abstract_popup_redirect_operation.ts:103
+gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg:1 
+            
+            
+            GET https://pixabay.com/get/gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg 400 (Bad Request)
