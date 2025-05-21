@@ -1,20 +1,18 @@
 import { useState } from 'react';
 import { useLocation } from 'wouter';
 import { Helmet } from 'react-helmet-async';
-import { useAuth } from '@/context/AuthContext';
+import { useFirebaseAuth } from '@/context/FirebaseAuthContext';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { UserRole } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Facebook, Mail, CheckCircle2 } from 'lucide-react';
+import { Mail, CheckCircle2 } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
-import { FaLinkedin } from 'react-icons/fa';
 import { useToast } from '@/hooks/use-toast';
 
 const registerSchema = z.object({
@@ -33,7 +31,7 @@ type RegisterFormValues = z.infer<typeof registerSchema>;
 
 const Register = () => {
   const [, navigate] = useLocation();
-  const { register: registerUser } = useAuth();
+  const { registerWithEmail, loginWithGoogle } = useFirebaseAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'job_seeker' | 'employer'>('job_seeker');
   const [registrationComplete, setRegistrationComplete] = useState(false);
@@ -69,13 +67,12 @@ const Register = () => {
       setRegisteredEmail(data.email);
       
       // For demo purposes, we'll simulate a successful registration
-      await registerUser({
-        email: data.email,
-        password: data.password,
-        fullName: data.fullName,
-        role: data.role as UserRole,
-        phone: data.phone,
-      });
+      await registerWithEmail(
+        data.email,
+        data.password,
+        data.fullName,
+        data.role
+      );
       
       // Show verification screen instead of navigating away
       setRegistrationComplete(true);
@@ -166,18 +163,19 @@ const Register = () => {
 
                   <div className="space-y-4">
                     {/* Social Registration Buttons */}
-                    <div className="grid grid-cols-3 gap-2">
-                      <Button variant="outline" className="w-full">
-                        <Facebook className="h-4 w-4 mr-2" />
-                        <span className="sr-only md:not-sr-only md:text-xs">Facebook</span>
-                      </Button>
-                      <Button variant="outline" className="w-full">
+                    <div className="grid grid-cols-1 gap-2">
+                      <Button 
+                        variant="outline" 
+                        className="w-full flex items-center justify-center"
+                        onClick={() => {
+                          // Register with Google functionality
+                          const { loginWithGoogle } = useFirebaseAuth(); 
+                          loginWithGoogle();
+                        }}
+                        type="button"
+                      >
                         <FcGoogle className="h-4 w-4 mr-2" />
-                        <span className="sr-only md:not-sr-only md:text-xs">Google</span>
-                      </Button>
-                      <Button variant="outline" className="w-full">
-                        <FaLinkedin className="h-4 w-4 mr-2 text-[#0077B5]" />
-                        <span className="sr-only md:not-sr-only md:text-xs">LinkedIn</span>
+                        <span className="md:text-sm">Continue with Google</span>
                       </Button>
                     </div>
                     
