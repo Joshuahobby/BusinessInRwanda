@@ -117,12 +117,12 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       resetForms();
       onClose();
     }}>
-      <DialogContent className="sm:max-w-md" aria-describedby="login-description">
+      <DialogContent className="sm:max-w-md" aria-describedby="login-description" aria-labelledby="login-title">
         {!showForgotPassword ? (
           // Login Screen
           <>
             <DialogHeader>
-              <DialogTitle className="text-lg font-bold">Sign In</DialogTitle>
+              <DialogTitle id="login-title" className="text-lg font-bold">Sign In</DialogTitle>
             </DialogHeader>
 
             <DialogDescription id="login-description" className="text-neutral-600 mb-4">
@@ -236,7 +236,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 >
                   <ArrowLeft className="h-4 w-4" />
                 </Button>
-                <DialogTitle className="text-lg font-bold">Reset Password</DialogTitle>
+                <DialogTitle id="reset-title" className="text-lg font-bold">Reset Password</DialogTitle>
               </div>
               <DialogDescription id="reset-description">
                 {!passwordResetSent 
