@@ -1,9 +1,10 @@
-import { Route, Switch } from "wouter";
+import { Route, Switch, Router as WouterRouter } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { FirebaseAuthProvider } from "@/context/FirebaseAuthContext";
+import { HelmetProvider } from "react-helmet-async";
 
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
@@ -20,7 +21,7 @@ import Resources from "@/pages/Resources";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-function Router() {
+function AppRoutes() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
@@ -48,14 +49,16 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <FirebaseAuthProvider>
-          <Toaster />
-          <Router />
-        </FirebaseAuthProvider>
-      </TooltipProvider>
-    </QueryClientProvider>
+    <HelmetProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <FirebaseAuthProvider>
+            <Toaster />
+            <AppRoutes />
+          </FirebaseAuthProvider>
+        </TooltipProvider>
+      </QueryClientProvider>
+    </HelmetProvider>
   );
 }
 
