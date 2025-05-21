@@ -55,35 +55,16 @@ function updateUserSession(
 }
 
 async function upsertUser(claims: any) {
-  // Make sure we have an email
-  if (!claims.email) {
-    throw new Error("Email is required from authentication provider");
-  }
-  
-  const existingUser = await storage.getUserByEmail(claims.email);
-  
-  if (existingUser) {
-    // User exists - update profile picture if available
-    if (claims.profile_image_url && claims.profile_image_url !== existingUser.profilePicture) {
-      const updatedUser = await storage.updateUser(existingUser.id, {
-        ...existingUser,
-        profilePicture: claims.profile_image_url
-      });
-      return updatedUser;
-    }
-    return existingUser;
-  }
-  
-  // Create new user
-  const newUser = await storage.createUser({
+  // Use our new upsertUser method directly
+  const user = await storage.upsertUser({
+    id: claims.sub,  // Use the stable user ID from Replit (important for persistence)
     email: claims.email,
-    password: "", // No password for social login users
-    fullName: `${claims.first_name || ""} ${claims.last_name || ""}`.trim() || claims.email.split('@')[0],
-    role: userRoleEnum.enumValues[0], // Default to job_seeker
-    profilePicture: claims.profile_image_url,
+    firstName: claims.first_name,
+    lastName: claims.last_name,
+    profileImageUrl: claims.profile_image_url
   });
   
-  return newUser;
+  return user;
 }
 
 export async function setupReplitAuth(app: Express) {

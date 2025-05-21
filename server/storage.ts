@@ -16,6 +16,7 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   updateUser(id: string, userData: Partial<User>): Promise<User>;
+  upsertUser(userData: { id: string, email?: string | null, firstName?: string | null, lastName?: string | null, profileImageUrl?: string | null }): Promise<User>;
   
   // Company operations
   getCompany(id: number): Promise<Company | undefined>;
@@ -456,6 +457,51 @@ export class MemStorage implements IStorage {
     
     this.usersData.set(id, updatedUser);
     return updatedUser;
+  }
+  
+  async upsertUser(userData: { id: string, email?: string | null, firstName?: string | null, lastName?: string | null, profileImageUrl?: string | null }): Promise<User> {
+    // Convert string id to number for memory storage
+    const numericId = parseInt(userData.id);
+    
+    // Try to find existing user
+    const existingUser = this.usersData.get(numericId);
+    
+    // Create fullName from firstName and lastName if available
+    const fullName = userData.firstName && userData.lastName 
+      ? `${userData.firstName} ${userData.lastName}`
+      : userData.firstName || 'User';
+    
+    if (existingUser) {
+      // Update existing user
+      const updatedUser: User = {
+        ...existingUser,
+        email: userData.email || existingUser.email,
+        fullName: fullName,
+        profilePicture: userData.profileImageUrl || existingUser.profilePicture,
+        updatedAt: new Date()
+      };
+      
+      this.usersData.set(numericId, updatedUser);
+      return updatedUser;
+    } else {
+      // Create new user
+      const newUser: User = {
+        id: userData.id,
+        email: userData.email || '',
+        password: null,
+        role: 'job_seeker', // Default role
+        fullName: fullName,
+        phone: null,
+        profilePicture: userData.profileImageUrl || null,
+        bio: null,
+        location: null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      this.usersData.set(numericId, newUser);
+      return newUser;
+    }
   }
   
   // Company operations

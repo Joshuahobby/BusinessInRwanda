@@ -54,6 +54,41 @@ export class DatabaseStorage implements IStorage {
       .returning();
     return updatedUser;
   }
+  
+  async upsertUser(userData: { id: string, email?: string | null, firstName?: string | null, lastName?: string | null, profileImageUrl?: string | null }): Promise<User> {
+    // Create fullName from firstName and lastName if available
+    const fullName = userData.firstName && userData.lastName 
+      ? `${userData.firstName} ${userData.lastName}`
+      : userData.firstName || 'User';
+    
+    const userDataToUpsert = {
+      id: userData.id,
+      email: userData.email || null,
+      fullName,
+      profilePicture: userData.profileImageUrl || null,
+      role: 'job_seeker', // Default role for social login users
+      updatedAt: new Date()
+    };
+    
+    // Try to update the user first, if not exists, insert
+    const [user] = await db
+      .insert(users)
+      .values({
+        ...userDataToUpsert,
+        password: null, // Social login users don't have passwords
+        createdAt: new Date()
+      })
+      .onConflictDoUpdate({
+        target: users.id,
+        set: {
+          ...userDataToUpsert,
+          updatedAt: new Date()
+        }
+      })
+      .returning();
+      
+    return user;
+  }
 
   // Company operations
   async getCompany(id: number): Promise<Company | undefined> {
