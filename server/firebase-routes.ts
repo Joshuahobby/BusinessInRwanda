@@ -40,17 +40,33 @@ export function setupFirebaseRoutes(app: Express) {
   // Firebase Authentication endpoint (for authentication with frontend)
   app.post("/api/auth/firebase-sync", async (req: Request, res: Response) => {
     try {
-      const { idToken, email, displayName, photoURL, role = "job_seeker" } = req.body;
+      const { idToken, email, displayName, photoURL, firebaseUid, role = "job_seeker" } = req.body;
       
       if (!email) {
         return res.status(400).json({ message: "Missing required user data" });
       }
       
-      // Since we're skipping Firebase Admin verification, we'll just use the email
+      console.log("Received Firebase sync request for:", email, "with UID:", firebaseUid);
+      
+      // Since we're skipping Firebase Admin verification, we'll just use the email and UID
       // In a production app, we would verify the token with Firebase Admin
       
-      // Check if user exists in our database by email
-      let user = await storage.getUserByEmail(email);
+      // First check if user exists in our database by Firebase UID
+      let user = null;
+      if (firebaseUid) {
+        user = await storage.getUserByFirebaseUid(firebaseUid);
+        if (user) {
+          console.log("Found user by Firebase UID:", user.email);
+        }
+      }
+      
+      // If not found by Firebase UID, try email
+      if (!user) {
+        user = await storage.getUserByEmail(email);
+        if (user) {
+          console.log("Found user by email:", user.email);
+        }
+      }
       
       if (!user) {
         // Create new user if they don't exist
@@ -62,21 +78,41 @@ export function setupFirebaseRoutes(app: Express) {
             profilePicture: photoURL || null,
             // Firebase handles authentication, so no password needed
             password: null,
-            firebaseUid: idToken?.substring(0, 28) || null, // Use part of token as fake uid
+            firebaseUid, // Use the actual Firebase UID from the request
             bio: null,
             location: null,
             phone: null
           });
-          console.log("Created new user for Firebase auth:", email);
+          console.log("Created new user for Firebase auth:", email, "with ID:", user.id);
         } catch (error) {
           console.error("Error creating user:", error);
           return res.status(500).json({ message: "Error creating user account" });
         }
       } else {
-        console.log("User already exists in database:", email);
+        // Update existing user with Firebase UID if it's missing or different
+        if (firebaseUid && (!user.firebaseUid || user.firebaseUid !== firebaseUid)) {
+          try {
+            user = await storage.updateUser(user.id, { 
+              firebaseUid,
+              // Update profile picture and display name if available
+              ...(photoURL && { profilePicture: photoURL }),
+              ...(displayName && { fullName: displayName })
+            });
+            console.log("Updated user with Firebase UID:", email, "with ID:", user.id);
+          } catch (error) {
+            console.error("Error updating user with UID:", error);
+          }
+        }
+        console.log("User already exists in database:", email, "with ID:", user.id);
       }
       
       // Log the user in (establish session)
+      // Make sure we have a valid user object before login
+      if (!user || !user.id) {
+        console.error("Invalid user object:", user);
+        return res.status(500).json({ message: "Invalid user data" });
+      }
+
       req.login(user, (err) => {
         if (err) {
           console.error("Firebase login error:", err);
@@ -89,6 +125,7 @@ export function setupFirebaseRoutes(app: Express) {
           userResponse.password = null;
         }
         
+        console.log("User logged in successfully:", userResponse.email);
         return res.status(200).json(userResponse);
       });
     } catch (error) {
