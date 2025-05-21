@@ -23,12 +23,12 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo and site name */}
           <div className="flex items-center space-x-2">
-            <Link href="/" className="flex items-center">
+            <div className="flex items-center cursor-pointer" onClick={() => window.location.href = "/"}>
               <div className="bg-[#0A3D62] p-2 rounded">
                 <span className="material-icons text-white">work</span>
               </div>
               <span className="ml-2 text-xl font-bold text-[#0A3D62] font-heading">Business In Rwanda</span>
-            </Link>
+            </div>
           </div>
 
           {/* Navigation - Desktop */}
