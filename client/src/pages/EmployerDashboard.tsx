@@ -69,23 +69,23 @@ const EmployerDashboard = () => {
   // Fetch employer's posted jobs
   const { data: jobs = [], isLoading: isLoadingJobs } = useQuery<Job[]>({
     queryKey: ['/api/employer/jobs'],
-    enabled: !!user, // Only run query if user is logged in
+    enabled: !!currentUser, // Only run query if user is logged in
   });
 
   // Fetch applications for employer's jobs
   const { data: applications = [], isLoading: isLoadingApplications } = useQuery<ApplicationWithDetails[]>({
     queryKey: ['/api/employer/applications'],
-    enabled: !!user, // Only run query if user is logged in
+    enabled: !!currentUser, // Only run query if user is logged in
   });
 
   // Fetch company profile data
   const { data: company, isLoading: isLoadingCompany } = useQuery({
     queryKey: ['/api/employer/company'],
-    enabled: !!user, // Only run query if user is logged in
+    enabled: !!currentUser, // Only run query if user is logged in
   });
   
   // Redirect if not authenticated or not an employer
-  if (!user) {
+  if (!currentUser) {
     navigate("/login");
     return null;
   }
@@ -116,14 +116,14 @@ const EmployerDashboard = () => {
                 <CardHeader>
                   <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={user.profilePicture} alt={user.fullName} />
+                      <AvatarImage src={currentUser.photoURL || ''} alt={currentUser.displayName || ''} />
                       <AvatarFallback className="bg-[#0A3D62] text-white">
-                        {user.fullName.split(' ').map(n => n[0]).join('')}
+                        {currentUser.displayName ? currentUser.displayName.split(' ').map((n: string) => n[0]).join('') : 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <CardTitle className="text-lg">{user.fullName}</CardTitle>
-                      <CardDescription>{user.email}</CardDescription>
+                      <CardTitle className="text-lg">{currentUser.displayName || 'User'}</CardTitle>
+                      <CardDescription>{currentUser.email || ''}</CardDescription>
                     </div>
                   </div>
                 </CardHeader>
@@ -471,9 +471,9 @@ const EmployerDashboard = () => {
                                       {job.description.substring(0, 150)}...
                                     </p>
                                     <div className="flex flex-wrap gap-2">
-                                      {job.jobType && (
+                                      {job.type && (
                                         <Badge variant="secondary" className="bg-blue-50 border-blue-100 text-blue-700">
-                                          {job.jobType.replace('_', ' ')}
+                                          {job.type.replace('_', ' ')}
                                         </Badge>
                                       )}
                                       {job.experienceLevel && (
