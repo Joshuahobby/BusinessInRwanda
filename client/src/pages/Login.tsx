@@ -39,16 +39,12 @@ const Login = () => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       setIsLoading(true);
-      await loginWithEmail(data.email, data.password);
+      // The user object will be returned by loginWithEmail
+      const user = await loginWithEmail(data.email, data.password);
       
-      // Navigate based on role
-      if (isJobSeeker()) {
-        navigate('/jobseeker/dashboard');
-      } else if (isEmployer()) {
-        navigate('/employer/dashboard');
-      } else {
-        navigate('/');
-      }
+      // Let the auth context handle the navigation after login
+      // Automatic redirection will occur based on the user's role
+      // This avoids the hooks dependency issue
     } catch (error) {
       // Error handling is done in AuthContext
     } finally {
@@ -76,18 +72,22 @@ const Login = () => {
               <CardContent>
                 <div className="space-y-4">
                   {/* Social Login Buttons */}
-                  <div className="grid grid-cols-3 gap-2">
-                    <Button variant="outline" className="w-full">
-                      <Facebook className="h-4 w-4 mr-2" />
-                      <span className="sr-only md:not-sr-only md:text-xs">Facebook</span>
-                    </Button>
-                    <Button variant="outline" className="w-full">
+                  <div className="grid grid-cols-1 gap-2">
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={() => {
+                        try {
+                          setIsLoading(true);
+                          loginWithGoogle();
+                        } catch (error) {
+                          // Error is handled in the auth context
+                        }
+                      }}
+                      disabled={isLoading}
+                    >
                       <FcGoogle className="h-4 w-4 mr-2" />
-                      <span className="sr-only md:not-sr-only md:text-xs">Google</span>
-                    </Button>
-                    <Button variant="outline" className="w-full">
-                      <FaLinkedin className="h-4 w-4 mr-2 text-[#0077B5]" />
-                      <span className="sr-only md:not-sr-only md:text-xs">LinkedIn</span>
+                      <span className="md:text-sm">Sign in with Google</span>
                     </Button>
                   </div>
                   

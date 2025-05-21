@@ -206,9 +206,17 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
     try {
       setIsLoading(true);
       await logOut();
+      
+      // Clear user data first
+      setCurrentUser(null);
+      
+      // Show success message
       toast({
         title: "Logged out successfully",
       });
+      
+      // Redirect to home page to avoid hook errors
+      window.location.href = '/';
     } catch (error) {
       toast({
         title: "Logout failed",
