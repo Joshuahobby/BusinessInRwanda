@@ -1,0 +1,237 @@
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { useToast } from "@/hooks/use-toast";
+import { 
+  auth, 
+  signInWithGoogle, 
+  signInWithEmail, 
+  createAccount, 
+  logOut, 
+  onAuthChange,
+  FirebaseUser 
+} from "@/lib/firebase-auth";
+import { User } from "@shared/schema";
+
+// Firebase User data structure in our database
+interface UserData {
+  id: string;
+  email: string;
+  fullName: string;
+  role: 'job_seeker' | 'employer' | 'admin';
+  profilePicture?: string;
+}
+
+interface AuthContextType {
+  currentUser: UserData | null;
+  isLoading: boolean;
+  isAuthenticated: boolean;
+  loginWithEmail: (email: string, password: string) => Promise<void>;
+  registerWithEmail: (email: string, password: string, fullName: string, role: 'job_seeker' | 'employer') => Promise<void>;
+  loginWithGoogle: () => Promise<void>;
+  logout: () => Promise<void>;
+  isEmployer: () => boolean;
+  isJobSeeker: () => boolean;
+  isAdmin: () => boolean;
+}
+
+const FirebaseAuthContext = createContext<AuthContextType | null>(null);
+
+interface FirebaseAuthProviderProps {
+  children: ReactNode;
+}
+
+export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) => {
+  const { toast } = useToast();
+  const [currentUser, setCurrentUser] = useState<UserData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Sync user data with our backend when Firebase auth state changes
+  useEffect(() => {
+    const unsubscribe = onAuthChange(async (firebaseUser) => {
+      setIsLoading(true);
+      if (firebaseUser) {
+        try {
+          // Get user's ID token
+          const idToken = await firebaseUser.getIdToken();
+          
+          // Send the token to our backend to create/verify user and get the user data
+          const response = await fetch("/api/auth/firebase-sync", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              idToken,
+              email: firebaseUser.email,
+              displayName: firebaseUser.displayName,
+              photoURL: firebaseUser.photoURL,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to sync user data with backend");
+          }
+
+          const userData = await response.json();
+          setCurrentUser(userData);
+        } catch (error) {
+          console.error("Error syncing with backend:", error);
+          toast({
+            title: "Authentication error",
+            description: "Failed to sync your account. Please try again later.",
+            variant: "destructive",
+          });
+        }
+      } else {
+        setCurrentUser(null);
+      }
+      setIsLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [toast]);
+
+  const handleAuthError = (error: any) => {
+    let message = "Authentication failed. Please try again.";
+    
+    // Firebase error codes
+    if (error.code === "auth/email-already-in-use") {
+      message = "This email is already registered. Please login instead.";
+    } else if (error.code === "auth/invalid-email") {
+      message = "Invalid email address.";
+    } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
+      message = "Invalid email or password.";
+    } else if (error.message) {
+      message = error.message;
+    }
+    
+    toast({
+      title: "Authentication failed",
+      description: message,
+      variant: "destructive",
+    });
+  };
+
+  const loginWithEmail = async (email: string, password: string) => {
+    try {
+      setIsLoading(true);
+      await signInWithEmail(email, password);
+      toast({
+        title: "Login successful",
+        description: "Welcome back to Business In Rwanda",
+      });
+    } catch (error) {
+      handleAuthError(error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const registerWithEmail = async (
+    email: string, 
+    password: string, 
+    fullName: string, 
+    role: 'job_seeker' | 'employer'
+  ) => {
+    try {
+      setIsLoading(true);
+      // Create Firebase account
+      const firebaseUser = await createAccount(email, password);
+      
+      // Send additional user data to our backend
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firebaseUid: firebaseUser.uid,
+          email,
+          fullName,
+          role,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to register user on the backend");
+      }
+
+      toast({
+        title: "Registration successful",
+        description: role === 'employer' 
+          ? "Please complete your company profile" 
+          : "Welcome to Business In Rwanda",
+      });
+    } catch (error) {
+      handleAuthError(error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const loginWithGoogle = async () => {
+    try {
+      setIsLoading(true);
+      await signInWithGoogle();
+      toast({
+        title: "Login successful",
+        description: "Welcome to Business In Rwanda",
+      });
+    } catch (error) {
+      handleAuthError(error);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const logout = async () => {
+    try {
+      setIsLoading(true);
+      await logOut();
+      toast({
+        title: "Logged out successfully",
+      });
+    } catch (error) {
+      toast({
+        title: "Logout failed",
+        description: "An error occurred while logging out",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const isEmployer = () => currentUser?.role === 'employer';
+  const isJobSeeker = () => currentUser?.role === 'job_seeker';
+  const isAdmin = () => currentUser?.role === 'admin';
+
+  return (
+    <FirebaseAuthContext.Provider
+      value={{
+        currentUser,
+        isLoading,
+        isAuthenticated: !!currentUser,
+        loginWithEmail,
+        registerWithEmail,
+        loginWithGoogle,
+        logout,
+        isEmployer,
+        isJobSeeker,
+        isAdmin,
+      }}
+    >
+      {children}
+    </FirebaseAuthContext.Provider>
+  );
+};
+
+export const useFirebaseAuth = () => {
+  const context = useContext(FirebaseAuthContext);
+  if (!context) {
+    throw new Error("useFirebaseAuth must be used within a FirebaseAuthProvider");
+  }
+  return context;
+};

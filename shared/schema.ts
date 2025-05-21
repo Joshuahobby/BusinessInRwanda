@@ -11,8 +11,9 @@ export const applicationStatusEnum = pgEnum('application_status', ['applied', 'r
 // Users table
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
+  firebaseUid: text("firebase_uid").unique(), // Firebase User ID for authentication
   email: text("email").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"), // Optional now as Firebase can handle auth
   role: userRoleEnum("role").notNull(),
   fullName: text("full_name").notNull(),
   phone: text("phone"),
