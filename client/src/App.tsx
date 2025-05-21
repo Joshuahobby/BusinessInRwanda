@@ -15,6 +15,8 @@ import PostJob from "@/pages/PostJob";
 import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import CompanyProfile from "@/pages/CompanyProfile";
+import Employers from "@/pages/Employers";
+import Resources from "@/pages/Resources";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
@@ -33,6 +35,8 @@ function Router() {
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
           <Route path="/company/:id" component={CompanyProfile} />
+          <Route path="/employers" component={Employers} />
+          <Route path="/resources" component={Resources} />
           {/* Fallback to 404 */}
           <Route component={NotFound} />
         </Switch>

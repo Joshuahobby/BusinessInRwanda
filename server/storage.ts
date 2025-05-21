@@ -95,20 +95,30 @@ export class MemStorage implements IStorage {
         password: "password123",
         fullName: "Jane Smith",
         role: "employer",
-        phone: "+250789123456"
+        phone: "+250789123456",
+        profilePicture: null,
+        bio: null,
+        location: null
       },
       {
         email: "jobseeker@example.com",
         password: "password123",
         fullName: "John Doe",
         role: "job_seeker",
-        phone: "+250722987654"
+        phone: "+250722987654",
+        profilePicture: null,
+        bio: null,
+        location: null
       },
       {
         email: "admin@example.com",
         password: "adminpass",
         fullName: "Admin User",
-        role: "admin"
+        role: "admin",
+        phone: null,
+        profilePicture: null,
+        bio: null,
+        location: null
       }
     ];
     
@@ -120,6 +130,9 @@ export class MemStorage implements IStorage {
         fullName: userData.fullName,
         role: userData.role as any,
         phone: userData.phone,
+        profilePicture: userData.profilePicture,
+        bio: userData.bio,
+        location: userData.location,
         createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000))
       };
       this.usersData.set(user.id, user);
@@ -135,53 +148,52 @@ export class MemStorage implements IStorage {
         website: "https://example.com/kigalitech",
         location: "Kigali",
         industry: "Information Technology",
-        size: "50-200",
-        founded: "2015",
-        featured: true
+        employeeCount: "50-200",
+        founded: "2015"
       },
       {
         name: "Rwanda Banking Corporation",
         description: "Premier banking institution with 25+ branches across Rwanda providing financial services to individuals and businesses.",
+        userId: 1, // Using same employer for demo
         logo: "https://picsum.photos/201",
         website: "https://example.com/rwandabanking",
         location: "Kigali",
         industry: "Finance & Banking",
-        size: "200-500",
-        founded: "2005",
-        featured: true
+        employeeCount: "200-500",
+        founded: "2005"
       },
       {
         name: "Green Farms Rwanda",
         description: "Sustainable agricultural company focusing on organic farming and agricultural technology solutions.",
+        userId: 1, // Using same employer for demo
         logo: "https://picsum.photos/202",
         website: "https://example.com/greenfarms",
         location: "Eastern Province",
         industry: "Agriculture",
-        size: "50-200",
-        founded: "2010",
-        featured: true
+        employeeCount: "50-200",
+        founded: "2010"
       },
       {
         name: "Rwanda Healthcare Partners",
         description: "Leading healthcare provider with multiple clinics and telehealth solutions across Rwanda.",
+        userId: 1, // Using same employer for demo
         logo: "https://picsum.photos/203",
         website: "https://example.com/rwandahealthcare",
         location: "Kigali",
         industry: "Healthcare",
-        size: "100-500",
-        founded: "2008",
-        featured: true
+        employeeCount: "100-500",
+        founded: "2008"
       },
       {
         name: "Educate Rwanda",
         description: "Educational institution dedicated to providing quality education and skills training for the digital economy.",
+        userId: 1, // Using same employer for demo
         logo: "https://picsum.photos/204",
         website: "https://example.com/educaterwanda",
         location: "Kigali",
         industry: "Education & Training",
-        size: "20-100",
-        founded: "2012",
-        featured: true
+        employeeCount: "20-100",
+        founded: "2012"
       }
     ];
     
@@ -197,13 +209,11 @@ export class MemStorage implements IStorage {
     const jobSeekerProfile = {
       userId: 2, // Job seeker user
       title: "Software Developer",
-      summary: "Experienced software developer with focus on web technologies and mobile application development.",
       skills: ["JavaScript", "TypeScript", "React", "Node.js", "Mobile Development"],
       experience: "3 years",
       education: "Bachelor's in Computer Science, University of Rwanda",
       resumeUrl: "https://example.com/resume",
-      linkedIn: "https://linkedin.com/in/johndoe",
-      github: "https://github.com/johndoe"
+      coverLetterUrl: null
     };
     
     this.jobSeekerProfilesData.set(this.profileIdCounter, {
@@ -223,11 +233,13 @@ export class MemStorage implements IStorage {
         salary: "$3000-$4000 monthly",
         description: "We are seeking a Senior Frontend Developer to join our growing team in Kigali. The ideal candidate will have strong expertise in React and modern JavaScript frameworks.",
         requirements: "- 4+ years of experience with frontend development\n- Strong proficiency in React, Redux, and TypeScript\n- Experience with responsive design and cross-browser compatibility\n- Excellent problem-solving skills and attention to detail",
+        responsibilities: "- Develop responsive web applications using React\n- Collaborate with backend developers on API integration\n- Optimize applications for maximum performance\n- Implement UI/UX designs with precision",
         benefits: "- Competitive salary\n- Health insurance\n- Flexible working hours\n- Professional development opportunities\n- Modern office in central Kigali",
         isActive: true,
         isFeatured: true,
         isRemote: false,
-        applicationDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
       },
       {
         title: "Backend Engineer",
@@ -239,11 +251,13 @@ export class MemStorage implements IStorage {
         salary: "$2500-$3500 monthly",
         description: "Join our backend team to build scalable APIs and services that power our growing suite of applications. You'll work with modern technologies in a collaborative environment.",
         requirements: "- 2+ years of experience with backend development\n- Proficiency in Node.js and Express\n- Experience with SQL and NoSQL databases\n- Understanding of RESTful API design principles",
+        responsibilities: "- Design and implement RESTful APIs\n- Configure and optimize database schemas\n- Implement authentication and authorization systems\n- Collaborate with frontend developers",
         benefits: "- Competitive salary\n- Health insurance\n- Flexible working hours\n- Professional development budget\n- Team building activities",
         isActive: true,
         isFeatured: true,
         isRemote: true,
-        applicationDeadline: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000)
       },
       {
         title: "Bank Branch Manager",
@@ -255,11 +269,13 @@ export class MemStorage implements IStorage {
         salary: "$4000-$5000 monthly",
         description: "Lead our flagship branch in Kigali, overseeing daily operations, team management, and customer service excellence. Responsible for meeting sales targets and ensuring compliance with banking regulations.",
         requirements: "- 5+ years of experience in banking\n- 3+ years in a management role\n- Strong leadership and communication skills\n- Bachelor's degree in Finance, Business, or related field",
+        responsibilities: "- Oversee branch operations and staff management\n- Ensure compliance with banking regulations\n- Meet sales and customer satisfaction targets\n- Build relationships with key clients",
         benefits: "- Competitive salary package\n- Performance bonuses\n- Comprehensive health coverage\n- Retirement benefits\n- Professional development opportunities",
         isActive: true,
         isFeatured: true,
         isRemote: false,
-        applicationDeadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000)
       },
       {
         title: "Agricultural Project Manager",
@@ -271,11 +287,13 @@ export class MemStorage implements IStorage {
         salary: "$2500-$3000 monthly",
         description: "Oversee agricultural projects including planning, implementation, and evaluation. Work with local farmers to improve crop yields and sustainable farming practices.",
         requirements: "- Degree in Agriculture, Environmental Science, or related field\n- 3+ years experience in agricultural project management\n- Knowledge of sustainable farming practices\n- Strong community engagement skills\n- Valid driver's license",
+        responsibilities: "- Manage agricultural development projects\n- Provide training to local farmers\n- Monitor project implementation and outcomes\n- Prepare detailed reports for stakeholders",
         benefits: "- Competitive salary\n- Housing allowance\n- Transportation\n- Health insurance\n- Capacity building opportunities",
         isActive: true,
         isFeatured: false,
         isRemote: false,
-        applicationDeadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000)
       },
       {
         title: "Registered Nurse",
@@ -287,11 +305,13 @@ export class MemStorage implements IStorage {
         salary: "$1800-$2200 monthly",
         description: "Join our medical team to provide quality patient care in our expanding healthcare facility. Responsibilities include patient assessment, treatment planning, and health education.",
         requirements: "- Nursing degree or diploma\n- Valid nursing license\n- 2+ years of clinical experience\n- Strong communication skills\n- Ability to work in shifts",
+        responsibilities: "- Conduct patient assessments and implement care plans\n- Administer medications and treatments\n- Educate patients on health management\n- Maintain accurate medical records",
         benefits: "- Competitive salary\n- Medical coverage\n- Continuing education support\n- Career advancement opportunities",
         isActive: true,
         isFeatured: false,
         isRemote: false,
-        applicationDeadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000)
       },
       {
         title: "Mathematics Teacher",
@@ -303,11 +323,13 @@ export class MemStorage implements IStorage {
         salary: "$1500-$1800 monthly",
         description: "Teach mathematics to secondary school students using modern teaching methodologies. Develop lesson plans, assess student progress, and participate in school activities.",
         requirements: "- Bachelor's degree in Mathematics or Education\n- Teaching certification (preferred)\n- Passion for education and student development\n- Strong communication skills\n- Fluency in English and Kinyarwanda",
+        responsibilities: "- Develop and implement mathematics curriculum\n- Assess student progress and provide feedback\n- Participate in school activities and meetings\n- Mentor students and provide additional support",
         benefits: "- Competitive salary\n- Housing allowance\n- End-of-year bonus\n- Professional development opportunities\n- Supportive teaching environment",
         isActive: true,
         isFeatured: true,
         isRemote: false,
-        applicationDeadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
       },
       {
         title: "Marketing Coordinator",
@@ -319,11 +341,13 @@ export class MemStorage implements IStorage {
         salary: "$1500-$2000 monthly",
         description: "Support our marketing team in planning and executing campaigns across digital and traditional channels. Coordinate with different departments to ensure consistent brand messaging.",
         requirements: "- Bachelor's degree in Marketing, Communications, or related field\n- 1+ years of marketing experience\n- Proficiency in social media platforms and basic design tools\n- Strong writing and communication skills\n- Analytical mindset",
+        responsibilities: "- Assist in planning and executing marketing campaigns\n- Create and schedule social media content\n- Coordinate with design team on marketing materials\n- Track campaign performance and prepare reports",
         benefits: "- Competitive salary\n- Performance bonuses\n- Flexible working hours\n- Professional development opportunities\n- Modern office environment",
         isActive: true,
         isFeatured: false,
         isRemote: false,
-        applicationDeadline: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000)
       },
       {
         title: "UI/UX Designer",
@@ -335,11 +359,13 @@ export class MemStorage implements IStorage {
         salary: "$2000-$3000 monthly",
         description: "Create intuitive and visually appealing user interfaces for web and mobile applications. Work closely with development teams to implement designs that enhance user experience.",
         requirements: "- 3+ years of UI/UX design experience\n- Proficiency in Figma, Adobe XD, or similar tools\n- Experience with user research and usability testing\n- Portfolio demonstrating past work\n- Understanding of frontend development basics",
+        responsibilities: "- Design user interfaces for web and mobile applications\n- Conduct user research and usability testing\n- Create wireframes, prototypes, and high-fidelity designs\n- Collaborate with development teams on implementation",
         benefits: "- Competitive salary\n- Health insurance\n- Flexible working hours\n- Design equipment allowance\n- Professional development budget",
         isActive: true,
         isFeatured: true,
         isRemote: true,
-        applicationDeadline: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000)
+        applicationDeadline: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000),
+        deadline: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000)
       }
     ];
     
@@ -357,7 +383,7 @@ export class MemStorage implements IStorage {
       userId: 2, // Job seeker
       jobId: 1, // Senior Frontend Developer
       coverLetter: "I am excited to apply for the Senior Frontend Developer position at Kigali Tech Solutions. With over 3 years of experience in React and modern web development, I believe I would be a great fit for your team.",
-      status: "applied",
+      status: "applied" as "applied" | "reviewed" | "interview_scheduled" | "rejected" | "hired",
       resumeUrl: "https://example.com/johndoe-resume.pdf"
     };
     
