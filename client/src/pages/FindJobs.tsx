@@ -12,42 +12,204 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, MapPin, Briefcase, Filter } from 'lucide-react';
+import { Search, MapPin, Briefcase, Filter, Calendar, Bookmark, Share2, Download, Bell } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogTrigger, 
+  DialogFooter,
+  DialogDescription
+} from '@/components/ui/dialog';
+import { useAuth } from '@/context/AuthContext';
+import Icon from '@/components/ui/icon';
 
 const FindJobs = () => {
-  const [location] = useLocation();
+  const [loc, setLocation] = useLocation();
   const [searchParams, setSearchParams] = useState<JobSearchParams>({});
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
+  const [sortOrder, setSortOrder] = useState('newest');
+  const [selectedJobTypes, setSelectedJobTypes] = useState<JobType[]>([]);
+  const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | ''>('');
+  const [datePosted, setDatePosted] = useState('');
+  const [salaryRange, setSalaryRange] = useState<[number, number]>([100000, 1000000]);
+  const [showAlertDialog, setShowAlertDialog] = useState(false);
+  const [alertKeyword, setAlertKeyword] = useState('');
+  const [savedSearches, setSavedSearches] = useState<{name: string, params: JobSearchParams}[]>([]);
+  
+  const { toast } = useToast();
+  const { isAuthenticated, user } = useAuth();
 
   // Parse initial search params from URL
   useEffect(() => {
-    const params = new URLSearchParams(location.split('?')[1]);
+    const params = new URLSearchParams(loc.split('?')[1]);
     const initialParams: JobSearchParams = {};
     
     if (params.has('keyword')) initialParams.keyword = params.get('keyword') || undefined;
     if (params.has('location')) initialParams.location = params.get('location') || undefined;
     if (params.has('category')) initialParams.category = params.get('category') || undefined;
+    if (params.has('jobType')) initialParams.jobType = params.get('jobType') as JobType || undefined;
+    if (params.has('experienceLevel')) initialParams.experienceLevel = params.get('experienceLevel') as ExperienceLevel || undefined;
     
     setSearchParams(initialParams);
-  }, [location]);
+    
+    // Extract job type if present
+    if (params.has('jobType')) {
+      setSelectedJobTypes([params.get('jobType') as JobType]);
+    }
+    
+    // Extract experience level if present
+    if (params.has('experienceLevel')) {
+      setExperienceLevel(params.get('experienceLevel') as ExperienceLevel || '');
+    }
+  }, [loc]);
 
   // Fetch jobs based on search params
   const { data: jobs = [], isLoading } = useQuery<Job[]>({
-    queryKey: ['/api/jobs', searchParams, currentPage],
+    queryKey: ['/api/jobs', searchParams, currentPage, sortOrder],
+  });
+  
+  // Fetch job categories for filter
+  const { data: categories = [] } = useQuery<{name: string, count: number}[]>({
+    queryKey: ['/api/categories'],
   });
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setCurrentPage(1);
-    // Here we would update the URL with the new search params
+    
+    // Create query params
+    const queryParams = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value) queryParams.append(key, value.toString());
+    });
+    
+    // Update URL
+    setLocation(`/find-jobs?${queryParams.toString()}`);
   };
 
   const handleFilterChange = (key: keyof JobSearchParams, value: string) => {
     setSearchParams(prev => ({
       ...prev,
-      [key]: value
+      [key]: value === '' ? undefined : value
     }));
+  };
+  
+  const handleJobTypeChange = (type: JobType, checked: boolean) => {
+    if (checked) {
+      setSelectedJobTypes(prev => [...prev, type]);
+      handleFilterChange('jobType', type);
+    } else {
+      setSelectedJobTypes(prev => prev.filter(t => t !== type));
+      handleFilterChange('jobType', '');
+    }
+  };
+  
+  const handleExperienceLevelChange = (level: ExperienceLevel) => {
+    setExperienceLevel(level);
+    handleFilterChange('experienceLevel', level);
+  };
+  
+  const handleDatePostedChange = (date: string) => {
+    setDatePosted(date);
+    
+    // Calculate the date based on selection
+    const now = new Date();
+    let fromDate = new Date();
+    
+    if (date === 'today') {
+      fromDate.setHours(0, 0, 0, 0);
+    } else if (date === 'week') {
+      fromDate.setDate(now.getDate() - 7);
+    } else if (date === 'month') {
+      fromDate.setMonth(now.getMonth() - 1);
+    }
+    
+    // We would add a dateFrom parameter to the API if we were implementing this fully
+  };
+  
+  const handleSortChange = (value: string) => {
+    setSortOrder(value);
+  };
+  
+  const handleSalaryRangeChange = (values: number[]) => {
+    setSalaryRange([values[0], values[1]]);
+    // We would add salary range parameters to the API if we were implementing this fully
+  };
+  
+  const handleSaveSearch = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to save searches",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    // Generate a name for the search
+    const searchName = searchParams.keyword 
+      ? `${searchParams.keyword} in ${searchParams.location || 'All Locations'}` 
+      : `Jobs in ${searchParams.location || 'All Locations'}`;
+      
+    setSavedSearches(prev => [
+      ...prev, 
+      { name: searchName, params: { ...searchParams } }
+    ]);
+    
+    toast({
+      title: "Search saved",
+      description: "You can access this search later from your dashboard"
+    });
+  };
+  
+  const handleCreateJobAlert = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to create job alerts",
+        variant: "destructive"
+      });
+      return;
+    }
+    
+    setAlertKeyword(searchParams.keyword || '');
+    setShowAlertDialog(true);
+  };
+  
+  const handleSetJobAlert = () => {
+    toast({
+      title: "Job alert created",
+      description: `You'll receive notifications for new "${alertKeyword}" jobs`
+    });
+    setShowAlertDialog(false);
+  };
+  
+  const handleApplyFilters = () => {
+    setCurrentPage(1);
+    
+    // Create query params from all filters
+    const queryParams = new URLSearchParams();
+    Object.entries(searchParams).forEach(([key, value]) => {
+      if (value) queryParams.append(key, value.toString());
+    });
+    
+    // Update URL with all filters
+    setLocation(`/find-jobs?${queryParams.toString()}`);
+  };
+  
+  const clearAllFilters = () => {
+    setSearchParams({});
+    setSelectedJobTypes([]);
+    setExperienceLevel('');
+    setDatePosted('');
+    setSalaryRange([100000, 1000000]);
+    setCurrentPage(1);
+    setLocation('/find-jobs');
   };
 
   return (
@@ -55,7 +217,63 @@ const FindJobs = () => {
       <Helmet>
         <title>Find Jobs - Business In Rwanda</title>
         <meta name="description" content="Search and apply for jobs across Rwanda. Filter by location, job type, and experience level to find your ideal career opportunity." />
+        <meta property="og:title" content="Find Jobs - Business In Rwanda" />
+        <meta property="og:description" content="Search and apply for jobs across Rwanda. Filter by location, job type, and experience level to find your ideal career opportunity." />
       </Helmet>
+      
+      {/* Job Alert Dialog */}
+      <Dialog open={showAlertDialog} onOpenChange={setShowAlertDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create Job Alert</DialogTitle>
+            <DialogDescription>
+              We'll send you email notifications when new jobs matching your criteria are posted.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="alert-keyword">Keywords</Label>
+              <Input 
+                id="alert-keyword" 
+                value={alertKeyword} 
+                onChange={(e) => setAlertKeyword(e.target.value)}
+                placeholder="e.g. Frontend Developer, Marketing"
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label>Alert Frequency</Label>
+              <RadioGroup defaultValue="daily" className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="daily" id="daily" />
+                  <label htmlFor="daily" className="text-sm">Daily</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="weekly" id="weekly" />
+                  <label htmlFor="weekly" className="text-sm">Weekly</label>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <RadioGroupItem value="instant" id="instant" />
+                  <label htmlFor="instant" className="text-sm">Instant</label>
+                </div>
+              </RadioGroup>
+            </div>
+          </div>
+          
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setShowAlertDialog(false)}>
+              Cancel
+            </Button>
+            <Button 
+              onClick={handleSetJobAlert} 
+              className="bg-[#0A3D62] hover:bg-[#082C46]"
+            >
+              Create Alert
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       <div className="bg-neutral-50 py-12">
         <div className="container mx-auto px-4">
@@ -122,28 +340,69 @@ const FindJobs = () => {
                 <h2 className="font-medium text-lg mb-4">Filters</h2>
                 
                 <div className="space-y-6">
+                  {/* Job Category */}
+                  <div>
+                    <Label className="font-medium mb-2 block">Job Category</Label>
+                    <Select 
+                      value={searchParams.category || ''} 
+                      onValueChange={(value) => handleFilterChange('category', value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="All Categories" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="">All Categories</SelectItem>
+                        {categories.map(category => (
+                          <SelectItem key={category.name} value={category.name}>
+                            {category.name} ({category.count})
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  
                   {/* Job Type */}
                   <div>
                     <Label className="font-medium mb-2 block">Job Type</Label>
                     <div className="space-y-2">
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="type-fulltime" />
+                        <Checkbox 
+                          id="type-fulltime"
+                          checked={selectedJobTypes.includes('full_time')}
+                          onCheckedChange={(checked) => handleJobTypeChange('full_time', checked as boolean)}
+                        />
                         <label htmlFor="type-fulltime" className="text-sm">Full Time</label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="type-parttime" />
+                        <Checkbox 
+                          id="type-parttime" 
+                          checked={selectedJobTypes.includes('part_time')}
+                          onCheckedChange={(checked) => handleJobTypeChange('part_time', checked as boolean)}
+                        />
                         <label htmlFor="type-parttime" className="text-sm">Part Time</label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="type-contract" />
+                        <Checkbox 
+                          id="type-contract" 
+                          checked={selectedJobTypes.includes('contract')}
+                          onCheckedChange={(checked) => handleJobTypeChange('contract', checked as boolean)}
+                        />
                         <label htmlFor="type-contract" className="text-sm">Contract</label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="type-internship" />
+                        <Checkbox 
+                          id="type-internship" 
+                          checked={selectedJobTypes.includes('internship')}
+                          onCheckedChange={(checked) => handleJobTypeChange('internship', checked as boolean)}
+                        />
                         <label htmlFor="type-internship" className="text-sm">Internship</label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <Checkbox id="type-remote" />
+                        <Checkbox 
+                          id="type-remote" 
+                          checked={selectedJobTypes.includes('remote')}
+                          onCheckedChange={(checked) => handleJobTypeChange('remote', checked as boolean)}
+                        />
                         <label htmlFor="type-remote" className="text-sm">Remote</label>
                       </div>
                     </div>
@@ -152,7 +411,11 @@ const FindJobs = () => {
                   {/* Experience Level */}
                   <div>
                     <Label className="font-medium mb-2 block">Experience Level</Label>
-                    <RadioGroup className="space-y-2">
+                    <RadioGroup 
+                      value={experienceLevel} 
+                      onValueChange={(value) => handleExperienceLevelChange(value as ExperienceLevel)}
+                      className="space-y-2"
+                    >
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem value="entry" id="exp-entry" />
                         <label htmlFor="exp-entry" className="text-sm">Entry Level</label>
@@ -176,10 +439,12 @@ const FindJobs = () => {
                   <div>
                     <div className="flex justify-between mb-2">
                       <Label className="font-medium">Salary Range (RWF)</Label>
-                      <span className="text-sm text-neutral-500">100k - 1M+</span>
+                      <span className="text-sm text-neutral-500">{salaryRange[0].toLocaleString()} - {salaryRange[1].toLocaleString()}</span>
                     </div>
                     <Slider 
-                      defaultValue={[100000, 1000000]} 
+                      defaultValue={salaryRange} 
+                      value={salaryRange}
+                      onValueChange={handleSalaryRangeChange}
                       min={100000} 
                       max={2000000} 
                       step={50000} 
@@ -189,9 +454,13 @@ const FindJobs = () => {
                   {/* Date Posted */}
                   <div>
                     <Label className="font-medium mb-2 block">Date Posted</Label>
-                    <RadioGroup className="space-y-2">
+                    <RadioGroup 
+                      value={datePosted} 
+                      onValueChange={handleDatePostedChange}
+                      className="space-y-2"
+                    >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="any" id="date-any" />
+                        <RadioGroupItem value="" id="date-any" />
                         <label htmlFor="date-any" className="text-sm">Any time</label>
                       </div>
                       <div className="flex items-center space-x-2">
@@ -209,9 +478,42 @@ const FindJobs = () => {
                     </RadioGroup>
                   </div>
                   
-                  <Button className="w-full bg-[#0A3D62] hover:bg-[#082C46]">
-                    Apply Filters
-                  </Button>
+                  <div className="space-y-2">
+                    <Button 
+                      className="w-full bg-[#0A3D62] hover:bg-[#082C46]"
+                      onClick={handleApplyFilters}
+                    >
+                      Apply Filters
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full"
+                      onClick={clearAllFilters}
+                    >
+                      Clear Filters
+                    </Button>
+                  </div>
+                  
+                  <div className="border-t pt-4 space-y-3">
+                    <Button 
+                      variant="outline" 
+                      className="w-full flex items-center gap-2"
+                      onClick={handleSaveSearch}
+                    >
+                      <Bookmark className="h-4 w-4" />
+                      <span>Save this search</span>
+                    </Button>
+                    
+                    <Button 
+                      variant="outline" 
+                      className="w-full flex items-center gap-2"
+                      onClick={handleCreateJobAlert}
+                    >
+                      <Bell className="h-4 w-4" />
+                      <span>Create job alert</span>
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -219,12 +521,46 @@ const FindJobs = () => {
             {/* Jobs List */}
             <div className="w-full md:w-3/4">
               <div className="bg-white p-5 rounded-lg shadow-sm mb-6">
-                <div className="flex justify-between items-center">
-                  <h2 className="font-medium">
-                    {isLoading ? 'Loading jobs...' : `${jobs.length} Jobs Found`}
-                  </h2>
-                  <Select defaultValue="newest">
-                    <SelectTrigger className="w-[180px]">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                  <div>
+                    <h2 className="font-medium">
+                      {isLoading ? 'Loading jobs...' : `${jobs.length} Jobs Found`}
+                    </h2>
+                    {Object.keys(searchParams).length > 0 && (
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {searchParams.keyword && (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <span>Keyword: {searchParams.keyword}</span>
+                          </Badge>
+                        )}
+                        {searchParams.location && (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <span>Location: {searchParams.location}</span>
+                          </Badge>
+                        )}
+                        {searchParams.category && (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <span>Category: {searchParams.category}</span>
+                          </Badge>
+                        )}
+                        {searchParams.jobType && (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <span>Type: {searchParams.jobType.replace('_', ' ')}</span>
+                          </Badge>
+                        )}
+                        {searchParams.experienceLevel && (
+                          <Badge variant="outline" className="flex items-center gap-1">
+                            <span>Experience: {searchParams.experienceLevel}</span>
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <Select 
+                    value={sortOrder} 
+                    onValueChange={handleSortChange}
+                  >
+                    <SelectTrigger className="w-[220px]">
                       <SelectValue placeholder="Sort by" />
                     </SelectTrigger>
                     <SelectContent>
@@ -251,13 +587,14 @@ const FindJobs = () => {
                       id={job.id}
                       title={job.title}
                       companyName="Company Name" // This would come from the company relation
-                      companyLogo="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&h=64"
+                      companyLogo="https://picsum.photos/200" // Using a placeholder image service
                       location={job.location}
                       jobType={job.type}
                       salary={job.salary || "Competitive salary"}
                       description={job.description}
                       postedAt={job.createdAt}
                       isNew={new Date(job.createdAt).getTime() > Date.now() - 3 * 24 * 60 * 60 * 1000}
+                      isRemote={job.type === 'remote'}
                       className="mb-4"
                     />
                   ))}
@@ -272,7 +609,7 @@ const FindJobs = () => {
                       >
                         Previous
                       </Button>
-                      {[...Array(3)].map((_, i) => (
+                      {[...Array(Math.min(3, Math.ceil(jobs.length / 10)))].map((_, i) => (
                         <Button
                           key={i}
                           variant={currentPage === i + 1 ? "default" : "outline"}
@@ -284,6 +621,7 @@ const FindJobs = () => {
                       ))}
                       <Button 
                         variant="outline"
+                        disabled={currentPage >= Math.ceil(jobs.length / 10)}
                         onClick={() => setCurrentPage(prev => prev + 1)}
                       >
                         Next
