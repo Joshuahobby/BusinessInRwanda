@@ -82,6 +82,291 @@ export class MemStorage implements IStorage {
     
     // Initialize with some categories
     this.initializeCategories();
+    
+    // Add sample data
+    this.initializeSampleData();
+  }
+  
+  private initializeSampleData() {
+    // Create sample users
+    const users = [
+      {
+        email: "employer@example.com",
+        password: "password123",
+        fullName: "Jane Smith",
+        role: "employer",
+        phone: "+250789123456"
+      },
+      {
+        email: "jobseeker@example.com",
+        password: "password123",
+        fullName: "John Doe",
+        role: "job_seeker",
+        phone: "+250722987654"
+      },
+      {
+        email: "admin@example.com",
+        password: "adminpass",
+        fullName: "Admin User",
+        role: "admin"
+      }
+    ];
+    
+    users.forEach(userData => {
+      const user = {
+        id: this.userIdCounter++,
+        email: userData.email,
+        password: userData.password,
+        fullName: userData.fullName,
+        role: userData.role as any,
+        phone: userData.phone,
+        createdAt: new Date(Date.now() - Math.floor(Math.random() * 10000000))
+      };
+      this.usersData.set(user.id, user);
+    });
+    
+    // Create sample companies
+    const companies = [
+      {
+        name: "Kigali Tech Solutions",
+        description: "Leading technology solutions provider in Rwanda, focused on digital transformation and software development.",
+        userId: 1, // Employer user
+        logo: "https://picsum.photos/200",
+        website: "https://example.com/kigalitech",
+        location: "Kigali",
+        industry: "Information Technology",
+        size: "50-200",
+        founded: "2015",
+        featured: true
+      },
+      {
+        name: "Rwanda Banking Corporation",
+        description: "Premier banking institution with 25+ branches across Rwanda providing financial services to individuals and businesses.",
+        logo: "https://picsum.photos/201",
+        website: "https://example.com/rwandabanking",
+        location: "Kigali",
+        industry: "Finance & Banking",
+        size: "200-500",
+        founded: "2005",
+        featured: true
+      },
+      {
+        name: "Green Farms Rwanda",
+        description: "Sustainable agricultural company focusing on organic farming and agricultural technology solutions.",
+        logo: "https://picsum.photos/202",
+        website: "https://example.com/greenfarms",
+        location: "Eastern Province",
+        industry: "Agriculture",
+        size: "50-200",
+        founded: "2010",
+        featured: true
+      },
+      {
+        name: "Rwanda Healthcare Partners",
+        description: "Leading healthcare provider with multiple clinics and telehealth solutions across Rwanda.",
+        logo: "https://picsum.photos/203",
+        website: "https://example.com/rwandahealthcare",
+        location: "Kigali",
+        industry: "Healthcare",
+        size: "100-500",
+        founded: "2008",
+        featured: true
+      },
+      {
+        name: "Educate Rwanda",
+        description: "Educational institution dedicated to providing quality education and skills training for the digital economy.",
+        logo: "https://picsum.photos/204",
+        website: "https://example.com/educaterwanda",
+        location: "Kigali",
+        industry: "Education & Training",
+        size: "20-100",
+        founded: "2012",
+        featured: true
+      }
+    ];
+    
+    companies.forEach(companyData => {
+      const company = {
+        id: this.companyIdCounter++,
+        ...companyData
+      };
+      this.companiesData.set(company.id, company);
+    });
+    
+    // Create job seeker profile
+    const jobSeekerProfile = {
+      userId: 2, // Job seeker user
+      title: "Software Developer",
+      summary: "Experienced software developer with focus on web technologies and mobile application development.",
+      skills: ["JavaScript", "TypeScript", "React", "Node.js", "Mobile Development"],
+      experience: "3 years",
+      education: "Bachelor's in Computer Science, University of Rwanda",
+      resumeUrl: "https://example.com/resume",
+      linkedIn: "https://linkedin.com/in/johndoe",
+      github: "https://github.com/johndoe"
+    };
+    
+    this.jobSeekerProfilesData.set(this.profileIdCounter, {
+      id: this.profileIdCounter++,
+      ...jobSeekerProfile
+    });
+    
+    // Create sample jobs
+    const jobs = [
+      {
+        title: "Senior Frontend Developer",
+        companyId: 1, // Kigali Tech Solutions
+        location: "Kigali",
+        type: "full_time",
+        experienceLevel: "senior",
+        category: "Information Technology",
+        salary: "$3000-$4000 monthly",
+        description: "We are seeking a Senior Frontend Developer to join our growing team in Kigali. The ideal candidate will have strong expertise in React and modern JavaScript frameworks.",
+        requirements: "- 4+ years of experience with frontend development\n- Strong proficiency in React, Redux, and TypeScript\n- Experience with responsive design and cross-browser compatibility\n- Excellent problem-solving skills and attention to detail",
+        benefits: "- Competitive salary\n- Health insurance\n- Flexible working hours\n- Professional development opportunities\n- Modern office in central Kigali",
+        isActive: true,
+        isFeatured: true,
+        isRemote: false,
+        applicationDeadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: "Backend Engineer",
+        companyId: 1, // Kigali Tech Solutions
+        location: "Kigali",
+        type: "full_time",
+        experienceLevel: "intermediate",
+        category: "Information Technology",
+        salary: "$2500-$3500 monthly",
+        description: "Join our backend team to build scalable APIs and services that power our growing suite of applications. You'll work with modern technologies in a collaborative environment.",
+        requirements: "- 2+ years of experience with backend development\n- Proficiency in Node.js and Express\n- Experience with SQL and NoSQL databases\n- Understanding of RESTful API design principles",
+        benefits: "- Competitive salary\n- Health insurance\n- Flexible working hours\n- Professional development budget\n- Team building activities",
+        isActive: true,
+        isFeatured: true,
+        isRemote: true,
+        applicationDeadline: new Date(Date.now() + 25 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: "Bank Branch Manager",
+        companyId: 2, // Rwanda Banking Corporation
+        location: "Kigali",
+        type: "full_time",
+        experienceLevel: "senior",
+        category: "Finance & Banking",
+        salary: "$4000-$5000 monthly",
+        description: "Lead our flagship branch in Kigali, overseeing daily operations, team management, and customer service excellence. Responsible for meeting sales targets and ensuring compliance with banking regulations.",
+        requirements: "- 5+ years of experience in banking\n- 3+ years in a management role\n- Strong leadership and communication skills\n- Bachelor's degree in Finance, Business, or related field",
+        benefits: "- Competitive salary package\n- Performance bonuses\n- Comprehensive health coverage\n- Retirement benefits\n- Professional development opportunities",
+        isActive: true,
+        isFeatured: true,
+        isRemote: false,
+        applicationDeadline: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: "Agricultural Project Manager",
+        companyId: 3, // Green Farms Rwanda
+        location: "Eastern Province",
+        type: "full_time",
+        experienceLevel: "intermediate",
+        category: "Agriculture",
+        salary: "$2500-$3000 monthly",
+        description: "Oversee agricultural projects including planning, implementation, and evaluation. Work with local farmers to improve crop yields and sustainable farming practices.",
+        requirements: "- Degree in Agriculture, Environmental Science, or related field\n- 3+ years experience in agricultural project management\n- Knowledge of sustainable farming practices\n- Strong community engagement skills\n- Valid driver's license",
+        benefits: "- Competitive salary\n- Housing allowance\n- Transportation\n- Health insurance\n- Capacity building opportunities",
+        isActive: true,
+        isFeatured: false,
+        isRemote: false,
+        applicationDeadline: new Date(Date.now() + 20 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: "Registered Nurse",
+        companyId: 4, // Rwanda Healthcare Partners
+        location: "Kigali",
+        type: "full_time",
+        experienceLevel: "intermediate",
+        category: "Healthcare",
+        salary: "$1800-$2200 monthly",
+        description: "Join our medical team to provide quality patient care in our expanding healthcare facility. Responsibilities include patient assessment, treatment planning, and health education.",
+        requirements: "- Nursing degree or diploma\n- Valid nursing license\n- 2+ years of clinical experience\n- Strong communication skills\n- Ability to work in shifts",
+        benefits: "- Competitive salary\n- Medical coverage\n- Continuing education support\n- Career advancement opportunities",
+        isActive: true,
+        isFeatured: false,
+        isRemote: false,
+        applicationDeadline: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: "Mathematics Teacher",
+        companyId: 5, // Educate Rwanda
+        location: "Kigali",
+        type: "full_time",
+        experienceLevel: "entry",
+        category: "Education & Training",
+        salary: "$1500-$1800 monthly",
+        description: "Teach mathematics to secondary school students using modern teaching methodologies. Develop lesson plans, assess student progress, and participate in school activities.",
+        requirements: "- Bachelor's degree in Mathematics or Education\n- Teaching certification (preferred)\n- Passion for education and student development\n- Strong communication skills\n- Fluency in English and Kinyarwanda",
+        benefits: "- Competitive salary\n- Housing allowance\n- End-of-year bonus\n- Professional development opportunities\n- Supportive teaching environment",
+        isActive: true,
+        isFeatured: true,
+        isRemote: false,
+        applicationDeadline: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: "Marketing Coordinator",
+        companyId: 1, // Kigali Tech Solutions
+        location: "Kigali",
+        type: "full_time",
+        experienceLevel: "entry",
+        category: "Marketing & Sales",
+        salary: "$1500-$2000 monthly",
+        description: "Support our marketing team in planning and executing campaigns across digital and traditional channels. Coordinate with different departments to ensure consistent brand messaging.",
+        requirements: "- Bachelor's degree in Marketing, Communications, or related field\n- 1+ years of marketing experience\n- Proficiency in social media platforms and basic design tools\n- Strong writing and communication skills\n- Analytical mindset",
+        benefits: "- Competitive salary\n- Performance bonuses\n- Flexible working hours\n- Professional development opportunities\n- Modern office environment",
+        isActive: true,
+        isFeatured: false,
+        isRemote: false,
+        applicationDeadline: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000)
+      },
+      {
+        title: "UI/UX Designer",
+        companyId: 1, // Kigali Tech Solutions
+        location: "Kigali",
+        type: "full_time",
+        experienceLevel: "intermediate",
+        category: "Information Technology",
+        salary: "$2000-$3000 monthly",
+        description: "Create intuitive and visually appealing user interfaces for web and mobile applications. Work closely with development teams to implement designs that enhance user experience.",
+        requirements: "- 3+ years of UI/UX design experience\n- Proficiency in Figma, Adobe XD, or similar tools\n- Experience with user research and usability testing\n- Portfolio demonstrating past work\n- Understanding of frontend development basics",
+        benefits: "- Competitive salary\n- Health insurance\n- Flexible working hours\n- Design equipment allowance\n- Professional development budget",
+        isActive: true,
+        isFeatured: true,
+        isRemote: true,
+        applicationDeadline: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000)
+      }
+    ];
+    
+    jobs.forEach(jobData => {
+      const job = {
+        id: this.jobIdCounter++,
+        ...jobData,
+        createdAt: new Date(Date.now() - Math.floor(Math.random() * 1000000))
+      };
+      this.jobsData.set(job.id, job);
+    });
+    
+    // Create a sample application
+    const application = {
+      userId: 2, // Job seeker
+      jobId: 1, // Senior Frontend Developer
+      coverLetter: "I am excited to apply for the Senior Frontend Developer position at Kigali Tech Solutions. With over 3 years of experience in React and modern web development, I believe I would be a great fit for your team.",
+      status: "applied",
+      resumeUrl: "https://example.com/johndoe-resume.pdf"
+    };
+    
+    this.applicationsData.set(this.applicationIdCounter, {
+      id: this.applicationIdCounter++,
+      ...application,
+      appliedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+      updatedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+    });
   }
   
   private initializeCategories() {
