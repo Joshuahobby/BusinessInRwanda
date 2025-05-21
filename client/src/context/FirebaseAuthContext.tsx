@@ -89,11 +89,11 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
           if (currentPath === '/login' || currentPath === '/') {
             // Auto-redirect based on user role
             if (userData.role === 'job_seeker') {
-              window.location.href = '/job-seeker-dashboard';
+              window.location.href = '/jobseeker/dashboard';
             } else if (userData.role === 'employer') {
-              window.location.href = '/employer-dashboard';
+              window.location.href = '/employer/dashboard';
             } else if (userData.role === 'admin') {
-              window.location.href = '/admin-dashboard';
+              window.location.href = '/admin/dashboard';
             }
           }
         } catch (error) {
