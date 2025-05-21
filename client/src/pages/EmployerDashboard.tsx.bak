@@ -3,22 +3,12 @@ import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/context/AuthContext";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Input } from "@/components/ui/input";
-import { useToast } from "@/hooks/use-toast";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { 
   BarChart, 
   Users, 
@@ -36,6 +26,7 @@ import {
   Download,
   MoreHorizontal,
   ChevronDown,
+  StarIcon,
   MessageSquare,
   HelpCircle,
   Inbox,
@@ -43,6 +34,16 @@ import {
   CheckCircle2,
   ThumbsUp
 } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { useToast } from "@/hooks/use-toast";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Job, Application } from "@shared/schema";
 import { format } from "date-fns";
 
@@ -66,7 +67,7 @@ const EmployerDashboard = () => {
   const [jobFilter, setJobFilter] = useState<number | "all">("all");
   const { toast } = useToast();
 
-  // Fetch employer's posted jobs
+  // Fetch employer's posted jobs - define hooks before conditional returns
   const { data: jobs = [], isLoading: isLoadingJobs } = useQuery<Job[]>({
     queryKey: ['/api/employer/jobs'],
     enabled: !!user, // Only run query if user is logged in
@@ -109,7 +110,6 @@ const EmployerDashboard = () => {
       <div className="bg-neutral-50 min-h-screen py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row gap-6">
-            
             {/* Sidebar */}
             <div className="w-full md:w-1/4">
               <Card>
@@ -186,7 +186,6 @@ const EmployerDashboard = () => {
             {/* Main Content */}
             <div className="w-full md:w-3/4">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                
                 {/* Overview Tab */}
                 <TabsContent value="overview">
                   <Card>
@@ -205,6 +204,10 @@ const EmployerDashboard = () => {
                             <option value="90">Last 90 days</option>
                             <option value="all">All time</option>
                           </select>
+                          <Button variant="outline" size="sm" className="flex items-center gap-1">
+                            <PieChart className="h-4 w-4" />
+                            <span>Analytics</span>
+                          </Button>
                         </div>
                       </div>
                     </CardHeader>
@@ -316,14 +319,25 @@ const EmployerDashboard = () => {
                                         <p className="text-xs text-neutral-500">{application.job.title}</p>
                                       </div>
                                     </div>
-                                    <Badge variant={
-                                      application.status === 'applied' ? 'default' : 
-                                      application.status === 'reviewed' ? 'secondary' : 
-                                      application.status === 'interview_scheduled' ? 'outline' : 
-                                      application.status === 'hired' ? 'outline' : 'destructive'
-                                    }>
-                                      {application.status.replace('_', ' ')}
-                                    </Badge>
+                                    <div className="flex items-center gap-2">
+                                      <Badge
+                                        className={
+                                          application.status === 'hired' ? 'bg-green-100 text-green-800 hover:bg-green-100' : 
+                                          application.status === 'rejected' ? 'bg-red-100 text-red-800 hover:bg-red-100' : ''
+                                        }
+                                        variant={
+                                          application.status === 'applied' ? 'default' : 
+                                          application.status === 'reviewed' ? 'secondary' : 
+                                          application.status === 'interview_scheduled' ? 'outline' : 
+                                          application.status === 'hired' ? 'outline' : 'destructive'
+                                        }
+                                      >
+                                        {application.status.replace('_', ' ')}
+                                      </Badge>
+                                      <Button variant="ghost" size="sm" className="p-0 h-6 w-6">
+                                        <Eye className="h-3.5 w-3.5" />
+                                      </Button>
+                                    </div>
                                   </div>
                                 ))}
                               </div>
@@ -412,6 +426,111 @@ const EmployerDashboard = () => {
                                   <p className="ml-3">{applications.filter(a => a.status === 'rejected').length}</p>
                                 </div>
                               </div>
+                              
+                              <Separator className="my-3" />
+                              
+                              <div>
+                                <h3 className="text-sm font-medium mb-3">Upcoming Interviews</h3>
+                                {applications.filter(a => a.status === 'interview_scheduled').length > 0 ? (
+                                  <div className="space-y-2">
+                                    {applications.filter(a => a.status === 'interview_scheduled').slice(0, 2).map((app) => (
+                                      <div key={app.id} className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                          <Calendar className="h-3.5 w-3.5 text-amber-500" />
+                                          <span className="text-xs">{format(new Date(), 'E, MMM d, h:mm a')}</span>
+                                        </div>
+                                        <p className="text-xs font-medium">{app.applicant.fullName}</p>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <p className="text-xs text-neutral-500">No upcoming interviews</p>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                        
+                        <Card>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base font-medium flex items-center justify-between">
+                              <span>Active Job Listings</span>
+                              <Button variant="link" size="sm" className="text-xs p-0" onClick={() => setActiveTab("jobs")}>
+                                View All
+                              </Button>
+                            </CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            {isLoadingJobs ? (
+                              <div className="space-y-4">
+                                {[1, 2, 3].map((_, i) => (
+                                  <div key={i} className="h-12 animate-pulse bg-neutral-100 rounded-md"></div>
+                                ))}
+                              </div>
+                            ) : jobs.length > 0 ? (
+                              <div className="space-y-4">
+                                {jobs.filter(job => job.isActive).slice(0, 5).map((job) => (
+                                  <div key={job.id} className="space-y-2 border-b pb-3 last:border-0 last:pb-0">
+                                    <div className="flex justify-between items-center">
+                                      <p className="text-sm font-medium">{job.title}</p>
+                                      <Badge variant="outline" className="bg-green-50 text-green-700 border-green-200">
+                                        {applications.filter(a => a.jobId === job.id).length} Applicants
+                                      </Badge>
+                                    </div>
+                                    <div className="flex items-center text-xs text-neutral-500 space-x-4">
+                                      <div className="flex items-center">
+                                        <Clock className="h-3 w-3 mr-1" />
+                                        <span>
+                                          Posted {format(new Date(job.createdAt), 'MMM d, yyyy')}
+                                        </span>
+                                      </div>
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            ) : (
+                              <div className="text-center py-6 text-neutral-500">
+                                <Briefcase className="h-10 w-10 mx-auto mb-2 text-neutral-300" />
+                                <p>No jobs posted yet</p>
+                                <Button variant="outline" size="sm" className="mt-2" onClick={() => navigate("/post-job")}>
+                                  <Plus className="h-3.5 w-3.5 mr-1" />
+                                  Post a Job
+                                </Button>
+                              </div>
+                            )}
+                          </CardContent>
+                        </Card>
+                        
+                        <Card>
+                          <CardHeader className="pb-2">
+                            <CardTitle className="text-base font-medium">Quick Actions</CardTitle>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="grid grid-cols-2 gap-3">
+                              <Button onClick={() => navigate("/post-job")} className="h-auto py-4 bg-[#0A3D62] hover:bg-[#082C46]">
+                                <div className="flex flex-col items-center">
+                                  <Plus className="h-5 w-5 mb-1" />
+                                  <span>Post a Job</span>
+                                </div>
+                              </Button>
+                              <Button variant="outline" className="h-auto py-4">
+                                <div className="flex flex-col items-center">
+                                  <FileText className="h-5 w-5 mb-1" />
+                                  <span>Review CVs</span>
+                                </div>
+                              </Button>
+                              <Button variant="outline" className="h-auto py-4">
+                                <div className="flex flex-col items-center">
+                                  <Calendar className="h-5 w-5 mb-1" />
+                                  <span>Schedule Interview</span>
+                                </div>
+                              </Button>
+                              <Button variant="outline" className="h-auto py-4">
+                                <div className="flex flex-col items-center">
+                                  <Users className="h-5 w-5 mb-1" />
+                                  <span>Candidate Pool</span>
+                                </div>
+                              </Button>
                             </div>
                           </CardContent>
                         </Card>
@@ -426,14 +545,14 @@ const EmployerDashboard = () => {
                     <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-2 sm:space-y-0">
                       <div>
                         <CardTitle className="text-xl font-heading">Manage Jobs</CardTitle>
-                        <CardDescription>
-                          View, edit, and manage your job listings
-                        </CardDescription>
+                        <CardDescription>View and manage your job listings</CardDescription>
                       </div>
-                      <Button onClick={() => navigate("/post-job")} className="bg-[#0A3D62] hover:bg-[#082C46]">
-                        <Plus className="h-4 w-4 mr-1.5" />
-                        Post New Job
-                      </Button>
+                      <Link href="/post-job">
+                        <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Post New Job
+                        </Button>
+                      </Link>
                     </CardHeader>
                     <CardContent>
                       {isLoadingJobs ? (
@@ -447,66 +566,63 @@ const EmployerDashboard = () => {
                           {jobs.map((job) => (
                             <Card key={job.id} className="overflow-hidden">
                               <CardContent className="p-0">
-                                <div className="p-4 sm:p-6 grid grid-cols-1 sm:grid-cols-[3fr_1fr] gap-4">
-                                  <div>
-                                    <div className="flex items-center mb-3">
-                                      <Badge variant={job.isActive ? "outline" : "secondary"} className={job.isActive ? "bg-green-50 text-green-700 border-green-200" : ""}>
-                                        {job.isActive ? "Active" : "Inactive"}
-                                      </Badge>
-                                      <span className="mx-2 text-neutral-300">•</span>
-                                      <span className="text-sm text-neutral-500">
-                                        Posted {format(new Date(job.createdAt), 'MMM d, yyyy')}
-                                      </span>
-                                      {job.location && (
-                                        <>
-                                          <span className="mx-2 text-neutral-300">•</span>
-                                          <span className="text-sm text-neutral-500">
-                                            {job.location}
-                                          </span>
-                                        </>
-                                      )}
+                                <div className="p-4 sm:p-6">
+                                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4">
+                                    <div>
+                                      <h3 className="text-lg font-medium">{job.title}</h3>
+                                      <p className="text-sm text-neutral-500 flex items-center gap-2 mt-1">
+                                        <Calendar className="h-4 w-4" />
+                                        Posted on {format(new Date(job.createdAt), 'MMM d, yyyy')}
+                                      </p>
                                     </div>
-                                    <h3 className="font-medium text-lg mb-1">{job.title}</h3>
-                                    <p className="text-sm line-clamp-2 text-neutral-600 mb-3">
-                                      {job.description.substring(0, 150)}...
-                                    </p>
-                                    <div className="flex flex-wrap gap-2">
-                                      {job.jobType && (
-                                        <Badge variant="secondary" className="bg-blue-50 border-blue-100 text-blue-700">
-                                          {job.jobType.replace('_', ' ')}
-                                        </Badge>
-                                      )}
-                                      {job.experienceLevel && (
-                                        <Badge variant="secondary" className="bg-purple-50 border-purple-100 text-purple-700">
-                                          {job.experienceLevel} level
-                                        </Badge>
-                                      )}
-                                      {job.salary && (
-                                        <Badge variant="secondary" className="bg-green-50 border-green-100 text-green-700">
-                                          {job.salary}
-                                        </Badge>
-                                      )}
+                                    <Badge 
+                                      variant={job.isActive ? 'default' : 'secondary'}
+                                      className={job.isActive ? 'bg-[#00A86B]' : ''}
+                                    >
+                                      {job.isActive ? 'Active' : 'Inactive'}
+                                    </Badge>
+                                  </div>
+
+                                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                    <div className="flex items-center">
+                                      <Briefcase className="h-4 w-4 text-neutral-500 mr-2" />
+                                      <span className="text-sm">
+                                        {job.type.replace('_', ' ')}
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center">
+                                      <Users className="h-4 w-4 text-neutral-500 mr-2" />
+                                      <span className="text-sm">
+                                        {applications.filter(a => a.jobId === job.id).length} Applicants
+                                      </span>
+                                    </div>
+                                    <div className="flex items-center">
+                                      <Clock className="h-4 w-4 text-neutral-500 mr-2" />
+                                      <span className="text-sm">
+                                        {job.deadline ? (
+                                          <>Expires {format(new Date(job.deadline), 'MMM d, yyyy')}</>
+                                        ) : (
+                                          <>No Deadline</>
+                                        )}
+                                      </span>
                                     </div>
                                   </div>
-                                  <div className="flex sm:flex-col gap-3 sm:items-end justify-start sm:justify-between">
-                                    <div className="text-sm">
-                                      <div className="font-medium mb-1">Applications</div>
-                                      <div className="text-2xl font-bold">
-                                        {applications.filter(a => a.jobId === job.id).length}
-                                      </div>
-                                    </div>
-                                    <div className="flex flex-col sm:flex-row gap-2">
-                                      <Button variant="outline" size="sm" asChild>
-                                        <Link href={`/jobs/${job.id}`}>
-                                          <Eye className="h-3.5 w-3.5 mr-1" />
-                                          View
-                                        </Link>
-                                      </Button>
-                                      <Button variant="outline" size="sm">
-                                        <Edit className="h-3.5 w-3.5 mr-1" />
-                                        Edit
-                                      </Button>
-                                    </div>
+
+                                  <Separator className="my-4" />
+
+                                  <div className="flex flex-wrap justify-end gap-2">
+                                    <Button variant="outline" size="sm">
+                                      <Eye className="h-4 w-4 mr-2" />
+                                      View Applicants
+                                    </Button>
+                                    <Button variant="outline" size="sm">
+                                      <Edit className="h-4 w-4 mr-2" />
+                                      Edit
+                                    </Button>
+                                    <Button variant="outline" size="sm" className="text-red-500 hover:text-red-700 hover:bg-red-50">
+                                      <Trash2 className="h-4 w-4 mr-2" />
+                                      Remove
+                                    </Button>
                                   </div>
                                 </div>
                               </CardContent>
@@ -515,15 +631,16 @@ const EmployerDashboard = () => {
                         </div>
                       ) : (
                         <div className="text-center py-12">
-                          <Briefcase className="h-10 w-10 mx-auto mb-3 text-neutral-300" />
-                          <h3 className="font-medium mb-1">No jobs posted yet</h3>
-                          <p className="text-sm text-neutral-500 mb-4">
-                            Create your first job posting to start receiving applications
+                          <Briefcase className="h-12 w-12 mx-auto mb-4 text-neutral-300" />
+                          <h3 className="text-lg font-medium mb-2">No jobs posted yet</h3>
+                          <p className="text-neutral-500 mb-6">
+                            Start attracting the best talent by posting your first job
                           </p>
-                          <Button onClick={() => navigate("/post-job")} className="bg-[#0A3D62] hover:bg-[#082C46]">
-                            <Plus className="h-4 w-4 mr-1.5" />
-                            Post a Job
-                          </Button>
+                          <Link href="/post-job">
+                            <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                              Post Your First Job
+                            </Button>
+                          </Link>
                         </div>
                       )}
                     </CardContent>
@@ -532,49 +649,64 @@ const EmployerDashboard = () => {
 
                 {/* Applications Tab */}
                 <TabsContent value="applications">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="text-xl font-heading">Applications</CardTitle>
-                      <CardDescription>
-                        Manage candidates and track application progress
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-col md:flex-row gap-4 mb-6">
-                        <div className="relative w-full md:w-1/3">
-                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-500" />
-                          <Input 
-                            placeholder="Search candidates..."
-                            className="pl-9"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                          />
+                  <div className="space-y-4">
+                    <Card>
+                      <CardHeader className="pb-3">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                          <div>
+                            <CardTitle className="text-xl font-heading">Applications</CardTitle>
+                            <CardDescription>
+                              Manage candidates and track their application progress
+                            </CardDescription>
+                          </div>
+                          <div className="flex items-center space-x-2">
+                            <Button variant="outline" size="sm" className="flex items-center gap-1">
+                              <Download className="h-4 w-4" />
+                              <span>Export</span>
+                            </Button>
+                            <Button size="sm" className="flex items-center gap-1 bg-[#0A3D62] hover:bg-[#082C46]">
+                              <Mail className="h-4 w-4" />
+                              <span>Email Selected</span>
+                            </Button>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                          <select 
-                            className="border rounded-md px-3 py-2 text-sm bg-white w-full md:w-auto"
-                            value={jobFilter === "all" ? "all" : jobFilter.toString()}
-                            onChange={(e) => setJobFilter(e.target.value === "all" ? "all" : Number(e.target.value))}
-                          >
-                            <option value="all">All Jobs</option>
-                            {jobs.map(job => (
-                              <option key={job.id} value={job.id}>{job.title}</option>
-                            ))}
-                          </select>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="flex flex-col md:flex-row gap-4 mb-4">
+                          <div className="relative w-full md:w-1/3">
+                            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-500" />
+                            <Input 
+                              placeholder="Search candidates..."
+                              className="pl-9"
+                              value={searchQuery}
+                              onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <select 
+                              className="border rounded-md px-3 py-2 text-sm bg-white w-full md:w-auto"
+                              value={jobFilter === "all" ? "all" : jobFilter.toString()}
+                              onChange={(e) => setJobFilter(e.target.value === "all" ? "all" : Number(e.target.value))}
+                            >
+                              <option value="all">All Jobs</option>
+                              {jobs.map(job => (
+                                <option key={job.id} value={job.id}>{job.title}</option>
+                              ))}
+                            </select>
+                          </div>
                         </div>
-                      </div>
-                      
-                      <Tabs defaultValue="all">
-                        <TabsList className="mb-6">
-                          <TabsTrigger value="all">All</TabsTrigger>
-                          <TabsTrigger value="applied">New</TabsTrigger>
-                          <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
-                          <TabsTrigger value="interview_scheduled">Interview</TabsTrigger>
-                          <TabsTrigger value="hired">Hired</TabsTrigger>
-                          <TabsTrigger value="rejected">Rejected</TabsTrigger>
-                        </TabsList>
+                        
+                        <Tabs defaultValue="all" onValueChange={setApplicationFilter}>
+                          <TabsList className="mb-4">
+                            <TabsTrigger value="all">All</TabsTrigger>
+                            <TabsTrigger value="applied">New</TabsTrigger>
+                            <TabsTrigger value="reviewed">Reviewed</TabsTrigger>
+                            <TabsTrigger value="interview_scheduled">Interview</TabsTrigger>
+                            <TabsTrigger value="hired">Hired</TabsTrigger>
+                            <TabsTrigger value="rejected">Rejected</TabsTrigger>
+                          </TabsList>
 
-                        <TabsContent value="all">
+                          <TabsContent value="all">
                           {isLoadingApplications ? (
                             <div className="space-y-4">
                               {[1, 2, 3].map((_, i) => (
@@ -583,14 +715,7 @@ const EmployerDashboard = () => {
                             </div>
                           ) : applications.length > 0 ? (
                             <div className="space-y-4">
-                              {applications
-                                .filter(app => 
-                                  (jobFilter === 'all' || app.jobId === jobFilter) &&
-                                  (searchQuery === '' || 
-                                   app.applicant.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                                   app.applicant.email.toLowerCase().includes(searchQuery.toLowerCase()))
-                                )
-                                .map((application) => (
+                              {applications.map((application) => (
                                 <Card key={application.id}>
                                   <CardContent className="p-4 sm:p-6">
                                     <div className="flex flex-col sm:flex-row gap-4">
@@ -610,30 +735,14 @@ const EmployerDashboard = () => {
                                             <p className="text-sm text-neutral-500">{application.applicant.email}</p>
                                           </div>
                                         </div>
-                                        <div className="flex mb-2">
-                                          <select 
-                                            className={`text-xs py-1 px-2 rounded border ${
-                                              application.status === 'applied' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
-                                              application.status === 'reviewed' ? 'bg-purple-50 border-purple-200 text-purple-700' : 
-                                              application.status === 'interview_scheduled' ? 'bg-amber-50 border-amber-200 text-amber-700' : 
-                                              application.status === 'hired' ? 'bg-green-50 border-green-200 text-green-700' : 
-                                              'bg-red-50 border-red-200 text-red-700'
-                                            }`}
-                                            defaultValue={application.status}
-                                            onChange={(e) => {
-                                              toast({
-                                                title: "Status Updated",
-                                                description: `${application.applicant.fullName}'s application status updated to ${e.target.value.replace('_', ' ')}`,
-                                              });
-                                            }}
-                                          >
-                                            <option value="applied">Applied</option>
-                                            <option value="reviewed">Reviewed</option>
-                                            <option value="interview_scheduled">Interview</option>
-                                            <option value="hired">Hired</option>
-                                            <option value="rejected">Rejected</option>
-                                          </select>
-                                        </div>
+                                        <Badge variant={
+                                          application.status === 'applied' ? 'default' : 
+                                          application.status === 'reviewed' ? 'secondary' : 
+                                          application.status === 'interview_scheduled' ? 'outline' : 
+                                          application.status === 'hired' ? 'success' : 'destructive'
+                                        }>
+                                          {application.status.replace('_', ' ')}
+                                        </Badge>
                                       </div>
                                       <div className="sm:w-3/4">
                                         <div className="mb-3">
@@ -642,38 +751,27 @@ const EmployerDashboard = () => {
                                             Applied {format(new Date(application.appliedAt), 'MMM d, yyyy')}
                                           </p>
                                         </div>
+                                        {application.coverLetter && (
+                                          <div className="mb-3">
+                                            <h5 className="text-sm font-medium mb-1">Cover Letter</h5>
+                                            <p className="text-sm text-neutral-600 line-clamp-2">
+                                              {application.coverLetter}
+                                            </p>
+                                          </div>
+                                        )}
                                         <div className="flex flex-wrap gap-2">
-                                          <Button size="sm" variant="secondary">
-                                            <Eye className="h-3.5 w-3.5 mr-1.5" />
-                                            View Application
+                                          {application.resumeUrl && (
+                                            <Button variant="outline" size="sm">
+                                              <FileText className="h-4 w-4 mr-2" />
+                                              View Resume
+                                            </Button>
+                                          )}
+                                          <Button variant="outline" size="sm">
+                                            Update Status
                                           </Button>
-                                          <Button size="sm" variant="outline">
-                                            <Calendar className="h-3.5 w-3.5 mr-1.5" />
-                                            Schedule Interview
+                                          <Button variant="outline" size="sm">
+                                            Contact
                                           </Button>
-                                          <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                              <Button size="sm" variant="outline">
-                                                <MoreHorizontal className="h-3.5 w-3.5 mr-1.5" />
-                                                More Actions
-                                              </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                              <DropdownMenuItem>
-                                                <Mail className="h-4 w-4 mr-2" />
-                                                <span>Email Candidate</span>
-                                              </DropdownMenuItem>
-                                              <DropdownMenuItem>
-                                                <Download className="h-4 w-4 mr-2" />
-                                                <span>Download Resume</span>
-                                              </DropdownMenuItem>
-                                              <DropdownMenuSeparator />
-                                              <DropdownMenuItem className="text-red-600">
-                                                <Trash2 className="h-4 w-4 mr-2" />
-                                                <span>Reject</span>
-                                              </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                          </DropdownMenu>
                                         </div>
                                       </div>
                                     </div>
@@ -682,15 +780,17 @@ const EmployerDashboard = () => {
                               ))}
                             </div>
                           ) : (
-                            <div className="text-center py-12 text-neutral-500">
-                              <FileText className="h-10 w-10 mx-auto mb-4 text-neutral-300" />
-                              <p>No applications received yet</p>
-                              <p className="text-sm text-neutral-400">Applications to your job listings will appear here</p>
+                            <div className="text-center py-12">
+                              <FileText className="h-12 w-12 mx-auto mb-4 text-neutral-300" />
+                              <h3 className="text-lg font-medium mb-2">No applications yet</h3>
+                              <p className="text-neutral-500">
+                                You haven't received any applications for your job listings yet
+                              </p>
                             </div>
                           )}
                         </TabsContent>
-                        
-                        {/* Other status filter tabs would follow the same pattern */}
+
+                        {/* Additional tab content for filtered views would go here */}
                       </Tabs>
                     </CardContent>
                   </Card>
@@ -703,13 +803,18 @@ const EmployerDashboard = () => {
                       <div>
                         <CardTitle className="text-xl font-heading">Company Profile</CardTitle>
                         <CardDescription>
-                          Manage your company information and details
+                          Manage your company information and branding
                         </CardDescription>
                       </div>
-                      {company && (
-                        <Button variant="outline" className="space-x-1">
-                          <Edit className="h-4 w-4" />
-                          <span>Edit Profile</span>
+                      {company ? (
+                        <Button variant="outline">
+                          <Edit className="h-4 w-4 mr-2" />
+                          Edit Profile
+                        </Button>
+                      ) : (
+                        <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                          <Plus className="h-4 w-4 mr-2" />
+                          Create Profile
                         </Button>
                       )}
                     </CardHeader>
@@ -720,75 +825,77 @@ const EmployerDashboard = () => {
                           <div className="h-48 animate-pulse bg-neutral-100 rounded-md"></div>
                         </div>
                       ) : company ? (
-                        <div className="space-y-6">
-                          <div className="flex flex-col sm:flex-row gap-6">
-                            <div className="sm:w-1/4">
-                              <div className="aspect-square w-full max-w-[150px] bg-neutral-100 rounded-md flex items-center justify-center overflow-hidden">
+                        <div>
+                          <div className="flex flex-col md:flex-row gap-6 mb-6">
+                            <div className="md:w-1/4">
+                              <div className="bg-neutral-100 rounded-md p-6 flex items-center justify-center h-48">
                                 {company.logo ? (
-                                  <img src={company.logo} alt={company.name} className="w-full h-full object-cover" />
+                                  <img 
+                                    src={company.logo} 
+                                    alt={`${company.name} logo`} 
+                                    className="max-h-36 max-w-full"
+                                  />
                                 ) : (
-                                  <Building className="h-12 w-12 text-neutral-300" />
+                                  <Building className="h-16 w-16 text-neutral-400" />
                                 )}
                               </div>
                             </div>
-                            <div className="sm:w-3/4 space-y-4">
-                              <div>
-                                <h2 className="text-2xl font-bold">{company.name}</h2>
-                                {company.industry && (
-                                  <p className="text-neutral-600">{company.industry}</p>
-                                )}
-                              </div>
-                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
-                                  <p className="text-sm text-neutral-500">Location</p>
-                                  <p>{company.location || 'Not specified'}</p>
+                            <div className="md:w-3/4">
+                              <h2 className="text-2xl font-bold mb-2">{company.name}</h2>
+                              <div className="space-y-3 text-sm">
+                                <div className="flex gap-2">
+                                  <span className="font-medium min-w-[100px]">Industry:</span>
+                                  <span>{company.industry}</span>
                                 </div>
-                                <div>
-                                  <p className="text-sm text-neutral-500">Website</p>
-                                  {company.website ? (
+                                <div className="flex gap-2">
+                                  <span className="font-medium min-w-[100px]">Location:</span>
+                                  <span>{company.location}</span>
+                                </div>
+                                {company.website && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Website:</span>
                                     <a 
                                       href={company.website} 
                                       target="_blank" 
-                                      rel="noopener noreferrer" 
-                                      className="text-blue-600 hover:underline"
+                                      rel="noopener noreferrer"
+                                      className="text-[#0A3D62] hover:underline"
                                     >
-                                      {company.website.replace(/(^\w+:|^)\/\//, '')}
+                                      {company.website}
                                     </a>
-                                  ) : (
-                                    <p>Not specified</p>
-                                  )}
-                                </div>
-                                <div>
-                                  <p className="text-sm text-neutral-500">Company Size</p>
-                                  <p>{company.employeeCount ? 
-                                    `${company.employeeCount} employees` : 
-                                    'Not specified'}</p>
-                                </div>
-                                <div>
-                                  <p className="text-sm text-neutral-500">Founded</p>
-                                  <p>{company.founded || 'Not specified'}</p>
-                                </div>
+                                  </div>
+                                )}
+                                {company.employeeCount && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Size:</span>
+                                    <span>{company.employeeCount} employees</span>
+                                  </div>
+                                )}
+                                {company.founded && (
+                                  <div className="flex gap-2">
+                                    <span className="font-medium min-w-[100px]">Founded:</span>
+                                    <span>{company.founded}</span>
+                                  </div>
+                                )}
                               </div>
                             </div>
                           </div>
-                          
-                          <div>
-                            <h3 className="font-medium mb-2">About</h3>
-                            <p className="text-neutral-700">
-                              {company.description || 'No company description provided.'}
+
+                          <div className="mt-6">
+                            <h3 className="text-lg font-medium mb-3">Company Description</h3>
+                            <p className="text-neutral-700 whitespace-pre-line">
+                              {company.description}
                             </p>
                           </div>
                         </div>
                       ) : (
                         <div className="text-center py-12">
-                          <Building className="h-10 w-10 mx-auto mb-3 text-neutral-300" />
-                          <h3 className="font-medium mb-1">No company profile yet</h3>
-                          <p className="text-sm text-neutral-500 mb-4">
-                            Create your company profile to showcase your brand to job seekers
+                          <Building className="h-12 w-12 mx-auto mb-4 text-neutral-300" />
+                          <h3 className="text-lg font-medium mb-2">No company profile yet</h3>
+                          <p className="text-neutral-500 mb-6">
+                            Create a company profile to attract top talent and showcase your brand
                           </p>
-                          <Button onClick={() => navigate("/company/create")} className="bg-[#0A3D62] hover:bg-[#082C46]">
-                            <Plus className="h-4 w-4 mr-1.5" />
-                            Create Profile
+                          <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                            Create Company Profile
                           </Button>
                         </div>
                       )}
