@@ -6,6 +6,7 @@ import { Strategy as LocalStrategy } from "passport-local";
 import * as crypto from "crypto";
 import session from "express-session";
 import { setupSocialAuth, getSessionConfig } from "./socialAuth";
+import { setupFirebaseRoutes } from "./firebase-routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up session middleware with PostgreSQL
@@ -17,6 +18,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Setup Social Authentication with Google and LinkedIn
   setupSocialAuth(app);
+  
+  // Setup Firebase Authentication
+  setupFirebaseRoutes(app);
 
   // Configure passport local strategy
   passport.use(
