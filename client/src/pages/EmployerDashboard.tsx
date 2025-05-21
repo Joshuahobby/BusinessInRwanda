@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
@@ -84,10 +84,25 @@ const EmployerDashboard = () => {
     enabled: !!currentUser, // Only run query if user is logged in
   });
   
-  // Redirect if not authenticated or not an employer
-  if (!currentUser) {
-    navigate("/login");
-    return null;
+  // Redirect if not authenticated or not an employer (using useEffect to avoid hooks errors)
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    } else if (currentUser.role !== 'employer') {
+      navigate("/");
+    }
+  }, [currentUser, navigate]);
+  
+  // If not authenticated, show a loading state
+  if (!currentUser || currentUser.role !== 'employer') {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-medium mb-2">Checking authentication...</h2>
+          <p className="text-neutral-600">You'll be redirected if you're not authorized to access this page.</p>
+        </div>
+      </div>
+    );
   }
 
   // Get counts for dashboard stats
