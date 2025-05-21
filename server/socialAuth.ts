@@ -102,7 +102,7 @@ export function setupSocialAuth(app: Express) {
     passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: "/api/auth/google/callback",
+      callbackURL: "https://" + process.env.REPLIT_DOMAINS?.split(',')[0] + "/api/auth/google/callback",
       scope: ['profile', 'email'],
       proxy: true
     }, async (accessToken, refreshToken, profile, done) => {
@@ -270,7 +270,7 @@ export function setupSocialAuth(app: Express) {
     
     passport.authenticate("linkedin", {
       failureRedirect: '/login?error=linkedin-auth-failed'
-    }, (err, user) => {
+    }, (err: any, user: any) => {
       if (err) {
         console.error('LinkedIn auth error:', err);
         return res.redirect('/login?error=auth-error');
