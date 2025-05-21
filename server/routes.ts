@@ -1,36 +1,21 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import session from "express-session";
-import MemoryStore from "memorystore";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as crypto from "crypto";
-
-// Initialize session store with memorystore
-const SessionStore = MemoryStore(session);
+import { setupReplitAuth, getSession, isAuthenticated as isAuthenticatedReplit } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Set up session middleware
-  app.use(
-    session({
-      secret: process.env.SESSION_SECRET || "rwanda-jobs-secret",
-      resave: false,
-      saveUninitialized: false,
-      store: new SessionStore({
-        checkPeriod: 86400000, // prune expired entries every 24h
-      }),
-      cookie: {
-        maxAge: 7 * 24 * 60 * 60 * 1000, // 1 week
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-      },
-    })
-  );
+  // Set up session middleware with PostgreSQL
+  app.use(getSession());
 
   // Initialize passport and session
   app.use(passport.initialize());
   app.use(passport.session());
+  
+  // Setup Replit Auth
+  await setupReplitAuth(app);
 
   // Configure passport local strategy
   passport.use(
@@ -165,6 +150,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json(user);
       });
     })(req, res, next);
+  });
+
+  // Social login with Replit - redirect to authentication
+  app.get("/api/auth/replit-login", (req, res, next) => {
+    res.redirect("/api/auth/replit");
   });
 
   // Logout route
