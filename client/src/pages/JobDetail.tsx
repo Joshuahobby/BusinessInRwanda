@@ -18,7 +18,7 @@ const JobDetail = () => {
   const [, params] = useRoute<{ id: string }>('/job/:id');
   const [, navigate] = useLocation();
   const { toast } = useToast();
-  const { isAuthenticated, isJobSeeker } = useAuth();
+  const { isAuthenticated, isJobSeeker } = useFirebaseAuth();
   
   // Extract job ID from params, if available
   const jobId = params ? parseInt(params.id) : null;
