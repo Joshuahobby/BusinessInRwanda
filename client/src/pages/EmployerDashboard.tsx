@@ -116,13 +116,13 @@ const EmployerDashboard = () => {
                 <CardHeader>
                   <div className="flex items-center space-x-4">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src={currentUser.photoURL || ''} alt={currentUser.displayName || ''} />
+                      <AvatarImage src={currentUser.profilePicture || ''} alt={currentUser.fullName || ''} />
                       <AvatarFallback className="bg-[#0A3D62] text-white">
-                        {currentUser.displayName ? currentUser.displayName.split(' ').map((n: string) => n[0]).join('') : 'U'}
+                        {currentUser.fullName ? currentUser.fullName.split(' ').map((n: string) => n[0]).join('') : 'U'}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <CardTitle className="text-lg">{currentUser.displayName || 'User'}</CardTitle>
+                      <CardTitle className="text-lg">{currentUser.fullName || 'User'}</CardTitle>
                       <CardDescription>{currentUser.email || ''}</CardDescription>
                     </div>
                   </div>
