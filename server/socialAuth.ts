@@ -105,9 +105,37 @@ export function setupSocialAuth(app: Express) {
       callbackURL: "/api/auth/google/callback",
       scope: ['profile', 'email'],
       proxy: true
-    }, (accessToken, refreshToken, profile, done) => {
-      console.log('Google profile received:', profile.id);
-      handleSocialLogin(profile, done);
+    }, async (accessToken, refreshToken, profile, done) => {
+      try {
+        console.log('Google profile received:', profile.id);
+        // Extract the email from the profile
+        const email = profile.emails?.[0]?.value;
+        if (!email) {
+          return done(new Error("No email found in Google profile"));
+        }
+        
+        // Check if user exists by email
+        let user = await storage.getUserByEmail(email);
+        
+        if (!user) {
+          // Create new user with Google profile data
+          const fullName = `${profile.name?.givenName || ''} ${profile.name?.familyName || ''}`.trim();
+          user = await storage.createUser({
+            email,
+            password: crypto.randomBytes(32).toString('hex'), // Random password for OAuth users
+            fullName: fullName || email.split('@')[0],
+            role: 'job_seeker' // Default role
+          });
+          console.log(`Created new user from Google login: ${email}`);
+        } else {
+          console.log(`Existing user logged in via Google: ${email}`);
+        }
+        
+        return done(null, user);
+      } catch (error) {
+        console.error('Google login error:', error);
+        return done(error);
+      }
     }));
   }
 
@@ -118,27 +146,62 @@ export function setupSocialAuth(app: Express) {
       clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
       callbackURL: "/api/auth/linkedin/callback",
       scope: ['r_emailaddress', 'r_liteprofile']
-    }, (accessToken, refreshToken, profile, done) => {
-      handleSocialLogin(profile, done);
+    }, async (accessToken, refreshToken, profile, done) => {
+      try {
+        console.log('LinkedIn profile received:', profile.id);
+        // Extract the email from the profile
+        const email = profile.emails?.[0]?.value;
+        if (!email) {
+          return done(new Error("No email found in LinkedIn profile"));
+        }
+        
+        // Check if user exists by email
+        let user = await storage.getUserByEmail(email);
+        
+        if (!user) {
+          // Create new user with LinkedIn profile data
+          const fullName = profile.displayName || '';
+          user = await storage.createUser({
+            email,
+            password: crypto.randomBytes(32).toString('hex'), // Random password for OAuth users
+            fullName: fullName || email.split('@')[0],
+            role: 'job_seeker' // Default role
+          });
+          console.log(`Created new user from LinkedIn login: ${email}`);
+        } else {
+          console.log(`Existing user logged in via LinkedIn: ${email}`);
+        }
+        
+        return done(null, user);
+      } catch (error) {
+        console.error('LinkedIn login error:', error);
+        return done(error);
+      }
     }));
   }
 
   // Set up user serialization/deserialization for sessions
   passport.serializeUser((user: any, done) => {
+    // Log user serialization for debugging
+    console.log('Serializing user:', user.id);
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id: number, done) => {
     try {
+      console.log('Deserializing user:', id);
       const user = await storage.getUser(id);
       if (!user) {
+        console.log('User not found in database:', id);
         return done(null, false);
       }
       
       // Remove password from user object
       const { password: _, ...userWithoutPassword } = user;
+      console.log('User deserialized successfully:', id);
       done(null, userWithoutPassword);
     } catch (error) {
+      console.error('Error deserializing user:', error);
       done(error);
     }
   });
@@ -165,22 +228,29 @@ export function setupSocialAuth(app: Express) {
     
     // Log callback receipt for debugging
     console.log(`Google auth callback received at ${protocol}://${host}/api/auth/google/callback`);
+    console.log('OAuth state:', req.query.state);
+    console.log('OAuth code:', req.query.code ? 'Present' : 'Missing');
+    console.log('OAuth error:', req.query.error || 'None');
     
     passport.authenticate("google", {
       failureRedirect: '/login?error=google-auth-failed'
     }, (err: any, user: any) => {
       if (err) {
         console.error('Auth error:', err);
-        return res.redirect('/login?error=auth-error');
+        return res.redirect('/login?error=auth-error&message=' + encodeURIComponent(err.message || 'Unknown error'));
       }
       if (!user) {
+        console.error('No user returned from authentication');
         return res.redirect('/login?error=no-user');
       }
+      
+      console.log('User authenticated, proceeding to login:', user.id);
       req.login(user, (loginErr) => {
         if (loginErr) {
           console.error('Login error:', loginErr);
           return res.redirect('/login?error=login-error');
         }
+        console.log('User logged in successfully:', user.id);
         return res.redirect('/');
       });
     })(req, res, next);
