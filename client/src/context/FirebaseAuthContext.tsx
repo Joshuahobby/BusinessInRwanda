@@ -83,6 +83,19 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
           const userData = await response.json();
           console.log("User data synced successfully:", userData.email);
           setCurrentUser(userData);
+          
+          // Check if we're on the login page or home page and redirect to appropriate dashboard
+          const currentPath = window.location.pathname;
+          if (currentPath === '/login' || currentPath === '/') {
+            // Auto-redirect based on user role
+            if (userData.role === 'job_seeker') {
+              window.location.href = '/job-seeker-dashboard';
+            } else if (userData.role === 'employer') {
+              window.location.href = '/employer-dashboard';
+            } else if (userData.role === 'admin') {
+              window.location.href = '/admin-dashboard';
+            }
+          }
         } catch (error) {
           console.error("Error syncing with backend:", error);
           // Don't show toast for every sync error to avoid spamming the user
@@ -129,6 +142,8 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
     try {
       setIsLoading(true);
       await signInWithEmail(email, password);
+      
+      // Redirection will happen automatically in the useEffect when currentUser is set
       toast({
         title: "Login successful",
         description: "Welcome back to Business In Rwanda",
