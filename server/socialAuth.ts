@@ -95,9 +95,13 @@ async function handleSocialLogin(
 export function setupSocialAuth(app: Express) {
   // Configure Google Strategy
   if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+    // Debug information about Google OAuth configuration
+    console.log('Setting up Google OAuth with Client ID:', 
+      process.env.GOOGLE_CLIENT_ID ? `${process.env.GOOGLE_CLIENT_ID.substring(0, 8)}...` : 'Not provided');
+    
     passport.use(new GoogleStrategy({
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
       callbackURL: "/api/auth/google/callback",
       scope: ['profile', 'email'],
       proxy: true
@@ -148,23 +152,19 @@ export function setupSocialAuth(app: Express) {
     // Log for debugging
     console.log(`Google auth request with callback URL: ${callbackURL}`);
     
+    // Use the standard authentication without customizing the callback URL
+    // This will use the callback URL configured in the Google OAuth setup
     passport.authenticate("google", {
-      scope: ['profile', 'email'],
-      callbackURL: callbackURL
+      scope: ['profile', 'email']
     })(req, res, next);
   });
 
   app.get("/api/auth/google/callback", (req, res, next) => {
-    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-    const host = req.headers.host;
-    const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
-    
     // Log callback receipt for debugging
-    console.log(`Google auth callback received at ${callbackURL}`);
+    console.log(`Google auth callback received`);
     
     passport.authenticate("google", {
-      failureRedirect: '/login?error=google-auth-failed',
-      callbackURL: callbackURL
+      failureRedirect: '/login?error=google-auth-failed'
     }, (err, user) => {
       if (err) {
         console.error('Auth error:', err);
@@ -183,31 +183,20 @@ export function setupSocialAuth(app: Express) {
     })(req, res, next);
   });
 
-  // Add LinkedIn authentication routes with full URL for callback
+  // Add LinkedIn authentication routes
   app.get("/api/auth/linkedin", (req, res, next) => {
-    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-    const host = req.headers.host;
-    const callbackURL = `${protocol}://${host}/api/auth/linkedin/callback`;
-    
     // Log for debugging
-    console.log(`LinkedIn auth request with callback URL: ${callbackURL}`);
+    console.log("LinkedIn auth request");
     
-    passport.authenticate("linkedin", {
-      callbackURL: callbackURL
-    })(req, res, next);
+    passport.authenticate("linkedin")(req, res, next);
   });
 
   app.get("/api/auth/linkedin/callback", (req, res, next) => {
-    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
-    const host = req.headers.host;
-    const callbackURL = `${protocol}://${host}/api/auth/linkedin/callback`;
-    
     // Log callback receipt for debugging
-    console.log(`LinkedIn auth callback received at ${callbackURL}`);
+    console.log("LinkedIn auth callback received");
     
     passport.authenticate("linkedin", {
-      failureRedirect: '/login?error=linkedin-auth-failed',
-      callbackURL: callbackURL
+      failureRedirect: '/login?error=linkedin-auth-failed'
     }, (err, user) => {
       if (err) {
         console.error('LinkedIn auth error:', err);

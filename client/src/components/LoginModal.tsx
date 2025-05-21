@@ -128,16 +128,27 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             <div className="space-y-4 py-2">
               <p className="text-neutral-600 mb-4">Welcome back! Sign in to access your account</p>
               
-              {/* Social Login Information */}
+              {/* Social Login Buttons */}
               <div className="space-y-3">
-                <div className="bg-muted/50 p-3 rounded-md border border-muted-foreground/20">
-                  <p className="text-sm text-muted-foreground">
-                    Social login with Google and LinkedIn is configured and working with our database integration.
-                    <br/><br/>
-                    To enable it in your environment, you'll need to update the OAuth credentials in the 
-                    Google Cloud Console and LinkedIn Developer portal to match your Replit URL.
-                  </p>
-                </div>
+                <a href="/api/auth/google" className="w-full no-underline">
+                  <Button 
+                    variant="outline" 
+                    className="w-full flex items-center justify-center gap-2 border-gray-300"
+                    type="button"
+                  >
+                    <FcGoogle className="h-5 w-5" />
+                    Continue with Google
+                  </Button>
+                </a>
+                <a href="/api/auth/linkedin" className="w-full no-underline">
+                  <Button 
+                    className="w-full bg-[#0077B5] hover:bg-[#005e8b] flex items-center justify-center gap-2"
+                    type="button"
+                  >
+                    <FaLinkedin className="h-4 w-4 text-white" />
+                    Continue with LinkedIn
+                  </Button>
+                </a>
               </div>
               
               {/* Divider */}
