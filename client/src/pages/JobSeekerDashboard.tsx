@@ -31,6 +31,7 @@ import {
 import { ApplicationStatus } from "@/lib/types";
 import { Application, Job } from "@shared/schema";
 import { format } from "date-fns";
+import AccountSettings from "@/components/AccountSettings";
 
 // Extended types with additional details
 type ApplicationWithJob = Application & {

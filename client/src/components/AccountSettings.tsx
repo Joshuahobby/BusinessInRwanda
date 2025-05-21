@@ -115,7 +115,7 @@ const AccountSettings = () => {
         </Alert>
       </CardContent>
       <CardFooter className="flex justify-between border-t pt-4">
-        <Button variant="outline" onClick={() => navigate(-1)}>Cancel</Button>
+        <Button variant="outline" onClick={() => navigate("/")}>Cancel</Button>
         <Button 
           variant="destructive" 
           onClick={() => {

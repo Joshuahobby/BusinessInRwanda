@@ -721,6 +721,21 @@ const EmployerDashboard = () => {
                   </Card>
                 </TabsContent>
 
+                {/* Account Settings Tab */}
+                <TabsContent value="settings">
+                  <Card>
+                    <CardHeader>
+                      <CardTitle className="text-xl font-heading">Account Settings</CardTitle>
+                      <CardDescription>
+                        Manage your account settings and role preferences
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <AccountSettings />
+                    </CardContent>
+                  </Card>
+                </TabsContent>
+
                 {/* Company Profile Tab */}
                 <TabsContent value="company">
                   <Card>
