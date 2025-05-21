@@ -163,6 +163,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   // Ensure user is always of type User | null to match the context type
   const safeUser: User | null = user || null;
 
+  // Social login helpers
+  const loginWithGoogle = () => {
+    window.location.href = "/api/auth/google";
+  };
+
+  const loginWithLinkedIn = () => {
+    window.location.href = "/api/auth/linkedin";
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -172,6 +181,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         login,
         register,
         logout,
+        loginWithGoogle,
+        loginWithLinkedIn,
         isEmployer,
         isJobSeeker,
         isAdmin
