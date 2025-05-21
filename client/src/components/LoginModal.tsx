@@ -130,7 +130,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               
               {/* Social Login Buttons */}
               <div className="space-y-3">
-                <a href="/api/auth/google" className="w-full no-underline">
+                <a 
+                  href={`https://accounts.google.com/o/oauth2/v2/auth?client_id=${encodeURIComponent(import.meta.env.VITE_GOOGLE_CLIENT_ID || '')}&redirect_uri=${encodeURIComponent(window.location.origin + '/api/auth/google/callback')}&response_type=code&scope=email+profile&access_type=offline&prompt=consent`}
+                  className="w-full no-underline"
+                >
                   <Button 
                     variant="outline" 
                     className="w-full flex items-center justify-center gap-2 border-gray-300"
