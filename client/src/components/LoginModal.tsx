@@ -140,7 +140,8 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                   onClick={async () => {
                     try {
                       setIsLoading(true);
-                      await loginWithGoogle();
+                      // In login modal, we default to job_seeker role for Google sign-in
+                      await loginWithGoogle('job_seeker');
                       onClose();
                     } catch (error) {
                       // Error handling is done in FirebaseAuthContext

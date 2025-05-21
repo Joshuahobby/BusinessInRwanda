@@ -10,6 +10,10 @@ import {
   onAuthChange,
   FirebaseUser 
 } from "@/lib/firebase-auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+// Google Authentication Provider
+const googleProvider = new GoogleAuthProvider();
 
 // Firebase User data structure in our database
 interface UserData {
@@ -211,13 +215,14 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
     try {
       setIsLoading(true);
       
-      // First authenticate with Google
-      const result = await signInWithPopup(auth, googleProvider);
+      // Get the Firebase user through Google sign-in
+      const user = await signInWithGoogle();
       
-      if (result.user) {
-        const user = result.user;
+      if (user) {
         // Get Firebase ID token
         const idToken = await user.getIdToken();
+        
+        console.log("Firebase auth change detected, syncing user:", user.email, "UID:", user.uid);
         
         // Make API call to sync the user with our database, including the role
         const response = await fetch('/api/auth/firebase-sync', {
