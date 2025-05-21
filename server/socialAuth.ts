@@ -6,7 +6,7 @@ import { storage } from "./storage";
 import { userRoleEnum } from "@shared/schema";
 import session from "express-session";
 import connectPg from "connect-pg-simple";
-import type { Express } from "express";
+import type { Express, Request } from "express";
 
 // Configure session storage with PostgreSQL
 export function getSessionConfig() {
@@ -51,31 +51,43 @@ async function handleSocialLogin(
     
     if (!user) {
       // Create new user
-      const firstName = profile.name?.givenName || profile.displayName?.split(' ')[0] || '';
+      const firstName = profile.name?.givenName || 
+                        profile.displayName?.split(' ')[0] || 
+                        email.split('@')[0];
+      
       const lastName = profile.name?.familyName || 
                       (profile.displayName?.split(' ').length > 1 
                         ? profile.displayName?.split(' ').slice(1).join(' ') 
                         : '');
       
+      // Generate a secure random password for social login users
+      const randomPassword = crypto.randomBytes(32).toString('hex');
+      
       user = await storage.createUser({
         email,
-        password: crypto.randomBytes(32).toString('hex'), // Generate random password for social accounts
+        password: crypto
+          .createHash("sha256")
+          .update(randomPassword)
+          .digest("hex"),
         fullName: `${firstName} ${lastName}`.trim(),
         role: userRoleEnum.enumValues[0], // Default to job_seeker
         profilePicture: profile.photos?.[0]?.value || null,
       });
+      
+      console.log(`Created new user from social login: ${email}`);
     } else {
       // Optionally update profile picture if empty
       if (!user.profilePicture && profile.photos?.[0]?.value) {
-        // Code to update user profile picture would go here
-        // In a real app, you might want to update the profile picture
+        // Future enhancement: update user profile picture
+        console.log(`User ${email} logged in via social authentication`);
       }
     }
 
-    // Remove password from user object
+    // Remove password from user object before returning
     const { password: _, ...userWithoutPassword } = user;
     return done(null, userWithoutPassword);
   } catch (error) {
+    console.error('Social login error:', error);
     return done(error);
   }
 }
@@ -105,16 +117,35 @@ export function setupSocialAuth(app: Express) {
     }));
   }
 
+  // Set up user serialization/deserialization for sessions
+  passport.serializeUser((user: any, done) => {
+    done(null, user.id);
+  });
+
+  passport.deserializeUser(async (id: number, done) => {
+    try {
+      const user = await storage.getUser(id);
+      if (!user) {
+        return done(null, false);
+      }
+      
+      // Remove password from user object
+      const { password: _, ...userWithoutPassword } = user;
+      done(null, userWithoutPassword);
+    } catch (error) {
+      done(error);
+    }
+  });
+
   // Add Google authentication routes
   app.get("/api/auth/google", 
     passport.authenticate("google", { scope: ['profile', 'email'] })
   );
 
   app.get("/api/auth/google/callback", 
-    passport.authenticate("google", { failureRedirect: '/login' }),
+    passport.authenticate("google", { failureRedirect: '/login?error=google-auth-failed' }),
     (req, res) => {
       // Successful authentication, redirect home or to a specific page
-      // We can add custom redirect logic here based on user type
       res.redirect('/');
     }
   );
@@ -125,11 +156,29 @@ export function setupSocialAuth(app: Express) {
   );
 
   app.get("/api/auth/linkedin/callback", 
-    passport.authenticate("linkedin", { failureRedirect: '/login' }),
+    passport.authenticate("linkedin", { failureRedirect: '/login?error=linkedin-auth-failed' }),
     (req, res) => {
       // Successful authentication, redirect home or to a specific page
-      // We can add custom redirect logic here based on user type
       res.redirect('/');
     }
   );
+
+  // Add logout route
+  app.get("/api/auth/logout", (req: Request, res) => {
+    req.logout((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return res.status(500).json({ message: "Error during logout" });
+      }
+      res.redirect("/");
+    });
+  });
+
+  // Get current user route
+  app.get("/api/auth/me", (req, res) => {
+    if (req.isAuthenticated()) {
+      return res.json(req.user);
+    }
+    return res.status(401).json({ message: "Not authenticated" });
+  });
 }

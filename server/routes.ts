@@ -15,7 +15,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.use(passport.initialize());
   app.use(passport.session());
   
-  // Setup Social Authentication
+  // Setup Social Authentication with Google and LinkedIn
   setupSocialAuth(app);
 
   // Configure passport local strategy
