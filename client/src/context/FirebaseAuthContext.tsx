@@ -59,11 +59,13 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
             headers: {
               "Content-Type": "application/json",
             },
+            credentials: "include", // Important for session cookies
             body: JSON.stringify({
               idToken,
               email: firebaseUser.email,
               displayName: firebaseUser.displayName,
               photoURL: firebaseUser.photoURL,
+              firebaseUid: firebaseUser.uid
             }),
           });
 
@@ -139,15 +141,17 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
       const firebaseUser = await createAccount(email, password);
       
       // Send additional user data to our backend
-      const response = await fetch("/api/auth/register", {
+      const response = await fetch("/api/auth/firebase-sync", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
+          idToken: await firebaseUser.getIdToken(),
           firebaseUid: firebaseUser.uid,
           email,
-          fullName,
+          displayName: fullName,
           role,
         }),
       });

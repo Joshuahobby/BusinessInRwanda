@@ -54,18 +54,26 @@ export function setupFirebaseRoutes(app: Express) {
       
       if (!user) {
         // Create new user if they don't exist
-        user = await storage.createUser({
-          email,
-          fullName: displayName || email?.split("@")[0] || "User",
-          role,
-          profilePicture: photoURL || null,
-          // Firebase handles authentication, so no password needed
-          password: null,
-          firebaseUid: idToken?.substring(0, 28) || null, // Use part of token as fake uid
-          bio: null,
-          location: null,
-          phone: null
-        });
+        try {
+          user = await storage.createUser({
+            email,
+            fullName: displayName || email?.split("@")[0] || "User",
+            role,
+            profilePicture: photoURL || null,
+            // Firebase handles authentication, so no password needed
+            password: null,
+            firebaseUid: idToken?.substring(0, 28) || null, // Use part of token as fake uid
+            bio: null,
+            location: null,
+            phone: null
+          });
+          console.log("Created new user for Firebase auth:", email);
+        } catch (error) {
+          console.error("Error creating user:", error);
+          return res.status(500).json({ message: "Error creating user account" });
+        }
+      } else {
+        console.log("User already exists in database:", email);
       }
       
       // Log the user in (establish session)

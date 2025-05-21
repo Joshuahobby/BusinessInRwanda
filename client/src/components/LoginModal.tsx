@@ -125,8 +125,11 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               <DialogTitle className="text-lg font-bold">Sign In</DialogTitle>
             </DialogHeader>
 
+            <DialogDescription id="login-description" className="text-neutral-600 mb-4">
+              Welcome back! Sign in to access your account
+            </DialogDescription>
+            
             <div className="space-y-4 py-2">
-              <p id="login-description" className="text-neutral-600 mb-4">Welcome back! Sign in to access your account</p>
               
               {/* Social Login Buttons */}
               <div className="space-y-3">
@@ -235,7 +238,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
                 </Button>
                 <DialogTitle className="text-lg font-bold">Reset Password</DialogTitle>
               </div>
-              <DialogDescription>
+              <DialogDescription id="reset-description">
                 {!passwordResetSent 
                   ? "Enter your email address and we'll send you a link to reset your password."
                   : "We've sent you an email with instructions to reset your password."}
