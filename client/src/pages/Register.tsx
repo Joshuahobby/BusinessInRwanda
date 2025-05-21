@@ -117,7 +117,8 @@ const Register = () => {
   const handleGoogleSignIn = async () => {
     try {
       setIsLoading(true);
-      await loginWithGoogle();
+      // Pass the currently selected role tab to the Google sign-in function
+      await loginWithGoogle(activeTab);
       navigate('/');
     } catch (error) {
       // Error handling is done in FirebaseAuthContext

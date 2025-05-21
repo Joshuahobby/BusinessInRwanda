@@ -26,7 +26,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   loginWithEmail: (email: string, password: string) => Promise<void>;
   registerWithEmail: (email: string, password: string, fullName: string, role: 'job_seeker' | 'employer') => Promise<void>;
-  loginWithGoogle: () => Promise<void>;
+  loginWithGoogle: (role?: 'job_seeker' | 'employer') => Promise<void>;
   logout: () => Promise<void>;
   isEmployer: () => boolean;
   isJobSeeker: () => boolean;
@@ -207,10 +207,54 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
     }
   };
 
-  const loginWithGoogle = async () => {
+  const loginWithGoogle = async (role?: 'job_seeker' | 'employer') => {
     try {
       setIsLoading(true);
-      await signInWithGoogle();
+      
+      // First authenticate with Google
+      const result = await signInWithPopup(auth, googleProvider);
+      
+      if (result.user) {
+        const user = result.user;
+        // Get Firebase ID token
+        const idToken = await user.getIdToken();
+        
+        // Make API call to sync the user with our database, including the role
+        const response = await fetch('/api/auth/firebase-sync', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idToken,
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            firebaseUid: user.uid,
+            // Use the provided role or default to job_seeker 
+            role: role || 'job_seeker'
+          }),
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to sync user data with server');
+        }
+        
+        // Get the user data from our database
+        const userData = await response.json();
+        
+        // Update the current user
+        setCurrentUser({
+          id: userData.id,
+          email: userData.email,
+          fullName: userData.fullName,
+          role: userData.role,
+          profilePicture: userData.profilePicture,
+        });
+        
+        console.log("User data synced successfully:", userData.email);
+      }
+      
       toast({
         title: "Login successful",
         description: "Welcome to Business In Rwanda",
