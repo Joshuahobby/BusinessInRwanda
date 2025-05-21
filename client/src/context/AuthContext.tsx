@@ -19,6 +19,8 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<void>;
   register: (userData: RegisterData) => Promise<void>;
   logout: () => Promise<void>;
+  loginWithGoogle: () => void;
+  loginWithLinkedIn: () => void;
   isEmployer: () => boolean;
   isJobSeeker: () => boolean;
   isAdmin: () => boolean;

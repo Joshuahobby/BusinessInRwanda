@@ -106,18 +106,29 @@ export function useAuth() {
     return registerMutation.mutateAsync(userData);
   };
 
+  // Social login helpers
+  const loginWithGoogle = () => {
+    window.location.href = "/api/auth/google";
+  };
+
+  const loginWithLinkedIn = () => {
+    window.location.href = "/api/auth/linkedin";
+  };
+
   return {
     user,
     isLoading,
     error,
     isAuthenticated: !!user,
     isEmployer: () => user?.role === "employer",
-    isJobSeeker: () => user?.role === "job_seeker",
+    isJobSeeker: () => user?.role === "job_seeker", 
     isAdmin: () => user?.role === "admin",
     login,
     logout,
     register,
     loginMutation,
     registerMutation,
+    loginWithGoogle,
+    loginWithLinkedIn
   };
 }

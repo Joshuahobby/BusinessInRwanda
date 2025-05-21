@@ -41,7 +41,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
-  const { login } = useAuth();
+  const { login, loginWithGoogle, loginWithLinkedIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [passwordResetSent, setPasswordResetSent] = useState(false);
@@ -130,18 +130,21 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               
               {/* Social Login Buttons */}
               <div className="space-y-3">
-                <a href="/api/auth/google" className="w-full no-underline">
-                  <Button variant="outline" className="w-full flex items-center justify-center gap-2 border-gray-300">
-                    <FcGoogle className="h-5 w-5" />
-                    Continue with Google
-                  </Button>
-                </a>
-                <a href="/api/auth/linkedin" className="w-full no-underline">
-                  <Button className="w-full bg-[#0077B5] hover:bg-[#005e8b] flex items-center justify-center gap-2">
-                    <FaLinkedin className="h-4 w-4 text-white" />
-                    Continue with LinkedIn
-                  </Button>
-                </a>
+                <Button 
+                  variant="outline" 
+                  className="w-full flex items-center justify-center gap-2 border-gray-300"
+                  onClick={() => useAuth().loginWithGoogle()}
+                >
+                  <FcGoogle className="h-5 w-5" />
+                  Continue with Google
+                </Button>
+                <Button 
+                  className="w-full bg-[#0077B5] hover:bg-[#005e8b] flex items-center justify-center gap-2"
+                  onClick={() => useAuth().loginWithLinkedIn()}
+                >
+                  <FaLinkedin className="h-4 w-4 text-white" />
+                  Continue with LinkedIn
+                </Button>
               </div>
               
               {/* Divider */}
