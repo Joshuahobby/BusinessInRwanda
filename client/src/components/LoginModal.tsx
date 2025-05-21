@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "wouter";
-import { useAuth } from "@/context/AuthContext";
+import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -41,7 +41,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
-  const { login } = useAuth();
+  const { loginWithEmail, loginWithGoogle } = useFirebaseAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [passwordResetSent, setPasswordResetSent] = useState(false);
@@ -66,10 +66,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       setIsLoading(true);
-      await login(data.email, data.password);
+      await loginWithEmail(data.email, data.password);
       onClose();
     } catch (error) {
-      // Error handling is done in AuthContext
+      // Error handling is done in FirebaseAuthContext
     } finally {
       setIsLoading(false);
     }

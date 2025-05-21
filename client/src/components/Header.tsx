@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { useAuth } from "@/context/AuthContext";
+import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
 import { Button } from "@/components/ui/button";
 import { 
   DropdownMenu,
@@ -16,7 +16,7 @@ import LoginModal from "./LoginModal";
 const Header = () => {
   const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const [location] = useLocation();
-  const { user, isAuthenticated, logout, isEmployer, isJobSeeker } = useAuth();
+  const { currentUser, isAuthenticated, logout, isEmployer, isJobSeeker } = useFirebaseAuth();
 
   return (
     <header className="bg-white shadow-sm">
@@ -67,7 +67,7 @@ const Header = () => {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="flex items-center gap-2">
                     <User className="h-4 w-4" />
-                    <span className="hidden md:inline">{user?.fullName}</span>
+                    <span className="hidden md:inline">{currentUser?.fullName}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">

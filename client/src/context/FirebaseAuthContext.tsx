@@ -9,7 +9,6 @@ import {
   onAuthChange,
   FirebaseUser 
 } from "@/lib/firebase-auth";
-import { User } from "@shared/schema";
 
 // Firebase User data structure in our database
 interface UserData {
