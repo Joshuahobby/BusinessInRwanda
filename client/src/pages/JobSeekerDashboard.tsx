@@ -288,10 +288,11 @@ const JobSeekerDashboard = () => {
             {/* Main Content */}
             <div className="col-span-12 md:col-span-9">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
-                <TabsList className="grid grid-cols-3 w-full md:w-auto">
+                <TabsList className="grid grid-cols-4 w-full md:w-auto">
                   <TabsTrigger value="overview">Overview</TabsTrigger>
                   <TabsTrigger value="applications">Applications</TabsTrigger>
                   <TabsTrigger value="profile">Profile</TabsTrigger>
+                  <TabsTrigger value="settings">Account</TabsTrigger>
                 </TabsList>
                 
                 {/* Overview Tab */}
@@ -860,6 +861,11 @@ const JobSeekerDashboard = () => {
                       <Button>Save Changes</Button>
                     </CardFooter>
                   </Card>
+                </TabsContent>
+                
+                {/* Account Settings Tab */}
+                <TabsContent value="settings" className="space-y-6">
+                  <AccountSettings />
                 </TabsContent>
               </Tabs>
             </div>
