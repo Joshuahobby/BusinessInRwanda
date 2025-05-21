@@ -55,10 +55,22 @@ function updateUserSession(
 }
 
 async function upsertUser(claims: any) {
+  // Make sure we have an email
+  if (!claims.email) {
+    throw new Error("Email is required from authentication provider");
+  }
+  
   const existingUser = await storage.getUserByEmail(claims.email);
   
   if (existingUser) {
-    // User exists - could update profile here if needed
+    // User exists - update profile picture if available
+    if (claims.profile_image_url && claims.profile_image_url !== existingUser.profilePicture) {
+      const updatedUser = await storage.updateUser(existingUser.id, {
+        ...existingUser,
+        profilePicture: claims.profile_image_url
+      });
+      return updatedUser;
+    }
     return existingUser;
   }
   

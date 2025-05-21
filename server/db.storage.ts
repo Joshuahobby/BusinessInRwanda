@@ -28,6 +28,23 @@ export class DatabaseStorage implements IStorage {
     const [user] = await db.insert(users).values(userData).returning();
     return user;
   }
+  
+  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+    const { id: userId, ...updateData } = userData;
+    const [updatedUser] = await db
+      .update(users)
+      .set({
+        ...updateData,
+        ...(updateData.profilePicture !== undefined && { profilePicture: updateData.profilePicture }),
+        ...(updateData.fullName !== undefined && { fullName: updateData.fullName }),
+        ...(updateData.phone !== undefined && { phone: updateData.phone }),
+        ...(updateData.bio !== undefined && { bio: updateData.bio }),
+        ...(updateData.location !== undefined && { location: updateData.location }),
+      })
+      .where(eq(users.id, id))
+      .returning();
+    return updatedUser;
+  }
 
   // Company operations
   async getCompany(id: number): Promise<Company | undefined> {
