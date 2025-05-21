@@ -92,21 +92,38 @@ export function setupFirebaseRoutes(app: Express) {
           return res.status(500).json({ message: "Error creating user account" });
         }
       } else {
-        // Update existing user with Firebase UID if it's missing or different
-        if (firebaseUid && (!user.firebaseUid || user.firebaseUid !== firebaseUid)) {
+        // Update existing user with Firebase UID and/or role if needed
+        if (firebaseUid || role) {
           try {
-            user = await storage.updateUser(user.id, { 
-              firebaseUid,
-              // Update profile picture and display name if available
-              ...(photoURL && { profilePicture: photoURL }),
-              ...(displayName && { fullName: displayName })
-            });
-            console.log("Updated user with Firebase UID:", email, "with ID:", user.id);
+            // Build update object with all potential updates
+            const updateData: any = {};
+            
+            // Add firebaseUid if it's missing or different
+            if (firebaseUid && (!user.firebaseUid || user.firebaseUid !== firebaseUid)) {
+              updateData.firebaseUid = firebaseUid;
+            }
+            
+            // Update role if provided and different from current role
+            if (role && user.role !== role) {
+              console.log(`Updating user role from ${user.role} to ${role}`);
+              updateData.role = role;
+            }
+            
+            // Update profile picture and display name if available
+            if (photoURL) updateData.profilePicture = photoURL;
+            if (displayName) updateData.fullName = displayName;
+            
+            // Only update if we have changes to make
+            if (Object.keys(updateData).length > 0) {
+              user = await storage.updateUser(user.id, updateData);
+              console.log("Updated user information:", email, "with ID:", user.id, 
+                "Updates:", Object.keys(updateData).join(", "));
+            }
           } catch (error) {
-            console.error("Error updating user with UID:", error);
+            console.error("Error updating user:", error);
           }
         }
-        console.log("User already exists in database:", email, "with ID:", user.id);
+        console.log("User already exists in database:", email, "with ID:", user.id, "with role:", user.role);
       }
       
       // Log the user in (establish session)

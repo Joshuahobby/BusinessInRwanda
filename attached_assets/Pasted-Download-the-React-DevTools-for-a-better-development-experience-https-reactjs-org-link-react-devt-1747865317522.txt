@@ -1,0 +1,122 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/:73 
+            
+            
+            GET https://pixabay.com/get/gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg 400 (Bad Request)
+
+                
+          
+          
+          
+         Microsoft Edge is moving towards a new experience that allows users to choose to browse without third-party cookies.
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+popup.ts:302  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ popup.ts:302
+popup.ts:302  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ popup.ts:302
+popup.ts:302  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ popup.ts:302
+popup.ts:302  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ popup.ts:302
+FirebaseAuthContext.tsx:61 Firebase auth change detected, syncing user: kizereinc@gmail.com UID: dvY8xobnSZb38xCFTukJcKUeIqC2
+FirebaseAuthContext.tsx:225 Firebase auth change detected, syncing user: kizereinc@gmail.com UID: dvY8xobnSZb38xCFTukJcKUeIqC2
+FirebaseAuthContext.tsx:67 
+            
+            
+            POST https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/api/auth/firebase-sync 500 (Internal Server Error)
+(anonymous) @ FirebaseAuthContext.tsx:67
+await in (anonymous)
+(anonymous) @ subscribe.ts:104
+(anonymous) @ subscribe.ts:233
+Promise.then
+sendOne @ subscribe.ts:230
+forEachObserver @ subscribe.ts:220
+next @ subscribe.ts:103
+notifyAuthListeners @ auth_impl.ts:724
+(anonymous) @ auth_impl.ts:448
+Promise.then
+queue @ auth_impl.ts:804
+_updateCurrentUser @ auth_impl.ts:446
+await in _updateCurrentUser
+_signInWithCredential @ credential.ts:56
+await in _signInWithCredential
+_signIn @ idp.ts:91
+onAuthEvent @ abstract_popup_redirect_operation.ts:103
+sendToConsumer @ auth_event_manager.ts:97
+(anonymous) @ auth_event_manager.ts:68
+onEvent @ auth_event_manager.ts:65
+(anonymous) @ popup_redirect.ts:139
+fn @ cb=gapi.loaded_0?le=scs:193
+(anonymous) @ cb=gapi.loaded_0?le=scs:193
+sl @ cb=gapi.loaded_0?le=scs:172
+Gl @ cb=gapi.loaded_0?le=scs:172
+Wk @ cb=gapi.loaded_0?le=scs:173
+bl.DH @ cb=gapi.loaded_0?le=scs:166
+FirebaseAuthContext.tsx:85  Backend sync failed: 500 {message: 'Error creating user account'}
+(anonymous) @ FirebaseAuthContext.tsx:85
+await in (anonymous)
+(anonymous) @ subscribe.ts:104
+(anonymous) @ subscribe.ts:233
+Promise.then
+sendOne @ subscribe.ts:230
+forEachObserver @ subscribe.ts:220
+next @ subscribe.ts:103
+notifyAuthListeners @ auth_impl.ts:724
+(anonymous) @ auth_impl.ts:448
+Promise.then
+queue @ auth_impl.ts:804
+_updateCurrentUser @ auth_impl.ts:446
+await in _updateCurrentUser
+_signInWithCredential @ credential.ts:56
+await in _signInWithCredential
+_signIn @ idp.ts:91
+onAuthEvent @ abstract_popup_redirect_operation.ts:103
+sendToConsumer @ auth_event_manager.ts:97
+(anonymous) @ auth_event_manager.ts:68
+onEvent @ auth_event_manager.ts:65
+(anonymous) @ popup_redirect.ts:139
+fn @ cb=gapi.loaded_0?le=scs:193
+(anonymous) @ cb=gapi.loaded_0?le=scs:193
+sl @ cb=gapi.loaded_0?le=scs:172
+Gl @ cb=gapi.loaded_0?le=scs:172
+Wk @ cb=gapi.loaded_0?le=scs:173
+bl.DH @ cb=gapi.loaded_0?le=scs:166
+FirebaseAuthContext.tsx:110  Error syncing with backend: Error: Failed to sync user data with backend: 500
+    at Object.next (FirebaseAuthContext.tsx:86:19)
+(anonymous) @ FirebaseAuthContext.tsx:110
+await in (anonymous)
+(anonymous) @ subscribe.ts:104
+(anonymous) @ subscribe.ts:233
+Promise.then
+sendOne @ subscribe.ts:230
+forEachObserver @ subscribe.ts:220
+next @ subscribe.ts:103
+notifyAuthListeners @ auth_impl.ts:724
+(anonymous) @ auth_impl.ts:448
+Promise.then
+queue @ auth_impl.ts:804
+_updateCurrentUser @ auth_impl.ts:446
+await in _updateCurrentUser
+_signInWithCredential @ credential.ts:56
+await in _signInWithCredential
+_signIn @ idp.ts:91
+onAuthEvent @ abstract_popup_redirect_operation.ts:103
+sendToConsumer @ auth_event_manager.ts:97
+(anonymous) @ auth_event_manager.ts:68
+onEvent @ auth_event_manager.ts:65
+(anonymous) @ popup_redirect.ts:139
+fn @ cb=gapi.loaded_0?le=scs:193
+(anonymous) @ cb=gapi.loaded_0?le=scs:193
+sl @ cb=gapi.loaded_0?le=scs:172
+Gl @ cb=gapi.loaded_0?le=scs:172
+Wk @ cb=gapi.loaded_0?le=scs:173
+bl.DH @ cb=gapi.loaded_0?le=scs:166
+FirebaseAuthContext.tsx:260 User data synced successfully: kizereinc@gmail.com
+gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg:1 
+            
+            
+            GET https://pixabay.com/get/gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg 400 (Bad Request)
