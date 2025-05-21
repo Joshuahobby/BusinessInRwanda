@@ -4,18 +4,19 @@ import { storage } from "./storage";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as crypto from "crypto";
-import { setupReplitAuth, getSession, isAuthenticated as isAuthenticatedReplit } from "./replitAuth";
+import session from "express-session";
+import { setupSocialAuth, getSessionConfig } from "./socialAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up session middleware with PostgreSQL
-  app.use(getSession());
+  app.use(session(getSessionConfig()));
 
   // Initialize passport and session
   app.use(passport.initialize());
   app.use(passport.session());
   
-  // Setup Replit Auth
-  await setupReplitAuth(app);
+  // Setup Social Authentication
+  setupSocialAuth(app);
 
   // Configure passport local strategy
   passport.use(
@@ -152,10 +153,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     })(req, res, next);
   });
 
-  // Social login with Replit - redirect to authentication
-  app.get("/api/auth/replit-login", (req, res, next) => {
-    res.redirect("/api/auth/replit");
-  });
+  // Social login routes were configured in socialAuth.ts
 
   // Logout route
   app.post("/api/auth/logout", (req, res) => {
