@@ -72,7 +72,7 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
               displayName: firebaseUser.displayName || firebaseUser.email?.split("@")[0],
               photoURL: firebaseUser.photoURL,
               firebaseUid: firebaseUser.uid,
-              role: "job_seeker" // Default role for new users
+              // Don't set a default role as it might override existing role
             }),
           });
 

@@ -1,0 +1,34 @@
+ Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/:1 [Intervention] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://fonts.gstatic.com/s/materialicons/v143/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2
+pixabay.com/get/gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg:1 
+            
+            
+            Failed to load resource: the server responded with a status of 400 ()
+  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ @fs/home/runner/work….js?v=76866ea0:7070
+  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ @fs/home/runner/work….js?v=76866ea0:7070
+  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ @fs/home/runner/work….js?v=76866ea0:7070
+  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ @fs/home/runner/work….js?v=76866ea0:7070
+  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ @fs/home/runner/work….js?v=76866ea0:7070
+  Cross-Origin-Opener-Policy policy would block the window.closed call.
+poll @ @fs/home/runner/work….js?v=76866ea0:7070
+  Error signing in with Google: FirebaseError: Firebase: Error (auth/popup-closed-by-user).
+    at createErrorInternal (@fs/home/runner/workspace/node_modules/.vite/deps/firebase_auth.js?v=76866ea0:697:37)
+    at _createError (@fs/home/runner/workspace/node_modules/.vite/deps/firebase_auth.js?v=76866ea0:665:10)
+    at @fs/home/runner/workspace/node_modules/.vite/deps/firebase_auth.js?v=76866ea0:7074:25
+signInWithGoogle @ src/lib/firebase-auth.ts:26
+
+                
+          
+          
+          
+         Microsoft Edge is moving towards a new experience that allows users to choose to browse without third-party cookies.
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again

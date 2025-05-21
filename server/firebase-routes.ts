@@ -40,7 +40,7 @@ export function setupFirebaseRoutes(app: Express) {
   // Firebase Authentication endpoint (for authentication with frontend)
   app.post("/api/auth/firebase-sync", async (req: Request, res: Response) => {
     try {
-      const { idToken, email, displayName, photoURL, firebaseUid, role = "job_seeker" } = req.body;
+      const { idToken, email, displayName, photoURL, firebaseUid, role } = req.body;
       
       if (!email) {
         return res.status(400).json({ message: "Missing required user data" });
@@ -71,10 +71,13 @@ export function setupFirebaseRoutes(app: Express) {
       if (!user) {
         // Create new user if they don't exist
         try {
+          // Use the role from registration or default to job_seeker for new users
+          const userRole = role || "job_seeker";
+          
           user = await storage.createUser({
             email,
             fullName: displayName || email?.split("@")[0] || "User",
-            role,
+            role: userRole,
             profilePicture: photoURL || null,
             // Firebase handles authentication, so no password needed
             password: null,
@@ -83,7 +86,7 @@ export function setupFirebaseRoutes(app: Express) {
             location: null,
             phone: null
           });
-          console.log("Created new user for Firebase auth:", email, "with ID:", user.id);
+          console.log("Created new user for Firebase auth:", email, "with ID:", user.id, "with role:", userRole);
         } catch (error) {
           console.error("Error creating user:", error);
           return res.status(500).json({ message: "Error creating user account" });
