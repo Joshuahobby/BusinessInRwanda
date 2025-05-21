@@ -23,6 +23,20 @@ export async function apiRequest(
   return res;
 }
 
+// Backward compatibility function
+export async function apiRequestLegacy(
+  url: string,
+  options: RequestInit,
+): Promise<Response> {
+  const res = await fetch(url, {
+    ...options,
+    credentials: "include",
+  });
+
+  await throwIfResNotOk(res);
+  return res;
+}
+
 type UnauthorizedBehavior = "returnNull" | "throw";
 export const getQueryFn: <T>(options: {
   on401: UnauthorizedBehavior;

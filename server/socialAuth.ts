@@ -111,10 +111,12 @@ export function setupSocialAuth(app: Express) {
   );
 
   app.get("/api/auth/google/callback", 
-    passport.authenticate("google", { 
-      successRedirect: '/',
-      failureRedirect: '/login'
-    })
+    passport.authenticate("google", { failureRedirect: '/login' }),
+    (req, res) => {
+      // Successful authentication, redirect home or to a specific page
+      // We can add custom redirect logic here based on user type
+      res.redirect('/');
+    }
   );
 
   // Add LinkedIn authentication routes
@@ -123,9 +125,11 @@ export function setupSocialAuth(app: Express) {
   );
 
   app.get("/api/auth/linkedin/callback", 
-    passport.authenticate("linkedin", { 
-      successRedirect: '/',
-      failureRedirect: '/login'
-    })
+    passport.authenticate("linkedin", { failureRedirect: '/login' }),
+    (req, res) => {
+      // Successful authentication, redirect home or to a specific page
+      // We can add custom redirect logic here based on user type
+      res.redirect('/');
+    }
   );
 }

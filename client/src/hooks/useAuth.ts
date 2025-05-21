@@ -2,7 +2,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import { User } from "@shared/schema";
 import { queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, apiRequestLegacy } from "@/lib/queryClient";
 
 export function useAuth() {
   const { toast } = useToast();
@@ -20,14 +20,8 @@ export function useAuth() {
   // Login mutation
   const loginMutation = useMutation({
     mutationFn: async (credentials: { email: string; password: string }) => {
-      const response = await apiRequest("/api/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(credentials),
-      });
-      return response.json();
+      const response = await apiRequest("POST", "/api/auth/login", credentials);
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
@@ -48,10 +42,8 @@ export function useAuth() {
   // Logout mutation
   const logoutMutation = useMutation({
     mutationFn: async () => {
-      const response = await apiRequest("/api/auth/logout", {
-        method: "POST",
-      });
-      return response.json();
+      const response = await apiRequest("POST", "/api/auth/logout");
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/auth/me"] });
@@ -78,14 +70,8 @@ export function useAuth() {
       role: string;
       phone?: string;
     }) => {
-      const response = await apiRequest("/api/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
-      });
-      return response.json();
+      const response = await apiRequest("POST", "/api/auth/register", userData);
+      return response;
     },
     onSuccess: () => {
       toast({
