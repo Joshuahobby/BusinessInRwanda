@@ -42,6 +42,7 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
   const { toast } = useToast();
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [redirectedFrom, setRedirectedFrom] = useState<string | null>(null);
 
   // Sync user data with our backend when Firebase auth state changes
   useEffect(() => {
@@ -86,8 +87,14 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
           
           // Check if we're on the login page or home page and redirect to appropriate dashboard
           const currentPath = window.location.pathname;
-          if (currentPath === '/login' || currentPath === '/') {
-            // Auto-redirect based on user role
+          const isLoginPage = currentPath === '/login' || currentPath === '/';
+          
+          // Only redirect if we're on login/home and haven't already redirected
+          if (isLoginPage && redirectedFrom !== currentPath) {
+            // Set that we're redirecting from this path to prevent loops
+            setRedirectedFrom(currentPath);
+            
+            // Auto-redirect based on user role to prevent redirection loops
             if (userData.role === 'job_seeker') {
               window.location.href = '/jobseeker/dashboard';
             } else if (userData.role === 'employer') {
