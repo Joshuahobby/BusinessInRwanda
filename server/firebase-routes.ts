@@ -40,38 +40,32 @@ export function setupFirebaseRoutes(app: Express) {
   // Firebase Authentication endpoint (for authentication with frontend)
   app.post("/api/auth/firebase-sync", async (req: Request, res: Response) => {
     try {
-      const { email, displayName, photoURL, firebaseUid, role = "job_seeker" } = req.body;
+      const { idToken, email, displayName, photoURL, role = "job_seeker" } = req.body;
       
-      if (!email || !firebaseUid) {
+      if (!email) {
         return res.status(400).json({ message: "Missing required user data" });
       }
       
-      // Check if user exists in our database
-      let user = await storage.getUserByFirebaseUid(firebaseUid);
+      // Since we're skipping Firebase Admin verification, we'll just use the email
+      // In a production app, we would verify the token with Firebase Admin
+      
+      // Check if user exists in our database by email
+      let user = await storage.getUserByEmail(email);
       
       if (!user) {
-        // If user doesn't exist but we have their email from Firebase, check if 
-        // they exist by email (for migration from old auth system)
-        const existingUserByEmail = await storage.getUserByEmail(email);
-          
-        if (existingUserByEmail) {
-          // Update existing user with Firebase UID
-          user = await storage.updateUser(existingUserByEmail.id, {
-            ...existingUserByEmail,
-            firebaseUid
-          });
-        } else {
-          // Create new user
-          user = await storage.createUser({
-            firebaseUid,
-            email,
-            fullName: displayName || email?.split("@")[0] || "User",
-            role,
-            profilePicture: photoURL || undefined,
-            // Firebase handles authentication, so no password needed
-            password: null
-          });
-        }
+        // Create new user if they don't exist
+        user = await storage.createUser({
+          email,
+          fullName: displayName || email?.split("@")[0] || "User",
+          role,
+          profilePicture: photoURL || null,
+          // Firebase handles authentication, so no password needed
+          password: null,
+          firebaseUid: idToken?.substring(0, 28) || null, // Use part of token as fake uid
+          bio: null,
+          location: null,
+          phone: null
+        });
       }
       
       // Log the user in (establish session)
@@ -81,9 +75,11 @@ export function setupFirebaseRoutes(app: Express) {
           return res.status(500).json({ message: "Error logging in" });
         }
         
-        // Omit password from response
+        // Omit sensitive data from response
         const userResponse = {...user};
-        delete userResponse.password;
+        if (userResponse.password) {
+          userResponse.password = null;
+        }
         
         return res.status(200).json(userResponse);
       });

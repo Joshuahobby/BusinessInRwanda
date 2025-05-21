@@ -117,7 +117,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
       resetForms();
       onClose();
     }}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-md" aria-describedby="login-description">
         {!showForgotPassword ? (
           // Login Screen
           <>
@@ -126,7 +126,7 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
             </DialogHeader>
 
             <div className="space-y-4 py-2">
-              <p className="text-neutral-600 mb-4">Welcome back! Sign in to access your account</p>
+              <p id="login-description" className="text-neutral-600 mb-4">Welcome back! Sign in to access your account</p>
               
               {/* Social Login Buttons */}
               <div className="space-y-3">
