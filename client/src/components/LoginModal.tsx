@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/context/AuthContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -41,7 +41,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>;
 
 const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
-  const { user, isAuthenticated } = useAuth();
+  const { login } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [passwordResetSent, setPasswordResetSent] = useState(false);
@@ -66,34 +66,10 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       setIsLoading(true);
-      
-      // Submit login using API request directly
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: data.email,
-          password: data.password,
-        }),
-        credentials: 'include'
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-      }
-      
-      // Refresh auth state and close modal
-      window.location.reload();
+      await login(data.email, data.password);
       onClose();
-    } catch (error: any) {
-      toast({
-        title: 'Login failed',
-        description: error.message || 'Please check your credentials and try again',
-        variant: 'destructive'
-      });
+    } catch (error) {
+      // Error handling is done in AuthContext
     } finally {
       setIsLoading(false);
     }
@@ -154,17 +130,17 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               
               {/* Social Login Buttons */}
               <div className="space-y-3">
-                <a href="/api/auth/replit-login" className="w-full">
-                  <Button className="w-full bg-gray-800 hover:bg-gray-900 flex items-center justify-center gap-2">
-                    <div className="h-4 w-4 rounded-full bg-white flex items-center justify-center">
-                      <span className="text-xs text-gray-800 font-bold">R</span>
-                    </div>
-                    Continue with Replit
-                  </Button>
-                </a>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2">
+                  <Facebook className="h-4 w-4" />
+                  Continue with Facebook
+                </Button>
                 <Button variant="outline" className="w-full flex items-center justify-center gap-2">
                   <FcGoogle className="h-5 w-5" />
                   Continue with Google
+                </Button>
+                <Button className="w-full bg-[#0077B5] hover:bg-[#005e8b] flex items-center justify-center gap-2">
+                  <FaLinkedin className="h-4 w-4" />
+                  Continue with LinkedIn
                 </Button>
               </div>
               

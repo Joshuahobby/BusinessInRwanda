@@ -55,16 +55,23 @@ function updateUserSession(
 }
 
 async function upsertUser(claims: any) {
-  // Use our new upsertUser method directly
-  const user = await storage.upsertUser({
-    id: claims.sub,  // Use the stable user ID from Replit (important for persistence)
+  const existingUser = await storage.getUserByEmail(claims.email);
+  
+  if (existingUser) {
+    // User exists - could update profile here if needed
+    return existingUser;
+  }
+  
+  // Create new user
+  const newUser = await storage.createUser({
     email: claims.email,
-    firstName: claims.first_name,
-    lastName: claims.last_name,
-    profileImageUrl: claims.profile_image_url
+    password: "", // No password for social login users
+    fullName: `${claims.first_name || ""} ${claims.last_name || ""}`.trim() || claims.email.split('@')[0],
+    role: userRoleEnum.enumValues[0], // Default to job_seeker
+    profilePicture: claims.profile_image_url,
   });
   
-  return user;
+  return newUser;
 }
 
 export async function setupReplitAuth(app: Express) {

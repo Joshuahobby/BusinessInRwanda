@@ -12,22 +12,20 @@ import { JobSearchParams } from "@/lib/types";
 // Interface for storage operations
 export interface IStorage {
   // User operations
-  getUser(id: string): Promise<User | undefined>;
+  getUser(id: number): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  updateUser(id: string, userData: Partial<User>): Promise<User>;
-  upsertUser(userData: { id: string, email?: string | null, firstName?: string | null, lastName?: string | null, profileImageUrl?: string | null }): Promise<User>;
   
   // Company operations
   getCompany(id: number): Promise<Company | undefined>;
-  getCompanyByUserId(userId: string): Promise<Company | undefined>;
+  getCompanyByUserId(userId: number): Promise<Company | undefined>;
   getCompanyWithJobs(id: number): Promise<(Company & { jobs: Job[] }) | undefined>;
   createCompany(company: InsertCompany): Promise<Company>;
   updateCompany(id: number, company: InsertCompany): Promise<Company>;
   getFeaturedCompanies(): Promise<Company[]>;
   
   // Job seeker profile operations
-  getJobSeekerProfile(userId: string): Promise<JobSeekerProfile | undefined>;
+  getJobSeekerProfile(userId: number): Promise<JobSeekerProfile | undefined>;
   createJobSeekerProfile(profile: InsertJobSeekerProfile): Promise<JobSeekerProfile>;
   updateJobSeekerProfile(id: number, profile: InsertJobSeekerProfile): Promise<JobSeekerProfile>;
   
@@ -420,20 +418,8 @@ export class MemStorage implements IStorage {
   }
   
   // User operations
-  async getUser(id: string): Promise<User | undefined> {
-    // Convert string id to number if it's stored that way in memory
-    const numericId = parseInt(id, 10);
-    // Check if we can find it by numeric ID (for backward compatibility)
-    if (!isNaN(numericId)) {
-      return this.usersData.get(numericId);
-    }
-    // Otherwise search through all users to find by string ID
-    for (const user of this.usersData.values()) {
-      if (user.id === id) {
-        return user;
-      }
-    }
-    return undefined;
+  async getUser(id: number): Promise<User | undefined> {
+    return this.usersData.get(id);
   }
   
   async getUserByEmail(email: string): Promise<User | undefined> {
@@ -454,94 +440,12 @@ export class MemStorage implements IStorage {
     return user;
   }
   
-  async updateUser(id: string, userData: Partial<User>): Promise<User> {
-    // Convert string id to number if it's stored that way in memory
-    const numericId = parseInt(id, 10);
-    
-    // Try to find user by numeric or string ID
-    let existingUser: User | undefined;
-    if (!isNaN(numericId)) {
-      existingUser = this.usersData.get(numericId);
-    } 
-    
-    // If not found by numeric ID, search by string ID
-    if (!existingUser) {
-      for (const [key, user] of this.usersData.entries()) {
-        if (user.id === id) {
-          existingUser = user;
-          break;
-        }
-      }
-    }
-    
-    if (!existingUser) {
-      throw new Error(`User with id ${id} not found`);
-    }
-    
-    const updatedUser: User = {
-      ...existingUser,
-      ...userData,
-      id: existingUser.id, // Ensure ID doesn't change
-      createdAt: existingUser.createdAt // Preserve original creation date
-    };
-    
-    // Use the numeric key for the map since that's how we're storing users
-    this.usersData.set(!isNaN(numericId) ? numericId : parseInt(existingUser.id, 10), updatedUser);
-    return updatedUser;
-  }
-  
-  async upsertUser(userData: { id: string, email?: string | null, firstName?: string | null, lastName?: string | null, profileImageUrl?: string | null }): Promise<User> {
-    // Convert string id to number for memory storage
-    const numericId = parseInt(userData.id);
-    
-    // Try to find existing user
-    const existingUser = this.usersData.get(numericId);
-    
-    // Create fullName from firstName and lastName if available
-    const fullName = userData.firstName && userData.lastName 
-      ? `${userData.firstName} ${userData.lastName}`
-      : userData.firstName || 'User';
-    
-    if (existingUser) {
-      // Update existing user
-      const updatedUser: User = {
-        ...existingUser,
-        email: userData.email || existingUser.email,
-        fullName: fullName,
-        profilePicture: userData.profileImageUrl || existingUser.profilePicture,
-        updatedAt: new Date()
-      };
-      
-      this.usersData.set(numericId, updatedUser);
-      return updatedUser;
-    } else {
-      // Create new user
-      const newUser: User = {
-        id: userData.id,
-        email: userData.email || '',
-        password: null,
-        role: 'job_seeker', // Default role
-        fullName: fullName,
-        phone: null,
-        profilePicture: userData.profileImageUrl || null,
-        bio: null,
-        location: null,
-        createdAt: new Date(),
-        updatedAt: new Date()
-      };
-      
-      this.usersData.set(numericId, newUser);
-      return newUser;
-    }
-  }
-  
   // Company operations
   async getCompany(id: number): Promise<Company | undefined> {
     return this.companiesData.get(id);
   }
   
-  async getCompanyByUserId(userId: string): Promise<Company | undefined> {
-    // Look through all companies to find those with matching userId
+  async getCompanyByUserId(userId: number): Promise<Company | undefined> {
     return Array.from(this.companiesData.values()).find(company => 
       company.userId === userId
     );
@@ -592,7 +496,7 @@ export class MemStorage implements IStorage {
   }
   
   // Job seeker profile operations
-  async getJobSeekerProfile(userId: string): Promise<JobSeekerProfile | undefined> {
+  async getJobSeekerProfile(userId: number): Promise<JobSeekerProfile | undefined> {
     return Array.from(this.jobSeekerProfilesData.values()).find(profile => 
       profile.userId === userId
     );
@@ -763,13 +667,13 @@ export class MemStorage implements IStorage {
     return application;
   }
   
-  async getApplicationByUserAndJob(userId: string, jobId: number): Promise<Application | undefined> {
+  async getApplicationByUserAndJob(userId: number, jobId: number): Promise<Application | undefined> {
     return Array.from(this.applicationsData.values()).find(app => 
       app.userId === userId && app.jobId === jobId
     );
   }
   
-  async getApplicationsByUserId(userId: string): Promise<Application[]> {
+  async getApplicationsByUserId(userId: number): Promise<Application[]> {
     // Get all applications for this user
     const userApplications = Array.from(this.applicationsData.values())
       .filter(app => app.userId === userId);

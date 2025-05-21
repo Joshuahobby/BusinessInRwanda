@@ -9,13 +9,12 @@ import {
 import { JobSearchParams } from "@/lib/types";
 import { IStorage } from "./storage";
 import { db } from "./db";
-import { eq, like, and, or, SQL, ilike, asc, desc, inArray, sql } from "drizzle-orm";
-import crypto from "crypto";
+import { eq, like, and, or, desc, sql } from "drizzle-orm";
 
 // Database storage implementation
 export class DatabaseStorage implements IStorage {
   // User operations
-  async getUser(id: string): Promise<User | undefined> {
+  async getUser(id: number): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
@@ -26,67 +25,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createUser(userData: InsertUser): Promise<User> {
-    // Make sure we have an ID (from Replit auth) or generate one
-    const userDataWithId = {
-      ...userData,
-      id: userData.id || crypto.randomUUID(),
-      updatedAt: new Date()
-    };
-    
-    const [user] = await db.insert(users).values(userDataWithId).returning();
-    return user;
-  }
-  
-  async updateUser(id: string, userData: Partial<User>): Promise<User> {
-    const { id: userId, ...updateData } = userData;
-    const [updatedUser] = await db
-      .update(users)
-      .set({
-        ...updateData,
-        ...(updateData.profilePicture !== undefined && { profilePicture: updateData.profilePicture }),
-        ...(updateData.fullName !== undefined && { fullName: updateData.fullName }),
-        ...(updateData.phone !== undefined && { phone: updateData.phone }),
-        ...(updateData.bio !== undefined && { bio: updateData.bio }),
-        ...(updateData.location !== undefined && { location: updateData.location }),
-        updatedAt: new Date()
-      })
-      .where(eq(users.id, id))
-      .returning();
-    return updatedUser;
-  }
-  
-  async upsertUser(userData: { id: string, email?: string | null, firstName?: string | null, lastName?: string | null, profileImageUrl?: string | null }): Promise<User> {
-    // Create fullName from firstName and lastName if available
-    const fullName = userData.firstName && userData.lastName 
-      ? `${userData.firstName} ${userData.lastName}`
-      : userData.firstName || 'User';
-    
-    const userDataToUpsert = {
-      id: userData.id,
-      email: userData.email || null,
-      fullName,
-      profilePicture: userData.profileImageUrl || null,
-      role: 'job_seeker', // Default role for social login users
-      updatedAt: new Date()
-    };
-    
-    // Try to update the user first, if not exists, insert
-    const [user] = await db
-      .insert(users)
-      .values({
-        ...userDataToUpsert,
-        password: null, // Social login users don't have passwords
-        createdAt: new Date()
-      })
-      .onConflictDoUpdate({
-        target: users.id,
-        set: {
-          ...userDataToUpsert,
-          updatedAt: new Date()
-        }
-      })
-      .returning();
-      
+    const [user] = await db.insert(users).values(userData).returning();
     return user;
   }
 
@@ -96,7 +35,7 @@ export class DatabaseStorage implements IStorage {
     return company;
   }
 
-  async getCompanyByUserId(userId: string): Promise<Company | undefined> {
+  async getCompanyByUserId(userId: number): Promise<Company | undefined> {
     const [company] = await db.select().from(companies).where(eq(companies.userId, userId));
     return company;
   }
@@ -130,7 +69,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Job seeker profile operations
-  async getJobSeekerProfile(userId: string): Promise<JobSeekerProfile | undefined> {
+  async getJobSeekerProfile(userId: number): Promise<JobSeekerProfile | undefined> {
     const [profile] = await db
       .select()
       .from(jobSeekerProfiles)
