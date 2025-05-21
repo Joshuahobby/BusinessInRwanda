@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useLocation } from "wouter";
 import { 
   auth, 
   signInWithGoogle, 
@@ -42,7 +43,7 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
   const { toast } = useToast();
   const [currentUser, setCurrentUser] = useState<UserData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [redirectedFrom, setRedirectedFrom] = useState<string | null>(null);
+  const [_, setLocation] = useLocation(); // React Router navigation
 
   // Sync user data with our backend when Firebase auth state changes
   useEffect(() => {
@@ -89,18 +90,16 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
           const currentPath = window.location.pathname;
           const isLoginPage = currentPath === '/login' || currentPath === '/';
           
-          // Only redirect if we're on login/home and haven't already redirected
-          if (isLoginPage && redirectedFrom !== currentPath) {
-            // Set that we're redirecting from this path to prevent loops
-            setRedirectedFrom(currentPath);
-            
-            // Auto-redirect based on user role to prevent redirection loops
+          // Only redirect if we're on login/home and not already on a dashboard
+          if (isLoginPage) {
+            // Use React Router's navigation instead of window.location to prevent refresh loops
             if (userData.role === 'job_seeker') {
-              window.location.href = '/jobseeker/dashboard';
+              // Using setTimeout to ensure this doesn't happen during render
+              setTimeout(() => setLocation('/jobseeker/dashboard'), 100);
             } else if (userData.role === 'employer') {
-              window.location.href = '/employer/dashboard';
+              setTimeout(() => setLocation('/employer/dashboard'), 100);
             } else if (userData.role === 'admin') {
-              window.location.href = '/admin/dashboard';
+              setTimeout(() => setLocation('/admin/dashboard'), 100);
             }
           }
         } catch (error) {
@@ -237,8 +236,8 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
         title: "Logged out successfully",
       });
       
-      // Redirect to home page to avoid hook errors
-      window.location.href = '/';
+      // Redirect to home page using React Router
+      setTimeout(() => setLocation('/'), 100);
     } catch (error) {
       toast({
         title: "Logout failed",
