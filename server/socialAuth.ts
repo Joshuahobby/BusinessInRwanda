@@ -99,8 +99,10 @@ export function setupSocialAuth(app: Express) {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: "/api/auth/google/callback",
-      scope: ['profile', 'email']
+      scope: ['profile', 'email'],
+      proxy: true
     }, (accessToken, refreshToken, profile, done) => {
+      console.log('Google profile received:', profile.id);
       handleSocialLogin(profile, done);
     }));
   }
@@ -137,31 +139,92 @@ export function setupSocialAuth(app: Express) {
     }
   });
 
-  // Add Google authentication routes
-  app.get("/api/auth/google", 
-    passport.authenticate("google", { scope: ['profile', 'email'] })
-  );
+  // Add Google authentication routes with full URL for callback
+  app.get("/api/auth/google", (req, res, next) => {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers.host;
+    const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
+    
+    // Log for debugging
+    console.log(`Google auth request with callback URL: ${callbackURL}`);
+    
+    passport.authenticate("google", {
+      scope: ['profile', 'email'],
+      callbackURL: callbackURL
+    })(req, res, next);
+  });
 
-  app.get("/api/auth/google/callback", 
-    passport.authenticate("google", { failureRedirect: '/login?error=google-auth-failed' }),
-    (req, res) => {
-      // Successful authentication, redirect home or to a specific page
-      res.redirect('/');
-    }
-  );
+  app.get("/api/auth/google/callback", (req, res, next) => {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers.host;
+    const callbackURL = `${protocol}://${host}/api/auth/google/callback`;
+    
+    // Log callback receipt for debugging
+    console.log(`Google auth callback received at ${callbackURL}`);
+    
+    passport.authenticate("google", {
+      failureRedirect: '/login?error=google-auth-failed',
+      callbackURL: callbackURL
+    }, (err, user) => {
+      if (err) {
+        console.error('Auth error:', err);
+        return res.redirect('/login?error=auth-error');
+      }
+      if (!user) {
+        return res.redirect('/login?error=no-user');
+      }
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          console.error('Login error:', loginErr);
+          return res.redirect('/login?error=login-error');
+        }
+        return res.redirect('/');
+      });
+    })(req, res, next);
+  });
 
-  // Add LinkedIn authentication routes
-  app.get("/api/auth/linkedin", 
-    passport.authenticate("linkedin")
-  );
+  // Add LinkedIn authentication routes with full URL for callback
+  app.get("/api/auth/linkedin", (req, res, next) => {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers.host;
+    const callbackURL = `${protocol}://${host}/api/auth/linkedin/callback`;
+    
+    // Log for debugging
+    console.log(`LinkedIn auth request with callback URL: ${callbackURL}`);
+    
+    passport.authenticate("linkedin", {
+      callbackURL: callbackURL
+    })(req, res, next);
+  });
 
-  app.get("/api/auth/linkedin/callback", 
-    passport.authenticate("linkedin", { failureRedirect: '/login?error=linkedin-auth-failed' }),
-    (req, res) => {
-      // Successful authentication, redirect home or to a specific page
-      res.redirect('/');
-    }
-  );
+  app.get("/api/auth/linkedin/callback", (req, res, next) => {
+    const protocol = req.headers['x-forwarded-proto'] || req.protocol;
+    const host = req.headers.host;
+    const callbackURL = `${protocol}://${host}/api/auth/linkedin/callback`;
+    
+    // Log callback receipt for debugging
+    console.log(`LinkedIn auth callback received at ${callbackURL}`);
+    
+    passport.authenticate("linkedin", {
+      failureRedirect: '/login?error=linkedin-auth-failed',
+      callbackURL: callbackURL
+    }, (err, user) => {
+      if (err) {
+        console.error('LinkedIn auth error:', err);
+        return res.redirect('/login?error=auth-error');
+      }
+      if (!user) {
+        return res.redirect('/login?error=no-user');
+      }
+      req.login(user, (loginErr) => {
+        if (loginErr) {
+          console.error('LinkedIn login error:', loginErr);
+          return res.redirect('/login?error=login-error');
+        }
+        return res.redirect('/');
+      });
+    })(req, res, next);
+  });
 
   // Add logout route
   app.get("/api/auth/logout", (req: Request, res) => {
