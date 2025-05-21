@@ -130,18 +130,18 @@ const LoginModal = ({ isOpen, onClose }: LoginModalProps) => {
               
               {/* Social Login Buttons */}
               <div className="space-y-3">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 flex items-center justify-center gap-2">
-                  <Facebook className="h-4 w-4" />
-                  Continue with Facebook
-                </Button>
-                <Button variant="outline" className="w-full flex items-center justify-center gap-2">
-                  <FcGoogle className="h-5 w-5" />
-                  Continue with Google
-                </Button>
-                <Button className="w-full bg-[#0077B5] hover:bg-[#005e8b] flex items-center justify-center gap-2">
-                  <FaLinkedin className="h-4 w-4" />
-                  Continue with LinkedIn
-                </Button>
+                <a href="/api/auth/google" className="w-full">
+                  <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+                    <FcGoogle className="h-5 w-5" />
+                    Continue with Google
+                  </Button>
+                </a>
+                <a href="/api/auth/linkedin" className="w-full">
+                  <Button className="w-full bg-[#0077B5] hover:bg-[#005e8b] flex items-center justify-center gap-2">
+                    <FaLinkedin className="h-4 w-4" />
+                    Continue with LinkedIn
+                  </Button>
+                </a>
               </div>
               
               {/* Divider */}
