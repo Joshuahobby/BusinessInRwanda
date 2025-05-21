@@ -24,7 +24,7 @@ type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login = () => {
   const [, navigate] = useLocation();
-  const { loginWithEmail, isJobSeeker, isEmployer } = useFirebaseAuth();
+  const { loginWithEmail, loginWithGoogle } = useFirebaseAuth();
   const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm<LoginFormValues>({

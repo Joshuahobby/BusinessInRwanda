@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
@@ -48,7 +48,14 @@ const JobSeekerDashboard = () => {
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Fetch job seeker profile - always define hooks before early returns
+  // Redirect if not authenticated - check before any hooks
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, navigate]);
+
+  // Fetch job seeker profile
   const { data: profile, isLoading: isLoadingProfile } = useQuery({
     queryKey: ['/api/jobseeker/profile'],
     enabled: !!currentUser, // Only run query if user is logged in
@@ -60,16 +67,23 @@ const JobSeekerDashboard = () => {
     enabled: !!currentUser, // Only run query if user is logged in
   });
   
-  // Redirect if not authenticated
-  if (!currentUser) {
-    navigate("/login");
-    return null;
-  }
-
   // Fetch recommended jobs
   const { data: recommendedJobs = [], isLoading: isLoadingRecommendedJobs } = useQuery<Job[]>({
     queryKey: ['/api/jobseeker/recommended-jobs'],
+    enabled: !!currentUser, // Only run query if user is logged in
   });
+  
+  // If not authenticated, show a loading state instead of redirecting directly
+  if (!currentUser) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-xl font-medium mb-2">Checking authentication...</h2>
+          <p className="text-neutral-600">You'll be redirected to login if not authenticated.</p>
+        </div>
+      </div>
+    );
+  }
 
   // Calculate profile completion percentage
   const calculateProfileCompletion = () => {
