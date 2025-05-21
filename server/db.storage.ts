@@ -14,7 +14,7 @@ import { eq, like, and, or, desc, sql } from "drizzle-orm";
 // Database storage implementation
 export class DatabaseStorage implements IStorage {
   // User operations
-  async getUser(id: number): Promise<User | undefined> {
+  async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }

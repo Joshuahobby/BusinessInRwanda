@@ -10,9 +10,9 @@ export const applicationStatusEnum = pgEnum('application_status', ['applied', 'r
 
 // Users table
 export const users = pgTable("users", {
-  id: serial("id").primaryKey(),
+  id: text("id").primaryKey(),
   email: text("email").notNull().unique(),
-  password: text("password").notNull(),
+  password: text("password"),
   role: userRoleEnum("role").notNull(),
   fullName: text("full_name").notNull(),
   phone: text("phone"),
@@ -20,12 +20,13 @@ export const users = pgTable("users", {
   bio: text("bio"),
   location: text("location"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Company profiles for employers
 export const companies = pgTable("companies", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
+  userId: text("user_id").notNull().references(() => users.id),
   name: text("name").notNull(),
   industry: text("industry").notNull(),
   logo: text("logo"),
@@ -39,7 +40,7 @@ export const companies = pgTable("companies", {
 // Job seeker profiles
 export const jobSeekerProfiles = pgTable("job_seeker_profiles", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").notNull().references(() => users.id),
+  userId: text("user_id").notNull().references(() => users.id),
   title: text("title"),
   skills: text("skills").array(),
   experience: text("experience"),
@@ -70,7 +71,7 @@ export const jobs = pgTable("jobs", {
 export const applications = pgTable("applications", {
   id: serial("id").primaryKey(),
   jobId: integer("job_id").notNull().references(() => jobs.id),
-  userId: integer("user_id").notNull().references(() => users.id),
+  userId: text("user_id").notNull().references(() => users.id),
   coverLetter: text("cover_letter"),
   resumeUrl: text("resume_url"),
   status: applicationStatusEnum("status").default('applied').notNull(),

@@ -12,21 +12,21 @@ import { JobSearchParams } from "@/lib/types";
 // Interface for storage operations
 export interface IStorage {
   // User operations
-  getUser(id: number): Promise<User | undefined>;
+  getUser(id: string): Promise<User | undefined>;
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
-  updateUser(id: number, userData: Partial<User>): Promise<User>;
+  updateUser(id: string, userData: Partial<User>): Promise<User>;
   
   // Company operations
   getCompany(id: number): Promise<Company | undefined>;
-  getCompanyByUserId(userId: number): Promise<Company | undefined>;
+  getCompanyByUserId(userId: string): Promise<Company | undefined>;
   getCompanyWithJobs(id: number): Promise<(Company & { jobs: Job[] }) | undefined>;
   createCompany(company: InsertCompany): Promise<Company>;
   updateCompany(id: number, company: InsertCompany): Promise<Company>;
   getFeaturedCompanies(): Promise<Company[]>;
   
   // Job seeker profile operations
-  getJobSeekerProfile(userId: number): Promise<JobSeekerProfile | undefined>;
+  getJobSeekerProfile(userId: string): Promise<JobSeekerProfile | undefined>;
   createJobSeekerProfile(profile: InsertJobSeekerProfile): Promise<JobSeekerProfile>;
   updateJobSeekerProfile(id: number, profile: InsertJobSeekerProfile): Promise<JobSeekerProfile>;
   
@@ -439,6 +439,23 @@ export class MemStorage implements IStorage {
     };
     this.usersData.set(id, user);
     return user;
+  }
+  
+  async updateUser(id: number, userData: Partial<User>): Promise<User> {
+    const existingUser = this.usersData.get(id);
+    if (!existingUser) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    
+    const updatedUser: User = {
+      ...existingUser,
+      ...userData,
+      id: existingUser.id, // Ensure ID doesn't change
+      createdAt: existingUser.createdAt // Preserve original creation date
+    };
+    
+    this.usersData.set(id, updatedUser);
+    return updatedUser;
   }
   
   // Company operations
