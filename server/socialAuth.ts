@@ -99,10 +99,14 @@ export function setupSocialAuth(app: Express) {
     console.log('Setting up Google OAuth with Client ID:', 
       process.env.GOOGLE_CLIENT_ID ? `${process.env.GOOGLE_CLIENT_ID.substring(0, 8)}...` : 'Not provided');
     
+    // Log the actual callback URL to debug
+    const callbackUrl = "https://" + process.env.REPLIT_DOMAINS?.split(',')[0] + "/api/auth/google/callback";
+    console.log('Google callback URL:', callbackUrl);
+    
     passport.use(new GoogleStrategy({
       clientID: process.env.GOOGLE_CLIENT_ID as string,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-      callbackURL: "https://" + process.env.REPLIT_DOMAINS?.split(',')[0] + "/api/auth/google/callback",
+      callbackURL: callbackUrl,
       scope: ['profile', 'email'],
       proxy: true
     }, async (accessToken, refreshToken, profile, done) => {
