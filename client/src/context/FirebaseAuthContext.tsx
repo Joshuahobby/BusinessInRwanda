@@ -52,6 +52,11 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
           // Get user's ID token
           const idToken = await firebaseUser.getIdToken();
           
+          console.log("Firebase auth change detected, syncing user:", 
+            firebaseUser.email, 
+            "UID:", firebaseUser.uid
+          );
+          
           // Send the token to our backend to create/verify user and get the user data
           const response = await fetch("/api/auth/firebase-sync", {
             method: "POST",
@@ -62,25 +67,33 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
             body: JSON.stringify({
               idToken,
               email: firebaseUser.email,
-              displayName: firebaseUser.displayName,
+              displayName: firebaseUser.displayName || firebaseUser.email?.split("@")[0],
               photoURL: firebaseUser.photoURL,
-              firebaseUid: firebaseUser.uid
+              firebaseUid: firebaseUser.uid,
+              role: "job_seeker" // Default role for new users
             }),
           });
 
           if (!response.ok) {
-            throw new Error("Failed to sync user data with backend");
+            const errorData = await response.json().catch(() => ({}));
+            console.error("Backend sync failed:", response.status, errorData);
+            throw new Error(`Failed to sync user data with backend: ${response.status}`);
           }
 
           const userData = await response.json();
+          console.log("User data synced successfully:", userData.email);
           setCurrentUser(userData);
         } catch (error) {
           console.error("Error syncing with backend:", error);
-          toast({
-            title: "Authentication error",
-            description: "Failed to sync your account. Please try again later.",
-            variant: "destructive",
-          });
+          // Don't show toast for every sync error to avoid spamming the user
+          // Only show it if we've been logged in for a while
+          if (currentUser) {
+            toast({
+              title: "Authentication error",
+              description: "Failed to sync your account. Please try again later.",
+              variant: "destructive",
+            });
+          }
         }
       } else {
         setCurrentUser(null);
