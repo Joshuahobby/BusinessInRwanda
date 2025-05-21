@@ -155,6 +155,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Social login routes were configured in socialAuth.ts
 
+  // Firebase authentication endpoint
+  app.post("/api/auth/firebase", async (req, res) => {
+    try {
+      const { email, fullName, profilePicture, role = 'job_seeker' } = req.body;
+      
+      if (!email) {
+        return res.status(400).json({ message: 'Missing required auth data' });
+      }
+      
+      // Check if user exists
+      let user = await storage.getUserByEmail(email);
+      
+      // Create user if doesn't exist
+      if (!user) {
+        user = await storage.createUser({
+          email,
+          password: '', // Firebase handles auth, so no password needed
+          fullName: fullName || email.split('@')[0],
+          role,
+          profilePicture
+        });
+      }
+      
+      // Log user in (establish session)
+      req.login(user, (err) => {
+        if (err) {
+          console.error('Firebase login error:', err);
+          return res.status(500).json({ message: 'Error logging in' });
+        }
+        return res.status(200).json(user);
+      });
+    } catch (error) {
+      console.error('Firebase auth error:', error);
+      res.status(500).json({ message: 'Authentication failed' });
+    }
+  });
+
   // Logout route
   app.post("/api/auth/logout", (req, res) => {
     req.logout(() => {
