@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/context/AuthContext";
+import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -58,7 +58,7 @@ type ApplicationWithDetails = Application & {
 };
 
 const EmployerDashboard = () => {
-  const { user } = useAuth();
+  const { currentUser } = useFirebaseAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
   const [applicationFilter, setApplicationFilter] = useState("all");

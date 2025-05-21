@@ -62,7 +62,7 @@ const postJobSchema = insertJobSchema.extend({
 type PostJobFormValues = z.infer<typeof postJobSchema>;
 
 const PostJob = () => {
-  const { user, isAuthenticated, isEmployer } = useAuth();
+  const { currentUser, isAuthenticated, isEmployer } = useFirebaseAuth();
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
