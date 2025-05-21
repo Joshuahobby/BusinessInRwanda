@@ -8,14 +8,15 @@ import { z } from 'zod';
 import { UserRole } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Facebook } from 'lucide-react';
+import { Facebook, Mail, CheckCircle2 } from 'lucide-react';
 import { FcGoogle } from 'react-icons/fc';
 import { FaLinkedin } from 'react-icons/fa';
+import { useToast } from '@/hooks/use-toast';
 
 const registerSchema = z.object({
   fullName: z.string().min(3, 'Full name must be at least 3 characters'),
@@ -36,6 +37,10 @@ const Register = () => {
   const { register: registerUser } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState<'job_seeker' | 'employer'>('job_seeker');
+  const [registrationComplete, setRegistrationComplete] = useState(false);
+  const [registeredEmail, setRegisteredEmail] = useState('');
+  const [verificationSent, setVerificationSent] = useState(false);
+  const { toast } = useToast();
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -52,6 +57,19 @@ const Register = () => {
   const onSubmit = async (data: RegisterFormValues) => {
     try {
       setIsLoading(true);
+      
+      // In a real application with email verification, we would:
+      // 1. Register the user with "verified: false" status
+      // 2. Generate a verification token and send an email with verification link
+      // 3. Show the verification screen
+      
+      // Simulate the API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Store registration data to display on verification screen
+      setRegisteredEmail(data.email);
+      
+      // For demo purposes, we'll simulate a successful registration
       await registerUser({
         email: data.email,
         password: data.password,
@@ -60,14 +78,44 @@ const Register = () => {
         phone: data.phone,
       });
       
-      // Navigate based on role
-      if (data.role === 'employer') {
-        navigate('/login'); // Employers need to login to complete profile
-      } else {
-        navigate('/jobseeker/dashboard'); // Job seekers are auto-logged in
-      }
+      // Show verification screen instead of navigating away
+      setRegistrationComplete(true);
+      
+      toast({
+        title: "Account created",
+        description: "Please verify your email to continue",
+      });
+      
     } catch (error) {
       // Error handling is done in AuthContext
+      toast({
+        title: "Registration failed",
+        description: "Please try again later",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+  
+  const resendVerification = async () => {
+    try {
+      setIsLoading(true);
+      
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setVerificationSent(true);
+      toast({
+        title: "Verification email sent",
+        description: "Please check your inbox for the verification link",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to send verification email",
+        description: "Please try again later",
+        variant: "destructive"
+      });
     } finally {
       setIsLoading(false);
     }
@@ -83,12 +131,15 @@ const Register = () => {
       <Helmet>
         <title>Register - Business In Rwanda</title>
         <meta name="description" content="Create an account on Business In Rwanda to find your dream job or post job opportunities for your company." />
+        <meta property="og:title" content="Register - Business In Rwanda" />
+        <meta property="og:description" content="Create an account on Business In Rwanda to find your dream job or post job opportunities for your company." />
       </Helmet>
 
       <div className="bg-neutral-50 py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto">
-            <Card>
+            {!registrationComplete ? (
+              <Card>
               <CardHeader className="space-y-1">
                 <CardTitle className="text-2xl font-bold text-center">Create an Account</CardTitle>
                 <CardDescription className="text-center">
@@ -259,6 +310,69 @@ const Register = () => {
                 </div>
               </CardContent>
             </Card>
+            ) : (
+              // Email Verification Screen
+              <Card>
+                <CardHeader className="space-y-1">
+                  <CardTitle className="text-2xl font-bold text-center">Verify Your Email</CardTitle>
+                  <CardDescription className="text-center">
+                    We've sent a verification link to your email address
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <div className="text-center py-6">
+                    <div className="bg-blue-50 text-blue-600 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                      <Mail className="h-8 w-8" />
+                    </div>
+                    
+                    <h3 className="text-lg font-medium mb-2">Check your inbox</h3>
+                    <p className="text-neutral-600 mb-1">
+                      We've sent a verification email to:
+                    </p>
+                    <p className="font-medium text-neutral-800 mb-4">
+                      {registeredEmail}
+                    </p>
+                    
+                    <div className="bg-neutral-50 p-4 rounded-lg text-sm text-neutral-600 mb-4">
+                      <p>
+                        Click the link in the email to verify your account and get started.
+                        If you don't see the email, check your spam folder.
+                      </p>
+                    </div>
+                    
+                    {!verificationSent ? (
+                      <div className="mt-4">
+                        <p className="text-neutral-600 text-sm mb-2">Didn't receive the email?</p>
+                        <Button 
+                          variant="outline" 
+                          onClick={resendVerification}
+                          disabled={isLoading}
+                          className="mt-2"
+                        >
+                          {isLoading ? "Sending..." : "Resend verification email"}
+                        </Button>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center text-green-600 gap-1 mt-4">
+                        <CheckCircle2 className="h-4 w-4" />
+                        <span className="text-sm">Verification email sent!</span>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+                <CardFooter>
+                  <div className="w-full">
+                    <Button 
+                      variant="link" 
+                      className="w-full"
+                      onClick={() => navigate('/login')}
+                    >
+                      Continue to login
+                    </Button>
+                  </div>
+                </CardFooter>
+              </Card>
+            )}
           </div>
         </div>
       </div>
