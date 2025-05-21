@@ -41,8 +41,10 @@ import {
   Inbox,
   Mail,
   CheckCircle2,
-  ThumbsUp
+  ThumbsUp,
+  Settings
 } from "lucide-react";
+import AccountSettings from "@/components/AccountSettings";
 import { Job, Application } from "@shared/schema";
 import { format } from "date-fns";
 
@@ -192,6 +194,14 @@ const EmployerDashboard = () => {
                     >
                       <Building className="h-4 w-4 mr-2" />
                       Company Profile
+                    </Button>
+                    <Button
+                      variant={activeTab === "settings" ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setActiveTab("settings")}
+                    >
+                      <Settings className="h-4 w-4 mr-2" />
+                      Account Settings
                     </Button>
                   </nav>
                 </CardContent>
