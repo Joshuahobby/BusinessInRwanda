@@ -75,7 +75,7 @@ const CreateCompany = () => {
   // Create company mutation
   const createCompanyMutation = useMutation({
     mutationFn: async (data: CreateCompanyFormValues) => {
-      const response = await apiRequest("/api/companies", "POST", {
+      const response = await apiRequest("POST", "/api/companies", {
         ...data,
         userId: currentUser?.id,
         employeeCount: parseInt(data.employeeCount),
