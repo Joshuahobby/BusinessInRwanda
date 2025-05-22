@@ -18,6 +18,43 @@ const LiveActivityFeed = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
 
+  // Create some initial sample activities to ensure component shows up
+  useEffect(() => {
+    const sampleActivities: ActivityItem[] = [
+      {
+        id: 'sample-1',
+        type: 'new_job',
+        message: 'New opportunity posted from Kigali',
+        location: 'Kigali',
+        timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+        icon: <Briefcase className="h-4 w-4" />,
+        color: 'text-blue-600 bg-blue-50'
+      },
+      {
+        id: 'sample-2',
+        type: 'new_application',
+        message: '5 new applications received today',
+        location: 'Rwanda',
+        timestamp: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
+        icon: <Users className="h-4 w-4" />,
+        color: 'text-green-600 bg-green-50'
+      },
+      {
+        id: 'sample-3',
+        type: 'trending',
+        message: 'Software Developer trending in Kigali',
+        location: 'Kigali',
+        timestamp: new Date(Date.now() - 1000 * 60 * 90), // 1.5 hours ago
+        icon: <TrendingUp className="h-4 w-4" />,
+        color: 'text-orange-600 bg-orange-50'
+      }
+    ];
+    
+    if (activities.length === 0) {
+      setActivities(sampleActivities);
+    }
+  }, []);
+
   // Fetch real data from the API
   const { data: jobs } = useQuery({
     queryKey: ['/api/jobs'],
@@ -30,7 +67,7 @@ const LiveActivityFeed = () => {
 
   // Generate realistic activity feed from real data
   useEffect(() => {
-    if (!jobs || !companies || !Array.isArray(jobs) || !Array.isArray(companies)) return;
+    if (!jobs || !Array.isArray(jobs)) return;
 
     const generateActivities = (): ActivityItem[] => {
       const activities: ActivityItem[] = [];
@@ -43,7 +80,7 @@ const LiveActivityFeed = () => {
         activities.push({
           id: `job-${job.id}`,
           type: 'new_job',
-          message: `New ${job.postType} posted: ${job.title}`,
+          message: `New opportunity posted: ${job.title}`,
           location: job.location,
           timestamp: new Date(now.getTime() - hoursAgo * 60 * 60 * 1000),
           icon: <Briefcase className="h-4 w-4" />,
@@ -52,7 +89,7 @@ const LiveActivityFeed = () => {
       });
 
       // Recent applications (simulated from job data)
-      const popularJobs = (jobs as any[]).slice(0, 3);
+      const popularJobs = jobs.slice(0, 3);
       popularJobs.forEach((job: any, index: number) => {
         const minutesAgo = Math.floor(Math.random() * 60) + 1;
         const applicantCount = Math.floor(Math.random() * 12) + 1;
@@ -67,22 +104,24 @@ const LiveActivityFeed = () => {
         });
       });
 
-      // Company registrations
-      const recentCompanies = (companies as any[]).slice(0, 3);
-      recentCompanies.forEach((company: any, index: number) => {
-        const daysAgo = Math.floor(Math.random() * 7) + 1;
-        activities.push({
-          id: `company-${company.id}`,
-          type: 'new_company',
-          message: `${company.name} joined the platform`,
-          timestamp: new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000),
-          icon: <Building2 className="h-4 w-4" />,
-          color: 'text-purple-600 bg-purple-50'
+      // Company activity from job companies
+      if (companies && Array.isArray(companies)) {
+        const recentCompanies = companies.slice(0, 3);
+        recentCompanies.forEach((company: any, index: number) => {
+          const daysAgo = Math.floor(Math.random() * 7) + 1;
+          activities.push({
+            id: `company-${company.id}`,
+            type: 'new_company',
+            message: `${company.name} joined the platform`,
+            timestamp: new Date(now.getTime() - daysAgo * 24 * 60 * 60 * 1000),
+            icon: <Building2 className="h-4 w-4" />,
+            color: 'text-purple-600 bg-purple-50'
+          });
         });
-      });
+      }
 
       // Trending activities
-      const trendingJobs = (jobs as any[]).slice(0, 2);
+      const trendingJobs = jobs.slice(0, 2);
       trendingJobs.forEach((job: any, index: number) => {
         const hoursAgo = Math.floor(Math.random() * 12) + 1;
         activities.push({
@@ -97,7 +136,7 @@ const LiveActivityFeed = () => {
       });
 
       // Closing deadlines
-      const closingJobs = (jobs as any[]).slice(0, 2);
+      const closingJobs = jobs.slice(0, 2);
       closingJobs.forEach((job: any, index: number) => {
         const daysLeft = Math.floor(Math.random() * 5) + 1;
         activities.push({
@@ -144,6 +183,25 @@ const LiveActivityFeed = () => {
     const diffInDays = Math.floor(diffInHours / 24);
     return `${diffInDays}d ago`;
   };
+
+  // Show loading state or fallback if no activities yet
+  if (activities.length === 0 && jobs && Array.isArray(jobs) && jobs.length > 0) {
+    // Create some immediate activities while loading
+    const quickActivities: ActivityItem[] = [
+      {
+        id: 'loading-1',
+        type: 'new_job',
+        message: 'New opportunity posted: ' + (jobs[0]?.title || 'Job Position'),
+        location: jobs[0]?.location || 'Kigali',
+        timestamp: new Date(),
+        icon: <Briefcase className="h-4 w-4" />,
+        color: 'text-blue-600 bg-blue-50'
+      }
+    ];
+    if (activities.length === 0) {
+      setActivities(quickActivities);
+    }
+  }
 
   if (activities.length === 0) return null;
 
