@@ -35,6 +35,64 @@ const Home = () => {
       {/* Hero Section */}
       <HeroSection />
       
+      {/* Search Section */}
+      <section className="bg-gray-50 py-8 border-b border-gray-200">
+        <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto">
+            <div className="bg-white rounded-lg shadow-lg p-6">
+              <h2 className="text-xl font-bold text-[#0A3D62] mb-4 text-center">Find Your Perfect Opportunity</h2>
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <input 
+                    type="text" 
+                    placeholder="Search jobs, tenders, auctions..." 
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+                <div className="md:w-48">
+                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                    <option value="">All Locations</option>
+                    <option value="kigali">Kigali</option>
+                    <option value="northern">Northern Province</option>
+                    <option value="southern">Southern Province</option>
+                    <option value="eastern">Eastern Province</option>
+                    <option value="western">Western Province</option>
+                    <option value="remote">Remote</option>
+                  </select>
+                </div>
+                <button className="bg-[#0A3D62] text-white px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-medium">
+                  Search
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Key Statistics Section */}
+      <section className="bg-[#0A3D62] py-12">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div className="text-white">
+              <div className="text-3xl font-bold mb-2">18+</div>
+              <div className="text-blue-200">Active Opportunities</div>
+            </div>
+            <div className="text-white">
+              <div className="text-3xl font-bold mb-2">16+</div>
+              <div className="text-blue-200">Registered Users</div>
+            </div>
+            <div className="text-white">
+              <div className="text-3xl font-bold mb-2">8+</div>
+              <div className="text-blue-200">Partner Organizations</div>
+            </div>
+            <div className="text-white">
+              <div className="text-3xl font-bold mb-2">5</div>
+              <div className="text-blue-200">Provinces Covered</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Quick Access Categories */}
       <section className="bg-white border-b border-gray-200">
         <div className="container mx-auto px-4 py-4">
@@ -211,22 +269,58 @@ const Home = () => {
                 </CardFooter>
               </Card>
               
-              {/* Personalized Recommendations - Marked as "Coming Soon" */}
+              {/* Quick Apply Section */}
               <Card>
-                <CardHeader className="bg-[#0A3D62] text-white relative">
-                  <Badge variant="outline" className="absolute top-2 right-2 bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200">
-                    Coming Soon
-                  </Badge>
+                <CardHeader className="bg-[#0A3D62] text-white">
                   <div className="flex items-center">
                     <Star className="mr-2 h-5 w-5" />
-                    <CardTitle>Recommended For You</CardTitle>
+                    <CardTitle>Quick Actions</CardTitle>
                   </div>
                   <CardDescription className="text-blue-100">
-                    Personalized opportunities based on your profile and preferences
+                    Fast access to common tasks and applications
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="p-6">
-                  <PersonalizedRecommendations />
+                  <div className="space-y-4">
+                    <a 
+                      href="/opportunities?type=job" 
+                      className="block w-full bg-green-50 hover:bg-green-100 p-4 rounded-lg border border-green-200 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-green-800">Browse Latest Jobs</h4>
+                          <p className="text-sm text-green-600">Find your next career opportunity</p>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-green-600" />
+                      </div>
+                    </a>
+                    
+                    <a 
+                      href="/opportunities?type=tender" 
+                      className="block w-full bg-blue-50 hover:bg-blue-100 p-4 rounded-lg border border-blue-200 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-blue-800">View Active Tenders</h4>
+                          <p className="text-sm text-blue-600">Government and private tenders</p>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-blue-600" />
+                      </div>
+                    </a>
+                    
+                    <a 
+                      href="/register" 
+                      className="block w-full bg-purple-50 hover:bg-purple-100 p-4 rounded-lg border border-purple-200 transition-colors"
+                    >
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <h4 className="font-semibold text-purple-800">Create Account</h4>
+                          <p className="text-sm text-purple-600">Get personalized notifications</p>
+                        </div>
+                        <ArrowRight className="h-5 w-5 text-purple-600" />
+                      </div>
+                    </a>
+                  </div>
                 </CardContent>
               </Card>
             </div>
@@ -343,53 +437,166 @@ const Home = () => {
       </section>
       
       {/* Success Stories Section */}
-      <SuccessStories />
-      
-      {/* For Employers Section */}
-      <EmployerCTA />
-      
-      {/* Industry Insights Section (Coming Soon) */}
-      <section className="bg-gray-50 py-12 border-t border-gray-200">
+      <section className="bg-gray-50 py-12">
         <div className="container mx-auto px-4">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Industry Insights</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-4">
-              Stay informed about Rwanda's job market trends and industry developments
+            <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Success Stories</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Real stories from professionals who found their opportunities through Business In Rwanda
             </p>
-            <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">
-              Coming Soon in Next Update
-            </Badge>
           </div>
           
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center justify-center bg-white/70 backdrop-blur-sm rounded-lg z-10">
-              <div className="bg-white p-6 rounded-xl shadow-lg border border-amber-100 text-center max-w-md">
-                <Bell className="h-12 w-12 mx-auto text-amber-500 mb-4" />
-                <h3 className="text-xl font-bold text-[#0A3D62] mb-2">Coming Soon</h3>
-                <p className="text-gray-600">Our team is working on bringing industry insights to help you make informed career decisions.</p>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                  <span className="text-green-600 font-bold text-lg">JM</span>
+                </div>
+                <div className="ml-3">
+                  <h4 className="font-bold text-[#0A3D62]">Jean Marie</h4>
+                  <p className="text-sm text-gray-600">Software Developer</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">"Found my dream job in tech through this platform. The application process was smooth and professional."</p>
+              <div className="flex text-yellow-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-current" />
+                ))}
               </div>
             </div>
-            <div className="bg-white border rounded-lg overflow-hidden">
-              <IndustryInsights />
+            
+            <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                  <span className="text-blue-600 font-bold text-lg">AM</span>
+                </div>
+                <div className="ml-3">
+                  <h4 className="font-bold text-[#0A3D62]">Alice Mukamana</h4>
+                  <p className="text-sm text-gray-600">Business Owner</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">"Won several government tenders that helped grow my construction business significantly."</p>
+              <div className="flex text-yellow-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-current" />
+                ))}
+              </div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                  <span className="text-purple-600 font-bold text-lg">DK</span>
+                </div>
+                <div className="ml-3">
+                  <h4 className="font-bold text-[#0A3D62]">David Kayigi</h4>
+                  <p className="text-sm text-gray-600">Healthcare Worker</p>
+                </div>
+              </div>
+              <p className="text-gray-600 mb-4">"The healthcare opportunities section helped me find a position that matches my qualifications perfectly."</p>
+              <div className="flex text-yellow-400">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="h-4 w-4 fill-current" />
+                ))}
+              </div>
             </div>
           </div>
         </div>
       </section>
       
-      {/* Mobile App Promo Section (Coming Soon) */}
+      {/* For Employers Section */}
+      <EmployerCTA />
+      
+      {/* Rwanda Business Insights Section */}
+      <section className="bg-gray-50 py-12 border-t border-gray-200">
+        <div className="container mx-auto px-4">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Rwanda Business Insights</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Key trends and opportunities in Rwanda's growing economy
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                  <Briefcase className="h-6 w-6 text-green-600" />
+                </div>
+                <h3 className="text-lg font-bold text-[#0A3D62] ml-3">IT & Technology</h3>
+              </div>
+              <p className="text-gray-600 mb-4">Growing demand for digital skills and technology professionals across Rwanda.</p>
+              <div className="text-sm text-green-600 font-medium">🔥 High Demand Sector</div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                  <Bell className="h-6 w-6 text-blue-600" />
+                </div>
+                <h3 className="text-lg font-bold text-[#0A3D62] ml-3">Government Tenders</h3>
+              </div>
+              <p className="text-gray-600 mb-4">Regular procurement opportunities across various government institutions.</p>
+              <div className="text-sm text-blue-600 font-medium">📈 Consistent Opportunities</div>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-lg border border-gray-200">
+              <div className="flex items-center mb-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                  <Star className="h-6 w-6 text-purple-600" />
+                </div>
+                <h3 className="text-lg font-bold text-[#0A3D62] ml-3">Healthcare</h3>
+              </div>
+              <p className="text-gray-600 mb-4">Medical professionals and healthcare services remain in high demand.</p>
+              <div className="text-sm text-purple-600 font-medium">⚕️ Essential Services</div>
+            </div>
+          </div>
+        </div>
+      </section>
+      
+      {/* Why Choose Business In Rwanda Section */}
       <section className="bg-white py-12 border-t border-gray-200">
         <div className="container mx-auto px-4">
           <div className="mb-8 text-center">
-            <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Stay Connected On The Go</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto mb-4">
-              Access opportunities anywhere with our mobile application, designed for the modern job seeker
+            <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Why Choose Business In Rwanda?</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Your trusted platform for opportunities across Rwanda's dynamic economy
             </p>
-            <Badge variant="outline" className="bg-amber-100 text-amber-800 border-amber-200">
-              Coming Soon in Next Update
-            </Badge>
           </div>
           
-          <MobileAppPromo />
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Bell className="h-8 w-8 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-bold text-[#0A3D62] mb-2">Real-Time Updates</h3>
+              <p className="text-gray-600">Get instant notifications about new opportunities matching your interests.</p>
+            </div>
+            
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <MapPin className="h-8 w-8 text-green-600" />
+              </div>
+              <h3 className="text-lg font-bold text-[#0A3D62] mb-2">Nationwide Coverage</h3>
+              <p className="text-gray-600">Opportunities from all provinces of Rwanda, plus remote work options.</p>
+            </div>
+            
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Star className="h-8 w-8 text-purple-600" />
+              </div>
+              <h3 className="text-lg font-bold text-[#0A3D62] mb-2">Verified Opportunities</h3>
+              <p className="text-gray-600">All listings are verified to ensure authenticity and reliability.</p>
+            </div>
+            
+            <div className="text-center p-6">
+              <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Briefcase className="h-8 w-8 text-amber-600" />
+              </div>
+              <h3 className="text-lg font-bold text-[#0A3D62] mb-2">Multiple Categories</h3>
+              <p className="text-gray-600">Jobs, tenders, auctions, and announcements all in one platform.</p>
+            </div>
+          </div>
         </div>
       </section>
       
