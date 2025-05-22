@@ -35,24 +35,24 @@ const Home = () => {
       
       {/* Quick Access Categories */}
       <section className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-8">
-          <div className="flex flex-wrap justify-center gap-4 md:gap-8">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-wrap justify-center gap-2 md:gap-4">
             {[
-              { name: "All Opportunities", icon: <Briefcase className="h-5 w-5" />, link: "/opportunities", color: "bg-blue-50 text-blue-700" },
-              { name: "Jobs", icon: <Briefcase className="h-5 w-5" />, link: "/opportunities?type=job", color: "bg-emerald-50 text-emerald-700" },
-              { name: "Tenders", icon: <Bell className="h-5 w-5" />, link: "/opportunities?type=tender", color: "bg-purple-50 text-purple-700" },
-              { name: "Auctions", icon: <Bell className="h-5 w-5" />, link: "/opportunities?type=auction", color: "bg-amber-50 text-amber-700" },
-              { name: "Announcements", icon: <Bell className="h-5 w-5" />, link: "/opportunities?type=announcement", color: "bg-red-50 text-red-700" },
+              { name: "All", icon: <Briefcase className="h-4 w-4" />, link: "/opportunities", color: "bg-blue-50 text-blue-700" },
+              { name: "Jobs", icon: <Briefcase className="h-4 w-4" />, link: "/opportunities?type=job", color: "bg-emerald-50 text-emerald-700" },
+              { name: "Tenders", icon: <Bell className="h-4 w-4" />, link: "/opportunities?type=tender", color: "bg-purple-50 text-purple-700" },
+              { name: "Auctions", icon: <Bell className="h-4 w-4" />, link: "/opportunities?type=auction", color: "bg-amber-50 text-amber-700" },
+              { name: "Announcements", icon: <Bell className="h-4 w-4" />, link: "/opportunities?type=announcement", color: "bg-red-50 text-red-700" },
             ].map((category, index) => (
               <a 
                 key={index} 
                 href={category.link}
-                className="flex items-center gap-2 px-4 py-3 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all"
+                className="flex items-center gap-2 px-3 py-2 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all"
               >
-                <div className={`${category.color} p-2 rounded-full`}>
+                <div className={`${category.color} p-1 rounded-full`}>
                   {category.icon}
                 </div>
-                <span className="font-medium text-gray-800">{category.name}</span>
+                <span className="text-sm font-medium text-gray-800">{category.name}</span>
               </a>
             ))}
           </div>
@@ -60,42 +60,42 @@ const Home = () => {
       </section>
       
       {/* Featured & Recent Opportunities */}
-      <section className="bg-gray-50 py-12">
+      <section className="bg-gray-50 py-6">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-bold text-[#0A3D62]">Highlighted Opportunities</h2>
-            <a href="/opportunities" className="text-blue-600 hover:text-blue-800 flex items-center">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-bold text-[#0A3D62]">Highlighted Opportunities</h2>
+            <a href="/opportunities" className="text-blue-600 hover:text-blue-800 flex items-center text-sm">
               View all <ArrowRight className="h-4 w-4 ml-1" />
             </a>
           </div>
           
-          <Tabs defaultValue="featured" className="mb-12">
-            <TabsList className="mb-6">
-              <TabsTrigger value="featured" className="gap-2">
-                <Star className="h-4 w-4" /> Featured
+          <Tabs defaultValue="featured" className="mb-6">
+            <TabsList className="mb-4">
+              <TabsTrigger value="featured" className="gap-1 text-sm">
+                <Star className="h-3 w-3" /> Featured
               </TabsTrigger>
-              <TabsTrigger value="recent" className="gap-2">
-                <CalendarDays className="h-4 w-4" /> Recently Posted
+              <TabsTrigger value="recent" className="gap-1 text-sm">
+                <CalendarDays className="h-3 w-3" /> Recent
               </TabsTrigger>
-              <TabsTrigger value="closing" className="gap-2">
-                <Clock className="h-4 w-4" /> Closing Soon
+              <TabsTrigger value="closing" className="gap-1 text-sm">
+                <Clock className="h-3 w-3" /> Closing
               </TabsTrigger>
-              <TabsTrigger value="popular" className="gap-2">
-                <Flame className="h-4 w-4" /> Popular
+              <TabsTrigger value="popular" className="gap-1 text-sm">
+                <Flame className="h-3 w-3" /> Popular
               </TabsTrigger>
             </TabsList>
             
             <TabsContent value="featured" className="mt-0">
               <div className="border rounded-lg overflow-hidden bg-white">
-                <div className="p-4 bg-blue-50 border-b border-blue-100 flex items-center">
-                  <Star className="text-blue-600 h-5 w-5 mr-2" />
-                  <h3 className="text-lg font-semibold text-blue-800">Featured Opportunities</h3>
+                <div className="p-3 bg-blue-50 border-b border-blue-100 flex items-center">
+                  <Star className="text-blue-600 h-4 w-4 mr-2" />
+                  <h3 className="text-base font-semibold text-blue-800">Featured Opportunities</h3>
                 </div>
-                <div className="p-4">
+                <div className="p-3">
                   <FeaturedJobs 
                     showTitle={false} 
                     showPagination={true} 
-                    limit={6}
+                    limit={4}
                     queryKey="/api/jobs/featured"
                   />
                 </div>
@@ -104,15 +104,15 @@ const Home = () => {
             
             <TabsContent value="recent" className="mt-0">
               <div className="border rounded-lg overflow-hidden bg-white">
-                <div className="p-4 bg-green-50 border-b border-green-100 flex items-center">
-                  <CalendarDays className="text-green-600 h-5 w-5 mr-2" />
-                  <h3 className="text-lg font-semibold text-green-800">Recently Posted</h3>
+                <div className="p-3 bg-green-50 border-b border-green-100 flex items-center">
+                  <CalendarDays className="text-green-600 h-4 w-4 mr-2" />
+                  <h3 className="text-base font-semibold text-green-800">Recently Posted</h3>
                 </div>
-                <div className="p-4">
+                <div className="p-3">
                   <FeaturedJobs 
                     showTitle={false} 
                     showPagination={true} 
-                    limit={6}
+                    limit={4}
                     queryKey="/api/jobs"
                   />
                 </div>
@@ -121,11 +121,11 @@ const Home = () => {
             
             <TabsContent value="closing" className="mt-0">
               <div className="border rounded-lg overflow-hidden bg-white">
-                <div className="p-4 bg-amber-50 border-b border-amber-100 flex items-center">
-                  <Clock className="text-amber-600 h-5 w-5 mr-2" />
-                  <h3 className="text-lg font-semibold text-amber-800">Closing Soon</h3>
+                <div className="p-3 bg-amber-50 border-b border-amber-100 flex items-center">
+                  <Clock className="text-amber-600 h-4 w-4 mr-2" />
+                  <h3 className="text-base font-semibold text-amber-800">Closing Soon</h3>
                 </div>
-                <div className="p-4">
+                <div className="p-3">
                   <DeadlineHighlights />
                 </div>
               </div>
@@ -133,15 +133,15 @@ const Home = () => {
             
             <TabsContent value="popular" className="mt-0">
               <div className="border rounded-lg overflow-hidden bg-white">
-                <div className="p-4 bg-purple-50 border-b border-purple-100 flex items-center">
-                  <Flame className="text-purple-600 h-5 w-5 mr-2" />
-                  <h3 className="text-lg font-semibold text-purple-800">Popular Opportunities</h3>
+                <div className="p-3 bg-purple-50 border-b border-purple-100 flex items-center">
+                  <Flame className="text-purple-600 h-4 w-4 mr-2" />
+                  <h3 className="text-base font-semibold text-purple-800">Popular Opportunities</h3>
                 </div>
-                <div className="p-4">
+                <div className="p-3">
                   <FeaturedJobs 
                     showTitle={false} 
                     showPagination={true} 
-                    limit={6}
+                    limit={4}
                     queryKey="/api/jobs/featured"
                   />
                 </div>
@@ -152,15 +152,15 @@ const Home = () => {
       </section>
       
       {/* Coming Soon Banner */}
-      <section className="bg-white py-6 border-y border-gray-200">
+      <section className="bg-white py-3 border-y border-gray-200">
         <div className="container mx-auto px-4">
-          <div className="flex items-center p-4 bg-blue-50 border border-blue-200 rounded-lg">
-            <div className="bg-blue-100 rounded-full p-3 mr-4">
-              <Bell className="h-6 w-6 text-blue-600" />
+          <div className="flex items-center p-3 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="bg-blue-100 rounded-full p-2 mr-3">
+              <Bell className="h-4 w-4 text-blue-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-blue-800 mb-1">New features coming soon!</h3>
-              <p className="text-blue-700 text-sm">
+              <h3 className="font-medium text-blue-800 text-sm">New features coming soon!</h3>
+              <p className="text-blue-700 text-xs">
                 Mobile apps, personalized recommendations, and industry insights will be available in our next update.
               </p>
             </div>
@@ -169,26 +169,26 @@ const Home = () => {
       </section>
       
       {/* Main Content Grid */}
-      <section className="bg-gray-50 py-12">
+      <section className="bg-gray-50 py-6">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             {/* Main content column */}
-            <div className="lg:col-span-2 space-y-8">
+            <div className="lg:col-span-2 space-y-6">
               {/* Browse by Category */}
               <Card>
-                <CardHeader className="bg-[#0A3D62] text-white">
+                <CardHeader className="bg-[#0A3D62] text-white py-3">
                   <div className="flex items-center">
-                    <Tag className="mr-2 h-5 w-5" />
-                    <CardTitle>Browse by Category</CardTitle>
+                    <Tag className="mr-2 h-4 w-4" />
+                    <CardTitle className="text-base">Browse by Category</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-6">
+                <CardContent className="p-4">
                   <CategoryFeaturedAds />
                 </CardContent>
-                <CardFooter className="bg-gray-50 px-6 py-3 border-t flex justify-between">
-                  <span className="text-sm text-gray-500">Find opportunities by industry</span>
-                  <a href="/categories" className="text-blue-600 text-sm flex items-center hover:text-blue-800">
-                    View all categories <ArrowRight className="ml-1 h-4 w-4" />
+                <CardFooter className="bg-gray-50 px-4 py-2 border-t flex justify-between">
+                  <span className="text-xs text-gray-500">Find opportunities by industry</span>
+                  <a href="/categories" className="text-blue-600 text-xs flex items-center hover:text-blue-800">
+                    View all categories <ArrowRight className="ml-1 h-3 w-3" />
                   </a>
                 </CardFooter>
               </Card>
