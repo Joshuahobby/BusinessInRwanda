@@ -113,7 +113,27 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
         currency: data.currency,
         experienceLevel: data.experienceLevel,
         companyId: data.companyId,
-        postType: data.postType // Include postType in the payload
+        postType: data.postType, // Include postType in the payload
+        
+        // Add auction specific fields if post type is auction
+        ...(data.postType === 'auction' && {
+          auctionDate: data.auctionDate,
+          auctionTime: data.auctionTime,
+          viewingDates: data.viewingDates,
+          auctionItems: data.auctionItems,
+          auctionRequirements: data.auctionRequirements,
+          // Store auction items as an array in additionalData
+          additionalData: {
+            auctionItems: data.auctionItems?.split('\n').filter(item => item.trim())
+          }
+        }),
+        
+        // Add tender specific fields if post type is tender
+        ...(data.postType === 'tender' && {
+          tenderDeadline: data.tenderDeadline,
+          tenderRequirements: data.tenderRequirements,
+          tenderDocuments: data.tenderDocuments
+        })
       };
 
       // Send the request to create the post
@@ -438,27 +458,147 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="responsibilities"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Responsibilities (Optional)</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      rows={3}
-                      className="resize-none"
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    List the responsibilities for this position
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {form.watch("postType") !== "auction" && (
+              <FormField
+                control={form.control}
+                name="responsibilities"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Responsibilities (Optional)</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        rows={3}
+                        className="resize-none"
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      List the responsibilities for this position
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
+            
+            {/* Auction-specific fields */}
+            {form.watch("postType") === "auction" && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="auctionDate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Auction Date</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="date" 
+                            {...field} 
+                            disabled={isSubmitting} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The date when the auction will take place
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="auctionTime"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Auction Time</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="time" 
+                            {...field} 
+                            disabled={isSubmitting} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The time when the auction will start
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="viewingDates"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Viewing Dates</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={2}
+                          className="resize-none"
+                          disabled={isSubmitting}
+                          placeholder="e.g., Viewing will be available from May 9-10, 2025 at the location."
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        When and where interested bidders can view the items
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="auctionItems"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Auction Items</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={5}
+                          className="resize-none"
+                          disabled={isSubmitting}
+                          placeholder="List each item on a separate line, e.g.:&#10;Toyota Carina E (1997)&#10;Small farming machine&#10;Metal scraps"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        List all items being auctioned (one per line)
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="auctionRequirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Auction Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={4}
+                          className="resize-none"
+                          disabled={isSubmitting}
+                          placeholder="e.g., Deposit requirements, payment conditions, bidder responsibilities"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Special requirements for bidders
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
 
             <DialogFooter>
               <Button type="button" variant="outline" onClick={onClose} disabled={isSubmitting}>
