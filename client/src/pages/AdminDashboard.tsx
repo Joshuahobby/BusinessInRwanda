@@ -79,6 +79,24 @@ const AdminDashboard = () => {
   const [isJobDetailsModalOpen, setIsJobDetailsModalOpen] = useState(false);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
   const [isCreateCompanyModalOpen, setIsCreateCompanyModalOpen] = useState(false);
+  
+  // Category management state
+  const [isCreateCategoryModalOpen, setIsCreateCategoryModalOpen] = useState(false);
+  const [isEditCategoryModalOpen, setIsEditCategoryModalOpen] = useState(false);
+  const [isDeleteCategoryModalOpen, setIsDeleteCategoryModalOpen] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<any>(null);
+  const [deletingCategory, setDeletingCategory] = useState<any>(null);
+  
+  // Featured sections state
+  const [isFeaturedSectionsModalOpen, setIsFeaturedSectionsModalOpen] = useState(false);
+  const [featuredSectionsData, setFeaturedSectionsData] = useState<any>(null);
+  
+  // Platform notifications state
+  const [isCreateNotificationModalOpen, setIsCreateNotificationModalOpen] = useState(false);
+  const [isEditNotificationModalOpen, setIsEditNotificationModalOpen] = useState(false);
+  const [isDeleteNotificationModalOpen, setIsDeleteNotificationModalOpen] = useState(false);
+  const [editingNotification, setEditingNotification] = useState<any>(null);
+  const [deletingNotification, setDeletingNotification] = useState<any>(null);
 
   // Check if user is admin, redirect if not
   useEffect(() => {
@@ -153,6 +171,42 @@ const AdminDashboard = () => {
   } = useQuery<CompanyModel[]>({
     queryKey: ["/api/admin/companies"],
     enabled: currentUser?.role === "admin" && activeTab === "companies",
+  });
+  
+  // Fetch categories
+  const {
+    data: categories = [],
+    isLoading: isLoadingCategories,
+    error: categoriesError,
+    refetch: refetchCategories
+  } = useQuery({
+    queryKey: ['/api/admin/categories'],
+    enabled: currentUser?.role === 'admin' && activeTab === 'categories',
+  });
+  
+  // Fetch featured sections
+  const {
+    data: featuredSections,
+    isLoading: isLoadingFeaturedSections,
+    error: featuredSectionsError,
+    refetch: refetchFeaturedSections
+  } = useQuery({
+    queryKey: ['/api/admin/featured-sections'],
+    enabled: currentUser?.role === 'admin' && activeTab === 'settings',
+    onSuccess: (data) => {
+      setFeaturedSectionsData(data);
+    }
+  });
+  
+  // Fetch notifications
+  const {
+    data: notifications = [],
+    isLoading: isLoadingNotifications,
+    error: notificationsError,
+    refetch: refetchNotifications
+  } = useQuery({
+    queryKey: ['/api/admin/notifications'],
+    enabled: currentUser?.role === 'admin' && activeTab === 'settings',
   });
 
   if (!currentUser || currentUser.role !== "admin") {
@@ -945,79 +999,85 @@ const AdminDashboard = () => {
                             Manage job categories on the platform
                           </CardDescription>
                         </div>
-                        <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                        <Button 
+                          className="bg-[#0A3D62] hover:bg-[#082C46]"
+                          onClick={() => setIsCreateCategoryModalOpen(true)}
+                        >
                           <PlusCircle className="h-4 w-4 mr-1.5" />
                           Add Category
                         </Button>
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="rounded-md border">
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Category Name</TableHead>
-                              <TableHead>Icon</TableHead>
-                              <TableHead>Job Count</TableHead>
-                              <TableHead className="text-right">Actions</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {/* This is a placeholder for categories - would be populated from API */}
-                            <TableRow>
-                              <TableCell>
-                                <div className="font-medium">Information Technology</div>
-                              </TableCell>
-                              <TableCell>💻</TableCell>
-                              <TableCell>24</TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex justify-end gap-2">
-                                  <Button variant="ghost" size="icon">
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600">
-                                    <Trash className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>
-                                <div className="font-medium">Finance & Banking</div>
-                              </TableCell>
-                              <TableCell>💰</TableCell>
-                              <TableCell>18</TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex justify-end gap-2">
-                                  <Button variant="ghost" size="icon">
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600">
-                                    <Trash className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                            <TableRow>
-                              <TableCell>
-                                <div className="font-medium">Healthcare</div>
-                              </TableCell>
-                              <TableCell>🏥</TableCell>
-                              <TableCell>15</TableCell>
-                              <TableCell className="text-right">
-                                <div className="flex justify-end gap-2">
-                                  <Button variant="ghost" size="icon">
-                                    <Edit className="h-4 w-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600">
-                                    <Trash className="h-4 w-4" />
-                                  </Button>
-                                </div>
-                              </TableCell>
-                            </TableRow>
-                          </TableBody>
-                        </Table>
-                      </div>
+                      {isLoadingCategories ? (
+                        <div className="space-y-3">
+                          {[1, 2, 3].map((i) => (
+                            <div key={i} className="h-12 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
+                          ))}
+                        </div>
+                      ) : categoriesError ? (
+                        <div className="p-4 bg-red-50 text-red-700 rounded-md">
+                          <AlertTriangle className="h-5 w-5 inline mr-2" />
+                          Failed to load categories. Please try again later.
+                        </div>
+                      ) : (
+                        <div className="rounded-md border">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Category Name</TableHead>
+                                <TableHead>Icon</TableHead>
+                                <TableHead>Job Count</TableHead>
+                                <TableHead className="text-right">Actions</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {categories && categories.length > 0 ? (
+                                categories.map((category) => (
+                                  <TableRow key={category.id}>
+                                    <TableCell>
+                                      <div className="font-medium">{category.name}</div>
+                                    </TableCell>
+                                    <TableCell>{category.icon}</TableCell>
+                                    <TableCell>{category.count || 0}</TableCell>
+                                    <TableCell className="text-right">
+                                      <div className="flex justify-end gap-2">
+                                        <Button 
+                                          variant="ghost" 
+                                          size="icon"
+                                          onClick={() => {
+                                            setEditingCategory(category);
+                                            setIsEditCategoryModalOpen(true);
+                                          }}
+                                        >
+                                          <Edit className="h-4 w-4" />
+                                        </Button>
+                                        <Button 
+                                          variant="ghost" 
+                                          size="icon" 
+                                          className="text-red-500 hover:text-red-600"
+                                          onClick={() => {
+                                            setDeletingCategory(category);
+                                            setIsDeleteCategoryModalOpen(true);
+                                          }}
+                                        >
+                                          <Trash className="h-4 w-4" />
+                                        </Button>
+                                      </div>
+                                    </TableCell>
+                                  </TableRow>
+                                ))
+                              ) : (
+                                <TableRow>
+                                  <TableCell colSpan={4} className="text-center py-6 text-neutral-500">
+                                    No categories found. Click "Add Category" to create a new category.
+                                  </TableCell>
+                                </TableRow>
+                              )}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>

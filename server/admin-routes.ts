@@ -22,6 +22,29 @@ const requireAdminRole = (req: Request, res: Response, next: NextFunction) => {
   next();
 };
 
+// Store featured sections and platform notifications in memory
+// In a production app, these would be stored in the database
+let featuredSections = {
+  featuredJobs: [],
+  featuredCompanies: [],
+  homepageHero: {
+    title: "Find Your Dream Job in Rwanda",
+    subtitle: "Connect with top employers and discover opportunities",
+    imageUrl: "/images/hero.jpg",
+    enabled: true
+  }
+};
+
+let platformNotifications = [
+  {
+    id: 1,
+    message: "Welcome to Business in Rwanda - The premier job portal in Rwanda!",
+    type: "info",
+    enabled: true,
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days from now
+  }
+];
+
 export function setupAdminRoutes(app: Express) {
   // Add admin middleware protection to all admin routes
   app.use('/api/admin/*', requireAdminRole);
@@ -378,6 +401,194 @@ export function setupAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error creating job:", error);
       res.status(500).json({ message: "Failed to create job" });
+    }
+  });
+  
+  // Category Management Endpoints
+  app.get('/api/admin/categories', async (req: Request, res: Response) => {
+    try {
+      const categories = await storage.getAllCategories();
+      res.json(categories);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+      res.status(500).json({ message: "Failed to fetch categories" });
+    }
+  });
+  
+  app.post('/api/admin/categories', async (req: Request, res: Response) => {
+    try {
+      // Validate request body
+      const result = insertCategorySchema.safeParse(req.body);
+      if (!result.success) {
+        return res.status(400).json({ message: "Invalid category data", errors: result.error.errors });
+      }
+      
+      // Create category
+      const category = await db.insert(categories).values({
+        name: req.body.name,
+        icon: req.body.icon
+      }).returning();
+      
+      res.status(201).json(category[0]);
+    } catch (error) {
+      console.error("Error creating category:", error);
+      res.status(500).json({ message: "Failed to create category" });
+    }
+  });
+  
+  app.patch('/api/admin/categories/:id', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+      
+      // Update category
+      const updatedCategory = await db.update(categories)
+        .set({ 
+          name: req.body.name,
+          icon: req.body.icon
+        })
+        .where(eq(categories.id, id))
+        .returning();
+      
+      if (!updatedCategory.length) {
+        return res.status(404).json({ message: "Category not found" });
+      }
+      
+      res.json(updatedCategory[0]);
+    } catch (error) {
+      console.error("Error updating category:", error);
+      res.status(500).json({ message: "Failed to update category" });
+    }
+  });
+  
+  app.delete('/api/admin/categories/:id', async (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid category ID" });
+      }
+      
+      // Delete category
+      await db.delete(categories).where(eq(categories.id, id));
+      res.json({ message: "Category deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      res.status(500).json({ message: "Failed to delete category" });
+    }
+  });
+  
+  // Featured Sections Endpoints
+  app.get('/api/admin/featured-sections', (req: Request, res: Response) => {
+    res.json(featuredSections);
+  });
+  
+  app.patch('/api/admin/featured-sections', (req: Request, res: Response) => {
+    try {
+      // Validate and update featured sections
+      if (req.body.featuredJobs !== undefined) {
+        featuredSections.featuredJobs = req.body.featuredJobs;
+      }
+      
+      if (req.body.featuredCompanies !== undefined) {
+        featuredSections.featuredCompanies = req.body.featuredCompanies;
+      }
+      
+      if (req.body.homepageHero !== undefined) {
+        featuredSections.homepageHero = {
+          ...featuredSections.homepageHero,
+          ...req.body.homepageHero
+        };
+      }
+      
+      res.json({ 
+        message: "Featured sections updated successfully",
+        featuredSections
+      });
+    } catch (error) {
+      console.error("Error updating featured sections:", error);
+      res.status(500).json({ message: "Failed to update featured sections" });
+    }
+  });
+  
+  // Platform Notification Endpoints
+  app.get('/api/admin/notifications', (req: Request, res: Response) => {
+    res.json(platformNotifications);
+  });
+  
+  app.post('/api/admin/notifications', (req: Request, res: Response) => {
+    try {
+      const { message, type, enabled, expiresAt } = req.body;
+      
+      if (!message) {
+        return res.status(400).json({ message: "Notification message is required" });
+      }
+      
+      const newNotification = {
+        id: platformNotifications.length > 0 
+          ? Math.max(...platformNotifications.map(n => n.id)) + 1 
+          : 1,
+        message,
+        type: type || "info",
+        enabled: enabled !== undefined ? enabled : true,
+        expiresAt: expiresAt ? new Date(expiresAt) : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
+      };
+      
+      platformNotifications.push(newNotification);
+      
+      res.status(201).json(newNotification);
+    } catch (error) {
+      console.error("Error creating notification:", error);
+      res.status(500).json({ message: "Failed to create notification" });
+    }
+  });
+  
+  app.patch('/api/admin/notifications/:id', (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid notification ID" });
+      }
+      
+      const notificationIndex = platformNotifications.findIndex(n => n.id === id);
+      if (notificationIndex === -1) {
+        return res.status(404).json({ message: "Notification not found" });
+      }
+      
+      const updatedNotification = {
+        ...platformNotifications[notificationIndex],
+        ...req.body,
+        id // Ensure ID remains the same
+      };
+      
+      platformNotifications[notificationIndex] = updatedNotification;
+      
+      res.json(updatedNotification);
+    } catch (error) {
+      console.error("Error updating notification:", error);
+      res.status(500).json({ message: "Failed to update notification" });
+    }
+  });
+  
+  app.delete('/api/admin/notifications/:id', (req: Request, res: Response) => {
+    try {
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) {
+        return res.status(400).json({ message: "Invalid notification ID" });
+      }
+      
+      const notificationIndex = platformNotifications.findIndex(n => n.id === id);
+      if (notificationIndex === -1) {
+        return res.status(404).json({ message: "Notification not found" });
+      }
+      
+      platformNotifications.splice(notificationIndex, 1);
+      
+      res.json({ message: "Notification deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting notification:", error);
+      res.status(500).json({ message: "Failed to delete notification" });
     }
   });
 }
