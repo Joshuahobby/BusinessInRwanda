@@ -1,6 +1,7 @@
-import type { Express } from "express";
+import express, { type Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
+import path from "path";
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
 import * as crypto from "crypto";
@@ -16,6 +17,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize passport and session
   app.use(passport.initialize());
   app.use(passport.session());
+  
+  // Set up static file serving for uploaded files
+  const uploadsPath = path.join(process.cwd(), 'public', 'uploads');
+  app.use('/uploads', express.static(uploadsPath));
   
   // Setup Social Authentication with Google and LinkedIn
   setupSocialAuth(app);
