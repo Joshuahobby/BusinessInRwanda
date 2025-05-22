@@ -224,30 +224,30 @@ const HeroSection = () => {
             </form>
           </motion.div>
 
-          {/* Stats Section */}
+          {/* Stats Section - Small and Inline */}
           <motion.div 
             variants={fadeInUp}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
+            className="flex flex-wrap justify-center gap-6 text-center"
           >
             {[
-              { icon: TrendingUp, value: "1,500+", label: "Active Opportunities", color: "from-blue-500 to-blue-600" },
-              { icon: Users, value: "5,000+", label: "Registered Users", color: "from-emerald-500 to-emerald-600" },
-              { icon: Briefcase, value: "300+", label: "Partner Organizations", color: "from-indigo-500 to-indigo-600" }
+              { icon: TrendingUp, value: "1,500+", label: "Opportunities" },
+              { icon: Users, value: "5,000+", label: "Users" },
+              { icon: Briefcase, value: "300+", label: "Organizations" }
             ].map((stat, index) => {
               const Icon = stat.icon;
               return (
                 <motion.div
                   key={index}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
-                  className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1, duration: 0.4 }}
+                  className="flex items-center gap-3 px-4 py-2 bg-white/80 backdrop-blur-sm rounded-full border border-gray-200/50"
                 >
-                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${stat.color} mb-4`}>
-                    <Icon className="h-8 w-8 text-white" />
+                  <Icon className="h-5 w-5 text-blue-600" />
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-lg font-bold text-gray-900">{stat.value}</span>
+                    <span className="text-sm text-gray-600">{stat.label}</span>
                   </div>
-                  <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
-                  <div className="text-gray-600 font-medium">{stat.label}</div>
                 </motion.div>
               );
             })}
