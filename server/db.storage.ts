@@ -123,7 +123,22 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createJob(jobData: InsertJob): Promise<Job> {
-    const [job] = await db.insert(jobs).values(jobData).returning();
+    // If companyName is missing, fetch it from the company
+    let enhancedJobData = {...jobData};
+    
+    if (!enhancedJobData.companyName && enhancedJobData.companyId) {
+      try {
+        const company = await this.getCompany(enhancedJobData.companyId);
+        if (company) {
+          enhancedJobData.companyName = company.name;
+        }
+      } catch (error) {
+        console.error("Error fetching company name:", error);
+        enhancedJobData.companyName = "Unknown Company";
+      }
+    }
+    
+    const [job] = await db.insert(jobs).values(enhancedJobData).returning();
     return job;
   }
 
@@ -166,11 +181,37 @@ export class DatabaseStorage implements IStorage {
     // Active jobs only
     conditions.push(eq(jobs.isActive, true));
 
+    // Build the query based on conditions
     const query = conditions.length > 0
       ? db.select().from(jobs).where(and(...conditions)).orderBy(desc(jobs.createdAt))
       : db.select().from(jobs).where(eq(jobs.isActive, true)).orderBy(desc(jobs.createdAt));
 
-    return await query;
+    // Get job results
+    const jobResults = await query;
+    
+    // Ensure company names are available for each job
+    const enhancedJobs = await Promise.all(jobResults.map(async (job) => {
+      // If company name is already set, use it
+      if (job.companyName) {
+        return job;
+      }
+      
+      // Otherwise, fetch the company name
+      try {
+        const company = await this.getCompany(job.companyId);
+        return {
+          ...job,
+          companyName: company?.name || "Unknown Company"
+        };
+      } catch (error) {
+        return {
+          ...job,
+          companyName: "Unknown Company"
+        };
+      }
+    }));
+    
+    return enhancedJobs;
   }
 
   async getFeaturedJobs(): Promise<Job[]> {
