@@ -1,0 +1,35 @@
+Warning: Use the &#x60;defaultValue&#x60; or &#x60;value&#x60; props on &lt;select&gt; instead of setting &#x60;selected&#x60; on &lt;option&gt;.
+    at option
+    at select
+    at div
+    at div
+    at div
+    at _c3 (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/card.tsx:45:12)
+    at div
+    at _c (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/card.tsx:20:11)
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=c3d2c9ba:42:13
+    at Presence (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=c3d2c9ba:24:11)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=c3d2c9ba:174:13
+    at _c5 (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/tabs.tsx:72:12)
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=c3d2c9ba:42:13
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=c3d2c9ba:38:15)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=c3d2c9ba:52:7
+    at div
+    at div
+    at div
+    at div
+    at EmployerDashboard (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/pages/EmployerDashboard.tsx?t=1747954894710:71:27)
+    at Route (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c3d2c9ba:323:16)
+    at Switch (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=c3d2c9ba:379:17)
+    at main
+    at div
+    at AppRoutes
+    at FirebaseAuthProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/context/FirebaseAuthContext.tsx:31:40)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=c3d2c9ba:38:15)
+    at TooltipProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=c3d2c9ba:62:5)
+    at QueryClientProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=c3d2c9ba:2805:3)
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=c3d2c9ba:624:5)
+    at App
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=c3d2c9ba:624:5)
