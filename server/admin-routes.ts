@@ -1,8 +1,8 @@
 import { Request, Response, Express, NextFunction } from "express";
 import { storage } from "./storage";
-import { Job, jobs, insertJobSchema } from "@shared/schema";
+import { Job, jobs, insertJobSchema, categories, insertCategorySchema } from "@shared/schema";
 import { upload } from "./upload-utils";
-import { desc } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 import { db } from "./db";
 
 // Define a type for user with the properties we need
