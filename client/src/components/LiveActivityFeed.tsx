@@ -183,7 +183,7 @@ const LiveActivityFeed = () => {
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % activities.length);
-    }, 3500); // Slightly faster cycling for more engagement
+    }, 6000); // Increased to 6 seconds for better readability
 
     return () => clearInterval(interval);
   }, [activities.length]);
@@ -228,16 +228,18 @@ const LiveActivityFeed = () => {
   return (
     <motion.div
       initial={{ opacity: 0, x: -100 }}
-      animate={{ opacity: isVisible ? 1 : 0, x: isVisible ? 0 : -100 }}
+      animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5 }}
       className="fixed bottom-4 left-4 z-40"
     >
-      <div 
-        className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 max-w-xs cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105"
-        onMouseEnter={() => {/* Pause cycling on hover */}}
-        onMouseLeave={() => {/* Resume cycling */}}
-      >
-        <div className="flex items-center justify-between mb-2">
+      {/* Minimized version */}
+      {!isVisible && (
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          className="bg-white rounded-full shadow-lg border border-gray-200 p-3 cursor-pointer hover:shadow-xl transition-all duration-300"
+          onClick={() => setIsVisible(true)}
+        >
           <div className="flex items-center gap-2">
             <div className="relative">
               <motion.div
@@ -259,79 +261,117 @@ const LiveActivityFeed = () => {
                 transition={{ duration: 1, repeat: Infinity }}
               />
             </div>
-            <span className="text-xs font-medium text-gray-700">🔥 Live Activity</span>
-            <div className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">
+            <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">
               LIVE
-            </div>
+            </span>
           </div>
-          <button
-            onClick={() => setIsVisible(!isVisible)}
-            className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded"
-          >
-            <motion.div
-              animate={{ rotate: isVisible ? 0 : 180 }}
-              transition={{ duration: 0.3 }}
-            >
-              ←
-            </motion.div>
-          </button>
-        </div>
+        </motion.div>
+      )}
 
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentActivity.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="space-y-2"
-          >
-            <div className="flex items-start gap-2">
-              <div className={`p-1 rounded-full ${currentActivity.color}`}>
-                {currentActivity.icon}
+      {/* Expanded version */}
+      {isVisible && (
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 max-w-xs cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105"
+          onMouseEnter={() => {/* Pause cycling on hover */}}
+          onMouseLeave={() => {/* Resume cycling */}}
+        >
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-2">
+              <div className="relative">
+                <motion.div
+                  animate={{ 
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 10, -10, 0]
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    repeatType: "reverse"
+                  }}
+                >
+                  <Bell className="h-4 w-4 text-blue-600" />
+                </motion.div>
+                <motion.div 
+                  className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
+                  animate={{ scale: [1, 1.5, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                />
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm text-gray-800 leading-tight">
-                  {currentActivity.message}
-                </p>
-                {currentActivity.location && (
-                  <div className="flex items-center gap-1 mt-1">
-                    <MapPin className="h-3 w-3 text-gray-500" />
-                    <span className="text-xs text-gray-500">{currentActivity.location}</span>
-                  </div>
-                )}
-                <span className="text-xs text-gray-400">
-                  {formatTimeAgo(currentActivity.timestamp)}
-                </span>
+              <span className="text-xs font-medium text-gray-700">🔥 Live Activity</span>
+              <div className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">
+                LIVE
               </div>
             </div>
-          </motion.div>
-        </AnimatePresence>
+            <button
+              onClick={() => setIsVisible(false)}
+              className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded"
+            >
+              <motion.div
+                transition={{ duration: 0.3 }}
+              >
+                ←
+              </motion.div>
+            </button>
+          </div>
 
-        {/* Enhanced Activity indicator dots with interaction */}
-        <div className="flex justify-center gap-1 mt-3 pt-2 border-t border-gray-100">
-          {activities.slice(0, 5).map((_, index) => (
+          <AnimatePresence mode="wait">
             <motion.div
-              key={index}
-              className={`w-2 h-2 rounded-full cursor-pointer transition-all duration-300 ${
-                index === currentIndex % 5 
-                  ? 'bg-blue-500 scale-125' 
-                  : 'bg-gray-300 hover:bg-gray-400'
-              }`}
-              onClick={() => setCurrentIndex(index)}
-              whileHover={{ scale: 1.2 }}
-              whileTap={{ scale: 0.9 }}
-            />
-          ))}
-        </div>
-        
-        {/* Activity counter */}
-        <div className="text-center mt-1">
-          <span className="text-xs text-gray-400">
-            {currentIndex + 1} of {activities.length} activities
-          </span>
-        </div>
-      </div>
+              key={currentActivity.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="space-y-2"
+            >
+              <div className="flex items-start gap-2">
+                <div className={`p-1 rounded-full ${currentActivity.color}`}>
+                  {currentActivity.icon}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-gray-800 leading-tight">
+                    {currentActivity.message}
+                  </p>
+                  {currentActivity.location && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <MapPin className="h-3 w-3 text-gray-500" />
+                      <span className="text-xs text-gray-500">{currentActivity.location}</span>
+                    </div>
+                  )}
+                  <span className="text-xs text-gray-400">
+                    {formatTimeAgo(currentActivity.timestamp)}
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* Enhanced Activity indicator dots with interaction */}
+          <div className="flex justify-center gap-1 mt-3 pt-2 border-t border-gray-100">
+            {activities.slice(0, 5).map((_, index) => (
+              <motion.div
+                key={index}
+                className={`w-2 h-2 rounded-full cursor-pointer transition-all duration-300 ${
+                  index === currentIndex % 5 
+                    ? 'bg-blue-500 scale-125' 
+                    : 'bg-gray-300 hover:bg-gray-400'
+                }`}
+                onClick={() => setCurrentIndex(index)}
+                whileHover={{ scale: 1.2 }}
+                whileTap={{ scale: 0.9 }}
+              />
+            ))}
+          </div>
+          
+          {/* Activity counter */}
+          <div className="text-center mt-1">
+            <span className="text-xs text-gray-400">
+              {currentIndex + 1} of {activities.length} activities
+            </span>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };

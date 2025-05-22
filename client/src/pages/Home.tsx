@@ -13,7 +13,7 @@ import IndustryInsights from '@/components/IndustryInsights';
 import SuccessStories from '@/components/SuccessStories';
 import MobileAppPromo from '@/components/MobileAppPromo';
 import PersonalizedRecommendations from '@/components/PersonalizedRecommendations';
-import SmartScreenTooltip from '@/components/SmartScreenTooltip';
+
 import LiveActivityFeed from '@/components/LiveActivityFeed';
 import { Briefcase, MapPin, Tag, Clock, Bell, Star, Flame, CalendarDays, ArrowRight, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
@@ -395,9 +395,6 @@ const Home = () => {
       
       {/* Final CTA Section */}
       <CTASection />
-      
-      {/* Smart Screen Optimization Tooltip */}
-      <SmartScreenTooltip />
       
       {/* Live Activity Feed */}
       <LiveActivityFeed />
