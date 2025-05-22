@@ -46,9 +46,21 @@ const createPostSchema = z.object({
   salary: z.string().optional(),
   currency: z.enum(["RWF", "USD", "EUR"]).default("RWF"),
   experienceLevel: z.enum(["entry", "intermediate", "senior", "executive"]),
-  postType: z.enum(["job", "tender", "announcement"]),
+  postType: z.enum(["job", "auction", "tender", "announcement"]),
   // Allow company ID to be either a number or a string (since select values are strings)
   companyId: z.union([z.number(), z.string().transform(val => parseInt(val, 10))]),
+  
+  // Auction-specific fields
+  auctionDate: z.string().optional(),
+  auctionTime: z.string().optional(),
+  viewingDates: z.string().optional(),
+  auctionItems: z.string().optional(),
+  auctionRequirements: z.string().optional(),
+  
+  // Tender-specific fields
+  tenderDeadline: z.string().optional(),
+  tenderRequirements: z.string().optional(),
+  tenderDocuments: z.string().optional(),
 });
 
 type FormValues = z.infer<typeof createPostSchema>;
@@ -180,6 +192,7 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="job">Job Vacancy</SelectItem>
+                        <SelectItem value="auction">Auction (Cyamunara)</SelectItem>
                         <SelectItem value="tender">Tender</SelectItem>
                         <SelectItem value="announcement">Announcement</SelectItem>
                       </SelectContent>

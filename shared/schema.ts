@@ -9,6 +9,7 @@ export const experienceLevelEnum = pgEnum('experience_level', ['entry', 'interme
 export const applicationStatusEnum = pgEnum('application_status', ['applied', 'reviewed', 'interview_scheduled', 'rejected', 'hired']);
 export const jobStatusEnum = pgEnum('job_status', ['pending', 'approved', 'rejected']);
 export const currencyEnum = pgEnum('currency_type', ['RWF', 'USD', 'EUR']);
+export const postTypeEnum = pgEnum('post_type', ['job', 'auction', 'tender', 'announcement']);
 
 // Users table
 export const users = pgTable("users", {
@@ -72,6 +73,23 @@ export const jobs = pgTable("jobs", {
   status: jobStatusEnum("status").default('pending').notNull(),
   isFeatured: boolean("is_featured").default(false).notNull(),
   adminNotes: text("admin_notes"),
+  
+  // Add post type field to differentiate between different kinds of posts
+  postType: postTypeEnum("post_type").default('job').notNull(),
+  
+  // Fields specific to auctions
+  auctionDate: timestamp("auction_date"),
+  viewingDates: text("viewing_dates"),
+  auctionItems: text("auction_items").array(),
+  auctionRequirements: text("auction_requirements"),
+  
+  // Fields specific to tenders
+  tenderDeadline: timestamp("tender_deadline"),
+  tenderRequirements: text("tender_requirements"),
+  tenderDocuments: text("tender_documents"),
+  
+  // Custom JSON field for any additional type-specific data
+  additionalData: jsonb("additional_data"),
 });
 
 // Applications table
