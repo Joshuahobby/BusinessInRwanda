@@ -42,12 +42,36 @@ const Header = () => {
             <Link href="/opportunities" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/opportunities' ? 'text-[#0A3D62]' : ''}`}>
               Opportunities
             </Link>
-            <Link href="/employers" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/employers' ? 'text-[#0A3D62]' : ''}`}>
-              Employers
-            </Link>
-            <Link href="/resources" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/resources' ? 'text-[#0A3D62]' : ''}`}>
-              Resources
-            </Link>
+            
+            {/* Conditional Navigation based on auth status */}
+            {isAuthenticated ? (
+              <>
+                {/* Logged-in user navigation */}
+                {isEmployer() && (
+                  <Link href="/employer/dashboard" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/employer/dashboard' ? 'text-[#0A3D62]' : ''}`}>
+                    My Dashboard
+                  </Link>
+                )}
+                {isJobSeeker() && (
+                  <Link href="/jobseeker/dashboard" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/jobseeker/dashboard' ? 'text-[#0A3D62]' : ''}`}>
+                    My Dashboard
+                  </Link>
+                )}
+                <Link href="/post-job" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/post-job' ? 'text-[#0A3D62]' : ''}`}>
+                  Post Opportunity
+                </Link>
+              </>
+            ) : (
+              <>
+                {/* Non-logged-in user navigation */}
+                <Link href="/employers" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/employers' ? 'text-[#0A3D62]' : ''}`}>
+                  For Employers
+                </Link>
+                <Link href="/resources" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/resources' ? 'text-[#0A3D62]' : ''}`}>
+                  How It Works
+                </Link>
+              </>
+            )}
             
             {/* Language Selector */}
             <DropdownMenu>
@@ -125,14 +149,48 @@ const Header = () => {
                     Home
                   </Link>
                   <Link href="/opportunities" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
-                    Find Opportunities
+                    Opportunities
                   </Link>
-                  <Link href="/employers" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
-                    Employers
-                  </Link>
-                  <Link href="/resources" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
-                    Resources
-                  </Link>
+                  
+                  {/* Conditional Mobile Navigation */}
+                  {isAuthenticated ? (
+                    <>
+                      {/* Logged-in user mobile navigation */}
+                      {isEmployer() && (
+                        <Link href="/employer/dashboard" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
+                          My Dashboard
+                        </Link>
+                      )}
+                      {isJobSeeker() && (
+                        <Link href="/jobseeker/dashboard" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
+                          My Dashboard
+                        </Link>
+                      )}
+                      <Link href="/post-job" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
+                        Post Opportunity
+                      </Link>
+                      <Link href="/profile" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
+                        Profile Settings
+                      </Link>
+                      <button 
+                        onClick={() => logout()}
+                        className="px-3 py-2 text-base font-medium text-red-600 hover:text-red-800 text-left"
+                      >
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      {/* Non-logged-in user mobile navigation */}
+                      <Link href="/employers" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
+                        For Employers
+                      </Link>
+                      <Link href="/resources" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
+                        How It Works
+                      </Link>
+                    </>
+                  )}
+                  
                   <div className="px-3 py-2">
                     <DropdownMenu>
                       <DropdownMenuTrigger className="flex items-center space-x-1 text-neutral-700">
