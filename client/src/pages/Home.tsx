@@ -92,7 +92,12 @@ const Home = () => {
                   <h3 className="text-lg font-semibold text-blue-800">Featured Opportunities</h3>
                 </div>
                 <div className="p-4">
-                  <FeaturedJobs />
+                  <FeaturedJobs 
+                    showTitle={false} 
+                    showPagination={true} 
+                    limit={6}
+                    queryKey="/api/jobs/featured"
+                  />
                 </div>
               </div>
             </TabsContent>
@@ -104,7 +109,12 @@ const Home = () => {
                   <h3 className="text-lg font-semibold text-green-800">Recently Posted</h3>
                 </div>
                 <div className="p-4">
-                  <FeaturedJobs />
+                  <FeaturedJobs 
+                    showTitle={false} 
+                    showPagination={true} 
+                    limit={6}
+                    queryKey="/api/jobs"
+                  />
                 </div>
               </div>
             </TabsContent>
@@ -128,7 +138,12 @@ const Home = () => {
                   <h3 className="text-lg font-semibold text-purple-800">Popular Opportunities</h3>
                 </div>
                 <div className="p-4">
-                  <FeaturedJobs />
+                  <FeaturedJobs 
+                    showTitle={false} 
+                    showPagination={true} 
+                    limit={6}
+                    queryKey="/api/jobs/featured"
+                  />
                 </div>
               </div>
             </TabsContent>
