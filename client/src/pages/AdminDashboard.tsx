@@ -449,161 +449,354 @@ const AdminDashboard = () => {
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 {/* Overview Tab */}
                 <TabsContent value="overview" className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Platform Overview</CardTitle>
-                      <CardDescription>
-                        Key metrics and platform performance
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                      {isLoadingStats ? (
-                        <div className="space-y-4">
-                          <div className="h-64 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
-                          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="h-32 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
-                            <div className="h-32 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
-                            <div className="h-32 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
-                          </div>
-                        </div>
-                      ) : statsError ? (
-                        <div className="p-4 bg-red-50 text-red-700 rounded-md">
-                          <AlertTriangle className="h-5 w-5 inline mr-2" />
-                          Failed to load platform statistics. Please try again later.
-                        </div>
-                      ) : (
-                        <div className="space-y-6">
-                          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                            <Card className="bg-blue-50 border-blue-100">
-                              <CardContent className="p-4">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-sm text-blue-700">Total Users</p>
-                                    <h3 className="text-2xl font-bold text-blue-900">{stats?.totalUsers || 0}</h3>
-                                  </div>
-                                  <Users className="h-10 w-10 text-blue-400" />
-                                </div>
-                              </CardContent>
-                            </Card>
-                            <Card className="bg-green-50 border-green-100">
-                              <CardContent className="p-4">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-sm text-green-700">Active Jobs</p>
-                                    <h3 className="text-2xl font-bold text-green-900">{stats?.totalJobs || 0}</h3>
-                                  </div>
-                                  <Briefcase className="h-10 w-10 text-green-400" />
-                                </div>
-                              </CardContent>
-                            </Card>
-                            <Card className="bg-purple-50 border-purple-100">
-                              <CardContent className="p-4">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-sm text-purple-700">Companies</p>
-                                    <h3 className="text-2xl font-bold text-purple-900">{stats?.totalCompanies || 0}</h3>
-                                  </div>
-                                  <Building className="h-10 w-10 text-purple-400" />
-                                </div>
-                              </CardContent>
-                            </Card>
-                            <Card className="bg-amber-50 border-amber-100">
-                              <CardContent className="p-4">
-                                <div className="flex items-center justify-between">
-                                  <div>
-                                    <p className="text-sm text-amber-700">Applications</p>
-                                    <h3 className="text-2xl font-bold text-amber-900">{stats?.totalApplications || 0}</h3>
-                                  </div>
-                                  <FileText className="h-10 w-10 text-amber-400" />
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </div>
+                  <div className="flex justify-between items-center mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold">Dashboard Overview</h2>
+                      <p className="text-muted-foreground">Monitor platform performance and key metrics</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Select defaultValue="week">
+                        <SelectTrigger className="w-[140px]">
+                          <SelectValue placeholder="Time period" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="today">Today</SelectItem>
+                          <SelectItem value="week">This Week</SelectItem>
+                          <SelectItem value="month">This Month</SelectItem>
+                          <SelectItem value="year">This Year</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button variant="outline" size="sm">
+                        <FileDown className="h-4 w-4 mr-2" />
+                        Export Data
+                      </Button>
+                    </div>
+                  </div>
 
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <Card>
-                              <CardHeader className="pb-2">
-                                <CardTitle className="text-lg">User Distribution</CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="h-64 flex items-center justify-center">
-                                  <PieChart className="h-40 w-40 text-neutral-300" />
+                  {isLoadingStats ? (
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[1, 2, 3, 4].map(i => (
+                          <Card key={i} className="h-[120px] animate-pulse">
+                            <CardContent className="p-6">
+                              <div className="h-4 w-1/2 bg-neutral-200 dark:bg-neutral-700 rounded-full mb-4"></div>
+                              <div className="h-8 w-1/3 bg-neutral-200 dark:bg-neutral-700 rounded-full"></div>
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </div>
+                      
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <Card className="h-[350px] animate-pulse">
+                          <CardHeader>
+                            <div className="h-5 w-1/3 bg-neutral-200 dark:bg-neutral-700 rounded-full"></div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="h-[250px] bg-neutral-200 dark:bg-neutral-700 rounded-md"></div>
+                          </CardContent>
+                        </Card>
+                        <Card className="h-[350px] animate-pulse">
+                          <CardHeader>
+                            <div className="h-5 w-1/3 bg-neutral-200 dark:bg-neutral-700 rounded-full"></div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-4">
+                              {[1, 2, 3, 4].map(i => (
+                                <div key={i} className="h-10 bg-neutral-200 dark:bg-neutral-700 rounded-md"></div>
+                              ))}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+                    </div>
+                  ) : statsError ? (
+                    <div className="p-6 bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 rounded-lg border border-red-200 dark:border-red-800">
+                      <div className="flex items-center">
+                        <AlertTriangle className="h-5 w-5 mr-3" />
+                        <div>
+                          <h3 className="font-medium">Error Loading Statistics</h3>
+                          <p className="text-sm mt-1">Unable to fetch platform statistics. Please try refreshing the page.</p>
+                        </div>
+                      </div>
+                      <Button variant="outline" size="sm" className="mt-3 text-red-700 dark:text-red-400 border-red-200 dark:border-red-800">
+                        Retry
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Stat Cards */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Card className="overflow-hidden border-l-4 border-l-blue-500 dark:border-l-blue-400">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-muted-foreground">Total Users</p>
+                                <h3 className="text-2xl font-bold mt-1">{stats?.totalUsers || 0}</h3>
+                                <div className="flex items-center mt-2 text-xs text-green-600 dark:text-green-400">
+                                  <TrendingUp className="h-3 w-3 mr-1" />
+                                  <span>+12% from last month</span>
                                 </div>
-                                <div className="grid grid-cols-3 gap-2 mt-4">
-                                  {(stats?.usersByRole || []).map((item) => (
-                                    <div key={item.role} className="text-center">
-                                      <div className={`h-3 rounded-full mb-1 mx-auto w-4/5 ${
-                                        item.role === 'job_seeker' ? 'bg-blue-400' :
-                                        item.role === 'employer' ? 'bg-green-400' : 'bg-purple-400'
-                                      }`}></div>
-                                      <p className="text-xs text-neutral-500 capitalize">{item.role.replace('_', ' ')}</p>
-                                      <p className="font-medium">{item.count}</p>
+                              </div>
+                              <div className="bg-blue-100 dark:bg-blue-900/30 p-2 rounded-md">
+                                <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="overflow-hidden border-l-4 border-l-green-500 dark:border-l-green-400">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-muted-foreground">Active Posts</p>
+                                <h3 className="text-2xl font-bold mt-1">{stats?.totalJobs || 0}</h3>
+                                <div className="flex items-center mt-2 text-xs text-green-600 dark:text-green-400">
+                                  <TrendingUp className="h-3 w-3 mr-1" />
+                                  <span>+8% from last month</span>
+                                </div>
+                              </div>
+                              <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-md">
+                                <Briefcase className="h-5 w-5 text-green-600 dark:text-green-400" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="overflow-hidden border-l-4 border-l-purple-500 dark:border-l-purple-400">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-muted-foreground">Companies</p>
+                                <h3 className="text-2xl font-bold mt-1">{stats?.totalCompanies || 0}</h3>
+                                <div className="flex items-center mt-2 text-xs text-green-600 dark:text-green-400">
+                                  <TrendingUp className="h-3 w-3 mr-1" />
+                                  <span>+5% from last month</span>
+                                </div>
+                              </div>
+                              <div className="bg-purple-100 dark:bg-purple-900/30 p-2 rounded-md">
+                                <Building className="h-5 w-5 text-purple-600 dark:text-purple-400" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        <Card className="overflow-hidden border-l-4 border-l-amber-500 dark:border-l-amber-400">
+                          <CardContent className="p-6">
+                            <div className="flex justify-between items-start">
+                              <div>
+                                <p className="text-sm text-muted-foreground">Applications</p>
+                                <h3 className="text-2xl font-bold mt-1">{stats?.totalApplications || 0}</h3>
+                                <div className="flex items-center mt-2 text-xs text-green-600 dark:text-green-400">
+                                  <TrendingUp className="h-3 w-3 mr-1" />
+                                  <span>+15% from last month</span>
+                                </div>
+                              </div>
+                              <div className="bg-amber-100 dark:bg-amber-900/30 p-2 rounded-md">
+                                <FileText className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      </div>
+
+                      {/* Charts and Activity */}
+                      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <Card>
+                          <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-lg">Post Type Distribution</CardTitle>
+                            <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={() => setActiveTab("posts")}>
+                              View All
+                              <ChevronRight className="h-3 w-3" />
+                            </Button>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="pt-4 space-y-4">
+                              <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                                    <span>Jobs</span>
+                                  </div>
+                                  <span className="font-medium">65%</span>
+                                </div>
+                                <div className="h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+                                  <div className="h-full bg-blue-500" style={{ width: '65%' }}></div>
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
+                                    <span>Tenders</span>
+                                  </div>
+                                  <span className="font-medium">15%</span>
+                                </div>
+                                <div className="h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+                                  <div className="h-full bg-purple-500" style={{ width: '15%' }}></div>
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-amber-500 rounded-full"></div>
+                                    <span>Auctions</span>
+                                  </div>
+                                  <span className="font-medium">12%</span>
+                                </div>
+                                <div className="h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+                                  <div className="h-full bg-amber-500" style={{ width: '12%' }}></div>
+                                </div>
+                              </div>
+                              
+                              <div className="space-y-2">
+                                <div className="flex justify-between text-sm">
+                                  <div className="flex items-center gap-2">
+                                    <div className="w-3 h-3 bg-green-500 rounded-full"></div>
+                                    <span>Announcements</span>
+                                  </div>
+                                  <span className="font-medium">8%</span>
+                                </div>
+                                <div className="h-2 bg-neutral-100 dark:bg-neutral-800 rounded-full overflow-hidden">
+                                  <div className="h-full bg-green-500" style={{ width: '8%' }}></div>
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="mt-8">
+                              <div className="flex justify-between items-center mb-4">
+                                <h4 className="text-sm font-medium">User Distribution</h4>
+                                <div className="flex -space-x-2">
+                                  {(stats?.usersByRole || []).map((item, i) => (
+                                    <div 
+                                      key={item.role} 
+                                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs text-white ${
+                                        item.role === 'job_seeker' ? 'bg-blue-500' :
+                                        item.role === 'employer' ? 'bg-green-500' : 'bg-purple-500'
+                                      }`}
+                                      style={{ zIndex: 3 - i }}
+                                    >
+                                      {item.role === 'job_seeker' ? 'J' : 
+                                       item.role === 'employer' ? 'E' : 'A'}
                                     </div>
                                   ))}
                                 </div>
-                              </CardContent>
-                            </Card>
+                              </div>
+                              <div className="flex gap-2">
+                                {(stats?.usersByRole || []).map((item) => (
+                                  <div key={item.role} className="flex-1 bg-neutral-100 dark:bg-neutral-800 rounded-md p-2 text-center">
+                                    <div className="text-xs text-muted-foreground capitalize">{item.role.replace('_', ' ')}</div>
+                                    <div className="font-medium mt-1">{item.count}</div>
+                                    <div className="text-xs text-muted-foreground">
+                                      {Math.round((item.count / (stats?.totalUsers || 1)) * 100)}%
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
 
-                            <Card>
-                              <CardHeader className="pb-2">
-                                <CardTitle className="text-lg">Recent Activity</CardTitle>
-                              </CardHeader>
-                              <CardContent>
-                                <div className="space-y-4">
-                                  <div>
-                                    <h4 className="text-sm font-medium mb-2">Recent Jobs</h4>
-                                    <div className="space-y-2">
-                                      {(stats?.recentJobs || []).length > 0 ? (
-                                        (stats?.recentJobs || []).map((job: any) => (
-                                          <div key={job.id} className="flex items-center justify-between py-1">
-                                            <div className="flex items-center">
-                                              <Briefcase className="h-4 w-4 mr-2 text-neutral-400" />
-                                              <span className="text-sm truncate max-w-[200px]">{job.title}</span>
-                                            </div>
-                                            <Badge variant="outline" className="text-xs">
-                                              {format(new Date(job.createdAt), 'MMM d')}
-                                            </Badge>
-                                          </div>
-                                        ))
-                                      ) : (
-                                        <p className="text-sm text-neutral-500">No recent jobs</p>
-                                      )}
+                        <div className="space-y-6">
+                          <Card>
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                              <CardTitle className="text-lg">Recent Posts</CardTitle>
+                              <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={() => setActiveTab("posts")}>
+                                View All
+                                <ChevronRight className="h-3 w-3" />
+                              </Button>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="space-y-4">
+                                {(stats?.recentJobs || []).length > 0 ? (
+                                  (stats?.recentJobs || []).slice(0, 4).map((job: any) => (
+                                    <div key={job.id} className="flex items-center justify-between p-2 rounded-md hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition-colors">
+                                      <div className="flex items-center gap-3">
+                                        <div className={`w-8 h-8 rounded-md flex items-center justify-center ${
+                                          job.postType === 'job' || !job.postType ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : 
+                                          job.postType === 'tender' ? 'bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400' :
+                                          job.postType === 'auction' ? 'bg-amber-100 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400' :
+                                          'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                                        }`}>
+                                          {job.postType === 'job' || !job.postType ? <Briefcase className="h-4 w-4" /> : 
+                                           job.postType === 'tender' ? <FileText className="h-4 w-4" /> :
+                                           job.postType === 'auction' ? <Gavel className="h-4 w-4" /> :
+                                           <Megaphone className="h-4 w-4" />}
+                                        </div>
+                                        <div>
+                                          <p className="font-medium text-sm truncate max-w-[180px] md:max-w-[240px]">{job.title}</p>
+                                          <p className="text-xs text-muted-foreground">{job.companyName || 'Individual Post'}</p>
+                                        </div>
+                                      </div>
+                                      <div className="flex items-center gap-2">
+                                        <Badge 
+                                          variant="outline" 
+                                          className={`text-xs ${
+                                            job.status === 'approved' ? 'bg-green-50 text-green-700 border-green-200 dark:bg-green-900/20 dark:text-green-400 dark:border-green-800' :
+                                            job.status === 'rejected' ? 'bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800' :
+                                            'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800'
+                                          }`}
+                                        >
+                                          {job.status}
+                                        </Badge>
+                                      </div>
                                     </div>
+                                  ))
+                                ) : (
+                                  <div className="flex items-center justify-center h-[150px] bg-neutral-50 dark:bg-neutral-800/50 rounded-md">
+                                    <p className="text-muted-foreground text-sm">No recent posts found</p>
                                   </div>
-                                  
-                                  <Separator />
-                                  
-                                  <div>
-                                    <h4 className="text-sm font-medium mb-2">Recent Applications</h4>
-                                    <div className="space-y-2">
-                                      {(stats?.recentApplications || []).length > 0 ? (
-                                        (stats?.recentApplications || []).map((app: any) => (
-                                          <div key={app.id} className="flex items-center justify-between py-1">
-                                            <div className="flex items-center">
-                                              <FileText className="h-4 w-4 mr-2 text-neutral-400" />
-                                              <span className="text-sm truncate max-w-[200px]">{app.job?.title || 'Unknown Job'}</span>
-                                            </div>
-                                            <Badge 
-                                              className={`text-xs ${app.status === 'hired' ? 'bg-green-100 text-green-800' : ''}`}
-                                              variant={app.status === 'applied' ? 'default' : 'outline'}
-                                            >
-                                              {app.status.replace('_', ' ')}
-                                            </Badge>
-                                          </div>
-                                        ))
-                                      ) : (
-                                        <p className="text-sm text-neutral-500">No recent applications</p>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          </div>
+                                )}
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          <Card>
+                            <CardHeader className="flex flex-row items-center justify-between pb-2">
+                              <CardTitle className="text-lg">Quick Actions</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                              <div className="grid grid-cols-2 gap-3">
+                                <Button 
+                                  variant="outline" 
+                                  className="h-auto py-4 flex flex-col items-center justify-center gap-2"
+                                  onClick={() => setIsCreatePostModalOpen(true)}
+                                >
+                                  <FilePlus2 className="h-5 w-5" />
+                                  <span className="text-xs">New Post</span>
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  className="h-auto py-4 flex flex-col items-center justify-center gap-2"
+                                  onClick={() => setIsCreateCompanyModalOpen(true)}
+                                >
+                                  <Building className="h-5 w-5" />
+                                  <span className="text-xs">New Company</span>
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  className="h-auto py-4 flex flex-col items-center justify-center gap-2"
+                                  onClick={() => setIsCreateCategoryModalOpen(true)}
+                                >
+                                  <TagIcon className="h-5 w-5" />
+                                  <span className="text-xs">New Category</span>
+                                </Button>
+                                <Button 
+                                  variant="outline" 
+                                  className="h-auto py-4 flex flex-col items-center justify-center gap-2"
+                                  onClick={() => navigate("/")}
+                                >
+                                  <MoveUpRight className="h-5 w-5" />
+                                  <span className="text-xs">View Site</span>
+                                </Button>
+                              </div>
+                            </CardContent>
+                          </Card>
                         </div>
-                      )}
-                    </CardContent>
-                  </Card>
+                      </div>
+                    </>
+                  )}
                 </TabsContent>
 
                 {/* Users Tab */}
