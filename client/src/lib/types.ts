@@ -14,4 +14,7 @@ export interface JobSearchParams {
   category?: string;
   jobType?: JobType;
   experienceLevel?: ExperienceLevel;
+  minSalary?: number;
+  maxSalary?: number;
+  currency?: string;
 }

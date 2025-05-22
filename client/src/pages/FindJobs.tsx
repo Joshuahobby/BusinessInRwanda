@@ -37,6 +37,7 @@ const FindJobs = () => {
   const [experienceLevel, setExperienceLevel] = useState<ExperienceLevel | ''>('');
   const [datePosted, setDatePosted] = useState('');
   const [salaryRange, setSalaryRange] = useState<[number, number]>([100000, 1000000]);
+  const [selectedCurrency, setSelectedCurrency] = useState<string>('RWF');
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [alertKeyword, setAlertKeyword] = useState('');
   const [savedSearches, setSavedSearches] = useState<{name: string, params: JobSearchParams}[]>([]);
