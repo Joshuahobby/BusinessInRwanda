@@ -809,11 +809,8 @@ const AdminDashboard = () => {
                             setIsJobDetailsModalOpen(true);
                           }}
                           onEditPost={(job) => {
-                            // Future implementation for job editing
-                            toast({
-                              title: "Coming Soon",
-                              description: "Job editing functionality will be available soon.",
-                            });
+                            setEditingPost(job);
+                            setIsEditPostModalOpen(true);
                           }}
                           onApprovePost={async (job) => {
                             try {
@@ -1392,6 +1389,14 @@ const AdminDashboard = () => {
         onClose={() => setIsEditNotificationModalOpen(false)}
         notification={editingNotification}
         mode="edit"
+      />
+
+      {/* Edit Post Modal */}
+      <EditPostModal
+        isOpen={isEditPostModalOpen}
+        onClose={() => setIsEditPostModalOpen(false)}
+        post={editingPost}
+        companies={companies || []}
       />
     </>
   );
