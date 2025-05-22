@@ -56,20 +56,18 @@ const CategoryModal = ({ isOpen, onClose, category, mode }: CategoryModalProps) 
     
     try {
       if (mode === "create") {
-        await apiRequest("/api/admin/categories", {
-          method: "POST",
-          body: JSON.stringify({ name, icon }),
-        });
+        await apiRequest("/api/admin/categories", "POST", 
+          JSON.stringify({ name, icon })
+        );
         
         toast({
           title: "Success",
           description: "Category created successfully",
         });
       } else {
-        await apiRequest(`/api/admin/categories/${category?.id}`, {
-          method: "PATCH",
-          body: JSON.stringify({ name, icon }),
-        });
+        await apiRequest(`/api/admin/categories/${category?.id}`, "PATCH", 
+          JSON.stringify({ name, icon })
+        );
         
         toast({
           title: "Success",

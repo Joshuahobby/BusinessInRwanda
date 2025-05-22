@@ -88,20 +88,18 @@ const NotificationModal = ({ isOpen, onClose, notification, mode }: Notification
     
     try {
       if (mode === "create") {
-        await apiRequest("/api/admin/notifications", {
-          method: "POST",
-          body: JSON.stringify(notificationData),
-        });
+        await apiRequest("/api/admin/notifications", "POST", 
+          JSON.stringify(notificationData)
+        );
         
         toast({
           title: "Success",
           description: "Notification created successfully",
         });
       } else {
-        await apiRequest(`/api/admin/notifications/${notification?.id}`, {
-          method: "PATCH",
-          body: JSON.stringify(notificationData),
-        });
+        await apiRequest(`/api/admin/notifications/${notification?.id}`, "PATCH", 
+          JSON.stringify(notificationData)
+        );
         
         toast({
           title: "Success",

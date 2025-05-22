@@ -32,9 +32,7 @@ const DeleteCategoryDialog = ({ isOpen, onClose, category }: DeleteCategoryDialo
     setIsLoading(true);
     
     try {
-      await apiRequest(`/api/admin/categories/${category.id}`, {
-        method: "DELETE",
-      });
+      await apiRequest(`/api/admin/categories/${category.id}`, "DELETE");
       
       toast({
         title: "Success",

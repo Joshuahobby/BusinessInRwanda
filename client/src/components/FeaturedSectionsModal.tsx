@@ -16,7 +16,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsItem, TabsList } from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsTrigger, TabsList } from "@/components/ui/tabs";
 import {
   Select,
   SelectContent,
@@ -96,10 +96,9 @@ const FeaturedSectionsModal = ({
     };
     
     try {
-      await apiRequest('/api/admin/featured-sections', {
-        method: "PATCH",
-        body: JSON.stringify(updatedData),
-      });
+      await apiRequest('/api/admin/featured-sections', "PATCH", 
+        JSON.stringify(updatedData)
+      );
       
       toast({
         title: "Success",
@@ -168,9 +167,9 @@ const FeaturedSectionsModal = ({
         <form onSubmit={handleSubmit} className="space-y-4 py-4">
           <Tabs defaultValue="hero" value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-3 mb-4">
-              <TabsItem value="hero">Homepage Hero</TabsItem>
-              <TabsItem value="jobs">Featured Jobs</TabsItem>
-              <TabsItem value="companies">Featured Companies</TabsItem>
+              <TabsTrigger value="hero">Homepage Hero</TabsTrigger>
+              <TabsTrigger value="jobs">Featured Jobs</TabsTrigger>
+              <TabsTrigger value="companies">Featured Companies</TabsTrigger>
             </TabsList>
             
             {/* Homepage Hero Tab */}
