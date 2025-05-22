@@ -7,6 +7,7 @@ import * as crypto from "crypto";
 import session from "express-session";
 import { setupSocialAuth, getSessionConfig } from "./socialAuth";
 import { setupFirebaseRoutes } from "./firebase-routes";
+import { setupAdminRoutes } from "./admin-routes";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up session middleware with PostgreSQL
@@ -21,6 +22,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Setup Firebase Authentication
   setupFirebaseRoutes(app);
+  
+  // Setup Admin Routes
+  setupAdminRoutes(app);
 
   // Configure passport local strategy
   passport.use(

@@ -12,6 +12,7 @@ import {
 import UserEditModal from "@/components/UserEditModal";
 import JobManagementTable from "@/components/JobManagementTable";
 import JobApprovalModal from "@/components/JobApprovalModal";
+import JobDetailsModal from "@/components/JobDetailsModal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -716,7 +717,7 @@ const AdminDashboard = () => {
                           }}
                           onApproveJob={async (job) => {
                             try {
-                              await fetch(`/api/jobs/${job.id}`, {
+                              await fetch(`/api/admin/jobs/${job.id}`, {
                                 method: "PATCH",
                                 headers: {
                                   "Content-Type": "application/json",
@@ -728,6 +729,7 @@ const AdminDashboard = () => {
                               
                               // Invalidate queries to refresh data
                               queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
                               
                               return Promise.resolve();
                             } catch (error) {
@@ -737,7 +739,7 @@ const AdminDashboard = () => {
                           }}
                           onRejectJob={async (job) => {
                             try {
-                              await fetch(`/api/jobs/${job.id}`, {
+                              await fetch(`/api/admin/jobs/${job.id}`, {
                                 method: "PATCH",
                                 headers: {
                                   "Content-Type": "application/json",
@@ -749,6 +751,7 @@ const AdminDashboard = () => {
                               
                               // Invalidate queries to refresh data
                               queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
                               
                               return Promise.resolve();
                             } catch (error) {
@@ -1009,6 +1012,13 @@ const AdminDashboard = () => {
         isOpen={isEditModalOpen} 
         onClose={() => setIsEditModalOpen(false)} 
         user={editingUser}
+      />
+
+      {/* Job Details Modal */}
+      <JobDetailsModal 
+        isOpen={isJobDetailsModalOpen}
+        onClose={() => setIsJobDetailsModalOpen(false)}
+        job={selectedJob}
       />
     </>
   );
