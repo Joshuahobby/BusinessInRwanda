@@ -595,9 +595,15 @@ const FindJobs = () => {
                     </div>
                   )}
                   
-                  {/* Date Posted */}
+                  {/* Date Posted - with contextual label */}
                   <div>
-                    <Label className="font-medium mb-2 block">Date Posted</Label>
+                    <Label className="font-medium mb-2 block">
+                      {postType === "job" && "Date Posted"}
+                      {postType === "tender" && "Tender Date"}
+                      {postType === "auction" && "Auction Date"}
+                      {postType === "announcement" && "Announcement Date"}
+                      {postType === "all" && "Date Posted"}
+                    </Label>
                     <RadioGroup 
                       value={datePosted} 
                       onValueChange={handleDatePostedChange}
@@ -775,10 +781,23 @@ const FindJobs = () => {
                 </div>
               ) : (
                 <div className="bg-white p-8 rounded-lg shadow-sm text-center">
-                  <Briefcase className="h-12 w-12 text-neutral-400 mx-auto mb-4" />
-                  <h3 className="text-xl font-medium mb-2">No jobs found</h3>
+                  {/* Dynamic icon based on selected post type */}
+                  {postType === "job" && <Briefcase className="h-12 w-12 text-neutral-400 mx-auto mb-4" />}
+                  {postType === "tender" && <FileText className="h-12 w-12 text-neutral-400 mx-auto mb-4" />}
+                  {postType === "auction" && <Gavel className="h-12 w-12 text-neutral-400 mx-auto mb-4" />}
+                  {postType === "announcement" && <Megaphone className="h-12 w-12 text-neutral-400 mx-auto mb-4" />}
+                  {postType === "all" && <Search className="h-12 w-12 text-neutral-400 mx-auto mb-4" />}
+                  
+                  {/* Dynamic heading based on selected post type */}
+                  <h3 className="text-xl font-medium mb-2">
+                    {postType === "job" && "No jobs found"}
+                    {postType === "tender" && "No tenders found"}
+                    {postType === "auction" && "No auctions found"}
+                    {postType === "announcement" && "No announcements found"}
+                    {postType === "all" && "No listings found"}
+                  </h3>
                   <p className="text-neutral-600 mb-4">
-                    We couldn't find any jobs matching your search criteria. Try adjusting your filters or search terms.
+                    We couldn't find any {postType === "all" ? "listings" : postType + "s"} matching your search criteria. Try adjusting your filters or search terms.
                   </p>
                   <Button 
                     variant="outline" 
