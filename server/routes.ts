@@ -334,6 +334,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Register interest for announcements or auctions
+  app.post("/api/jobs/:id/interest", isJobSeeker, async (req, res) => {
+    try {
+      const jobId = parseInt(req.params.id);
+      const userId = (req.user as any).id;
+      
+      // Check if opportunity exists
+      const job = await storage.getJob(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Opportunity not found" });
+      }
+      
+      // Create interest record (we'll add this to storage later)
+      const interestData = {
+        jobId,
+        userId,
+        message: req.body.message,
+        contactPreference: req.body.contactPreference || 'email',
+        notifyUpdates: req.body.notifyUpdates !== false,
+      };
+      
+      // For now, create a simple application record with special status
+      const application = await storage.createApplication({
+        jobId,
+        userId,
+        coverLetter: req.body.message || `Interest registered for ${job.postType}`,
+        resumeUrl: req.body.documentsUrl,
+        status: "applied",
+      });
+      
+      res.status(201).json(application);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Submit proposal for tenders
+  app.post("/api/jobs/:id/proposal", isJobSeeker, async (req, res) => {
+    try {
+      const jobId = parseInt(req.params.id);
+      const userId = (req.user as any).id;
+      
+      // Check if tender exists
+      const job = await storage.getJob(jobId);
+      if (!job) {
+        return res.status(404).json({ message: "Tender not found" });
+      }
+      
+      if (job.postType !== 'tender') {
+        return res.status(400).json({ message: "This endpoint is only for tender proposals" });
+      }
+      
+      // Create proposal as application for now
+      const application = await storage.createApplication({
+        jobId,
+        userId,
+        coverLetter: `${req.body.proposalTitle}\n\n${req.body.proposalDescription}\n\n${req.body.coverLetter || ''}`,
+        resumeUrl: req.body.documentsUrl,
+        status: "applied",
+      });
+      
+      res.status(201).json(application);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // ===== COMPANY ROUTES =====
   
   // Get featured companies
