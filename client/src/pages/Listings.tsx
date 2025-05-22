@@ -109,7 +109,7 @@ const Listings = () => {
     });
     
     // Update URL
-    setLocation(`/find-jobs?${queryParams.toString()}`);
+    setLocation(`/listings?${queryParams.toString()}`);
   };
 
   const handleFilterChange = (key: keyof JobSearchParams, value: string) => {
@@ -227,7 +227,7 @@ const Listings = () => {
     });
     
     // Update URL with all filters
-    setLocation(`/find-jobs?${queryParams.toString()}`);
+    setLocation(`/listings?${queryParams.toString()}`);
   };
   
   const clearAllFilters = () => {
@@ -238,16 +238,52 @@ const Listings = () => {
     setSalaryRange([100000, 1000000]);
     setSelectedCurrency('RWF');
     setCurrentPage(1);
-    setLocation('/find-jobs');
+    setLocation('/listings');
   };
 
   return (
     <>
       <Helmet>
-        <title>Find Jobs - Business In Rwanda</title>
-        <meta name="description" content="Search and apply for jobs across Rwanda. Filter by location, job type, and experience level to find your ideal career opportunity." />
-        <meta property="og:title" content="Find Jobs - Business In Rwanda" />
-        <meta property="og:description" content="Search and apply for jobs across Rwanda. Filter by location, job type, and experience level to find your ideal career opportunity." />
+        <title>
+          {postType === "all" && "Find Opportunities - Business In Rwanda"}
+          {postType === "job" && "Find Jobs - Business In Rwanda"}
+          {postType === "tender" && "Find Tenders - Business In Rwanda"}
+          {postType === "auction" && "Find Auctions/Cyamunara - Business In Rwanda"}
+          {postType === "announcement" && "Announcements - Business In Rwanda"}
+        </title>
+        <meta name="description" content={
+          postType === "all" 
+            ? "Search jobs, tenders, auctions, and announcements across Rwanda. Filter by location, type, and other criteria to find the right opportunity."
+            : postType === "job"
+            ? "Search and apply for jobs across Rwanda. Filter by location, job type, and experience level to find your ideal career opportunity."
+            : postType === "tender"
+            ? "Browse tender opportunities from organizations across Rwanda. Find and bid on projects that match your expertise."
+            : postType === "auction"
+            ? "Discover property and asset auctions (Cyamunara) across Rwanda. Find valuable opportunities and place your bids."
+            : "View official announcements from organizations and government entities across Rwanda."
+        } />
+        <meta property="og:title" content={
+          postType === "all" 
+            ? "Find Opportunities - Business In Rwanda"
+            : postType === "job"
+            ? "Find Jobs - Business In Rwanda"
+            : postType === "tender"
+            ? "Find Tenders - Business In Rwanda"
+            : postType === "auction"
+            ? "Find Auctions/Cyamunara - Business In Rwanda"
+            : "Announcements - Business In Rwanda"
+        } />
+        <meta property="og:description" content={
+          postType === "all" 
+            ? "Search jobs, tenders, auctions, and announcements across Rwanda. Filter by location, type, and other criteria to find the right opportunity."
+            : postType === "job"
+            ? "Search and apply for jobs across Rwanda. Filter by location, job type, and experience level to find your ideal career opportunity."
+            : postType === "tender"
+            ? "Browse tender opportunities from organizations across Rwanda. Find and bid on projects that match your expertise."
+            : postType === "auction"
+            ? "Discover property and asset auctions (Cyamunara) across Rwanda. Find valuable opportunities and place your bids."
+            : "View official announcements from organizations and government entities across Rwanda."
+        } />
       </Helmet>
       
       {/* Job Alert Dialog */}
