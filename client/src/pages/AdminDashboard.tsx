@@ -356,7 +356,7 @@ const AdminDashboard = () => {
                       onClick={() => setActiveTab("settings")}
                     >
                       <Settings className="h-4 w-4 mr-2" />
-                      <span>Settings</span>
+                      <span>Platform Settings</span>
                       {activeTab === "settings" && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>}
                     </Button>
                   </nav>
