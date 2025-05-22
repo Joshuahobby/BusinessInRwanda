@@ -78,6 +78,7 @@ const AdminDashboard = () => {
   const [selectedJob, setSelectedJob] = useState<JobModel | null>(null);
   const [isJobDetailsModalOpen, setIsJobDetailsModalOpen] = useState(false);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [isCreateCompanyModalOpen, setIsCreateCompanyModalOpen] = useState(false);
 
   // Check if user is admin, redirect if not
   useEffect(() => {
@@ -1060,6 +1061,12 @@ const AdminDashboard = () => {
         isOpen={isCreatePostModalOpen}
         onClose={() => setIsCreatePostModalOpen(false)}
         companies={companies || []}
+      />
+
+      {/* Create Company Modal */}
+      <CreateCompanyModal
+        isOpen={isCreateCompanyModalOpen}
+        onClose={() => setIsCreateCompanyModalOpen(false)}
       />
     </>
   );
