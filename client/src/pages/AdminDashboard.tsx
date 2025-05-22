@@ -193,7 +193,7 @@ const AdminDashboard = () => {
   } = useQuery({
     queryKey: ['/api/admin/featured-sections'],
     enabled: currentUser?.role === 'admin' && activeTab === 'settings',
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
       setFeaturedSectionsData(data);
     }
   });
@@ -1084,7 +1084,7 @@ const AdminDashboard = () => {
 
                 {/* Settings Tab */}
                 <TabsContent value="settings" className="space-y-6">
-                  <Card>
+                  <Card className="mb-6">
                     <CardHeader>
                       <CardTitle>Account Settings</CardTitle>
                       <CardDescription>
@@ -1093,6 +1093,193 @@ const AdminDashboard = () => {
                     </CardHeader>
                     <CardContent>
                       <AccountSettings />
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Featured Sections Configuration */}
+                  <Card className="mb-6">
+                    <CardHeader>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                          <CardTitle>Featured Sections</CardTitle>
+                          <CardDescription>
+                            Configure featured content on the homepage
+                          </CardDescription>
+                        </div>
+                        <Button 
+                          className="bg-[#0A3D62] hover:bg-[#082C46]"
+                          onClick={() => setIsFeaturedSectionsModalOpen(true)}
+                        >
+                          <Settings className="h-4 w-4 mr-1.5" />
+                          Configure Featured Content
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {isLoadingFeaturedSections ? (
+                        <div className="space-y-3">
+                          <div className="h-20 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
+                          <div className="h-20 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
+                        </div>
+                      ) : featuredSectionsError ? (
+                        <div className="p-4 bg-red-50 text-red-700 rounded-md">
+                          <AlertTriangle className="h-5 w-5 inline mr-2" />
+                          Failed to load featured sections. Please try again later.
+                        </div>
+                      ) : (
+                        <div className="space-y-6">
+                          <div className="border rounded-md p-4">
+                            <h3 className="font-medium text-lg mb-2">Homepage Hero</h3>
+                            {featuredSectionsData?.homepageHero ? (
+                              <div>
+                                <p><span className="font-medium">Title:</span> {featuredSectionsData.homepageHero.title}</p>
+                                <p><span className="font-medium">Subtitle:</span> {featuredSectionsData.homepageHero.subtitle}</p>
+                                <p><span className="font-medium">Status:</span> {featuredSectionsData.homepageHero.enabled ? (
+                                  <Badge className="bg-green-600">Enabled</Badge>
+                                ) : (
+                                  <Badge variant="outline">Disabled</Badge>
+                                )}</p>
+                              </div>
+                            ) : (
+                              <p className="text-neutral-500">No hero configuration found.</p>
+                            )}
+                          </div>
+                          
+                          <div className="border rounded-md p-4">
+                            <h3 className="font-medium text-lg mb-2">Featured Jobs</h3>
+                            {featuredSectionsData?.featuredJobs?.length > 0 ? (
+                              <div>
+                                <p><span className="font-medium">Total Featured Jobs:</span> {featuredSectionsData.featuredJobs.length}</p>
+                                <ul className="list-disc list-inside mt-2">
+                                  {featuredSectionsData.featuredJobs.slice(0, 3).map((jobId: number) => {
+                                    const job = jobs.find(j => j.id === jobId);
+                                    return (
+                                      <li key={jobId}>
+                                        {job ? job.title : `Job #${jobId}`}
+                                      </li>
+                                    );
+                                  })}
+                                  {featuredSectionsData.featuredJobs.length > 3 && (
+                                    <li>And {featuredSectionsData.featuredJobs.length - 3} more...</li>
+                                  )}
+                                </ul>
+                              </div>
+                            ) : (
+                              <p className="text-neutral-500">No featured jobs configured.</p>
+                            )}
+                          </div>
+                          
+                          <div className="border rounded-md p-4">
+                            <h3 className="font-medium text-lg mb-2">Featured Companies</h3>
+                            {featuredSectionsData?.featuredCompanies?.length > 0 ? (
+                              <div>
+                                <p><span className="font-medium">Total Featured Companies:</span> {featuredSectionsData.featuredCompanies.length}</p>
+                                <ul className="list-disc list-inside mt-2">
+                                  {featuredSectionsData.featuredCompanies.slice(0, 3).map((companyId: number) => {
+                                    const company = companies.find(c => c.id === companyId);
+                                    return (
+                                      <li key={companyId}>
+                                        {company ? company.name : `Company #${companyId}`}
+                                      </li>
+                                    );
+                                  })}
+                                  {featuredSectionsData.featuredCompanies.length > 3 && (
+                                    <li>And {featuredSectionsData.featuredCompanies.length - 3} more...</li>
+                                  )}
+                                </ul>
+                              </div>
+                            ) : (
+                              <p className="text-neutral-500">No featured companies configured.</p>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                  
+                  {/* Platform Notifications */}
+                  <Card>
+                    <CardHeader>
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                        <div>
+                          <CardTitle>Platform Notifications</CardTitle>
+                          <CardDescription>
+                            Manage site-wide notification messages
+                          </CardDescription>
+                        </div>
+                        <Button 
+                          className="bg-[#0A3D62] hover:bg-[#082C46]"
+                          onClick={() => setIsCreateNotificationModalOpen(true)}
+                        >
+                          <PlusCircle className="h-4 w-4 mr-1.5" />
+                          Add Notification
+                        </Button>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      {isLoadingNotifications ? (
+                        <div className="space-y-3">
+                          <div className="h-16 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
+                          <div className="h-16 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
+                        </div>
+                      ) : notificationsError ? (
+                        <div className="p-4 bg-red-50 text-red-700 rounded-md">
+                          <AlertTriangle className="h-5 w-5 inline mr-2" />
+                          Failed to load notifications. Please try again later.
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {notifications && notifications.length > 0 ? (
+                            notifications.map((notification: any) => (
+                              <div key={notification.id} className="border rounded-md p-4">
+                                <div className="flex justify-between items-start mb-2">
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant={notification.type === 'info' ? 'outline' : notification.type === 'warning' ? 'secondary' : 'destructive'}>
+                                      {notification.type}
+                                    </Badge>
+                                    <Badge variant={notification.enabled ? 'default' : 'outline'}>
+                                      {notification.enabled ? 'Active' : 'Inactive'}
+                                    </Badge>
+                                  </div>
+                                  <div className="flex gap-1">
+                                    <Button 
+                                      variant="ghost" 
+                                      size="icon"
+                                      onClick={() => {
+                                        setEditingNotification(notification);
+                                        setIsEditNotificationModalOpen(true);
+                                      }}
+                                    >
+                                      <Edit className="h-4 w-4" />
+                                    </Button>
+                                    <Button 
+                                      variant="ghost" 
+                                      size="icon" 
+                                      className="text-red-500 hover:text-red-600"
+                                      onClick={() => {
+                                        setDeletingNotification(notification);
+                                        setIsDeleteNotificationModalOpen(true);
+                                      }}
+                                    >
+                                      <Trash className="h-4 w-4" />
+                                    </Button>
+                                  </div>
+                                </div>
+                                
+                                <p className="text-neutral-800 dark:text-neutral-100 mb-1">{notification.message}</p>
+                                
+                                <p className="text-xs text-neutral-500">
+                                  Expires: {new Date(notification.expiresAt).toLocaleDateString()}
+                                </p>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="text-center py-6 text-neutral-500">
+                              No notifications found. Click "Add Notification" to create a new site-wide notification.
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                 </TabsContent>
