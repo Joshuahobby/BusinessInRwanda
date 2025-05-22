@@ -15,6 +15,7 @@ import PostManagementTable from "@/components/PostManagementTable";
 import JobApprovalModal from "@/components/JobApprovalModal";
 import JobDetailsModal from "@/components/JobDetailsModal";
 import CreatePostModal from "@/components/CreatePostModal";
+import EditPostModal from "@/components/EditPostModal";
 import CreateCompanyModal from "@/components/CreateCompanyModal";
 import CategoryModal from "@/components/CategoryModal";
 import DeleteCategoryDialog from "@/components/DeleteCategoryDialog";
@@ -84,6 +85,8 @@ const AdminDashboard = () => {
   const [selectedJob, setSelectedJob] = useState<JobModel | null>(null);
   const [isJobDetailsModalOpen, setIsJobDetailsModalOpen] = useState(false);
   const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
+  const [isEditPostModalOpen, setIsEditPostModalOpen] = useState(false);
+  const [editingPost, setEditingPost] = useState<JobModel | null>(null);
   const [isCreateCompanyModalOpen, setIsCreateCompanyModalOpen] = useState(false);
   
   // Category management state
