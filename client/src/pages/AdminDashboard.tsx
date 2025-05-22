@@ -940,71 +940,105 @@ const AdminDashboard = () => {
                   </Card>
                 </TabsContent>
 
-                {/* Ads Tab (formerly Jobs Tab) */}
-                <TabsContent value="jobs" className="space-y-6">
-                  <Card>
-                    <CardHeader>
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div>
-                          <CardTitle>Ad Listings</CardTitle>
-                          <CardDescription>
-                            Manage all ad listings including jobs, auctions, tenders, and announcements
-                          </CardDescription>
-                        </div>
-                        <Button 
-                          className="bg-[#0A3D62] hover:bg-[#082C46]"
-                          onClick={() => setIsCreatePostModalOpen(true)}
-                        >
-                          <PlusCircle className="h-4 w-4 mr-1.5" />
-                          Create New Ad
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <div className="flex flex-col md:flex-row gap-4 mb-6">
-                        <div className="relative w-full md:w-1/3">
-                          <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-500" />
-                          <Input 
-                            placeholder="Search ads by title or description..." 
-                            className="pl-9"
+                {/* Posts Management Tab */}
+                <TabsContent value="posts" className="space-y-6">
+                  <div className="flex justify-between items-center mb-4">
+                    <div>
+                      <h2 className="text-2xl font-bold">Post Management</h2>
+                      <p className="text-muted-foreground">Manage jobs, auctions, tenders, and announcements in one place</p>
+                    </div>
+                    <Button 
+                      onClick={() => setIsCreatePostModalOpen(true)}
+                    >
+                      <PlusCircle className="h-4 w-4 mr-2" />
+                      New Post
+                    </Button>
+                  </div>
+                  
+                  <Card className="overflow-hidden border-t-4 border-t-primary">
+                    <CardHeader className="pb-3">
+                      <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+                        <div className="relative w-full md:w-[300px]">
+                          <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            type="search"
+                            placeholder="Search posts..."
+                            className="pl-9 w-full bg-background"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                           />
                         </div>
-                        <div className="w-full md:w-1/3">
-                          <Select
-                            value={postTypeFilter}
-                            onValueChange={setPostTypeFilter}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Filter by type" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all">All Types</SelectItem>
-                              <SelectItem value="job">Jobs</SelectItem>
-                              <SelectItem value="auction">Auctions</SelectItem>
-                              <SelectItem value="tender">Tenders</SelectItem>
-                              <SelectItem value="announcement">Announcements</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </div>
-                        <div className="w-full md:w-1/3">
-                          <Select
-                            value={jobStatusFilter}
-                            onValueChange={setJobStatusFilter}
-                          >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Filter by status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="all">All Statuses</SelectItem>
-                              <SelectItem value="pending">Pending</SelectItem>
-                              <SelectItem value="approved">Approved</SelectItem>
-                              <SelectItem value="rejected">Rejected</SelectItem>
-                            </SelectContent>
-                          </Select>
+                        
+                        <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+                          <div className="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800/50 rounded-md px-3 py-1.5">
+                            <TagIcon className="h-4 w-4 text-muted-foreground" />
+                            <Select value={postTypeFilter} onValueChange={setPostTypeFilter}>
+                              <SelectTrigger className="border-0 p-0 h-auto font-medium bg-transparent hover:bg-transparent focus:ring-0">
+                                <SelectValue placeholder="Post Type" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">All Types</SelectItem>
+                                <SelectItem value="job">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-blue-500 mr-2"></div>
+                                    Jobs
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="auction">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-amber-500 mr-2"></div>
+                                    Auctions
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="tender">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-purple-500 mr-2"></div>
+                                    Tenders
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="announcement">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                                    Announcements
+                                  </div>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          
+                          <div className="flex items-center gap-2 bg-neutral-50 dark:bg-neutral-800/50 rounded-md px-3 py-1.5">
+                            <Filter className="h-4 w-4 text-muted-foreground" />
+                            <Select value={jobStatusFilter} onValueChange={setJobStatusFilter}>
+                              <SelectTrigger className="border-0 p-0 h-auto font-medium bg-transparent hover:bg-transparent focus:ring-0">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="all">All Statuses</SelectItem>
+                                <SelectItem value="pending">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-amber-500 mr-2"></div>
+                                    Pending
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="approved">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-green-500 mr-2"></div>
+                                    Approved
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="rejected">
+                                  <div className="flex items-center">
+                                    <div className="w-2 h-2 rounded-full bg-red-500 mr-2"></div>
+                                    Rejected
+                                  </div>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
                         </div>
                       </div>
+                    </CardHeader>
+                    <CardContent className="p-0">
 
                       {isLoadingJobs ? (
                         <div className="animate-pulse space-y-4">
