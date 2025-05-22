@@ -29,8 +29,11 @@ function AppRoutes() {
       <main className="flex-grow">
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/find-jobs" component={FindJobs} />
+          <Route path="/listings" component={FindJobs} />
           <Route path="/job/:id" component={JobDetail} />
+          <Route path="/tender/:id" component={JobDetail} />
+          <Route path="/auction/:id" component={JobDetail} />
+          <Route path="/announcement/:id" component={JobDetail} />
           <Route path="/employer/dashboard" component={EmployerDashboard} />
           <Route path="/jobseeker/dashboard" component={JobSeekerDashboard} />
           <Route path="/admin/dashboard" component={AdminDashboard} />

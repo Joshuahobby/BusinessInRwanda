@@ -27,7 +27,7 @@ const HeroSection = () => {
       queryParams.append("type", searchType);
     }
     
-    navigate(`/find-jobs?${queryParams.toString()}`);
+    navigate(`/listings?${queryParams.toString()}`);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
