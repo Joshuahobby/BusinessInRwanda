@@ -57,21 +57,21 @@ const JobCard = ({
           color: "bg-purple-100 text-purple-800 hover:bg-purple-200",
           label: "Auction",
           icon: <Gavel className="h-4 w-4 mr-1" />,
-          actionText: "View Details"
+          actionText: "View Auction Details"
         };
       case "tender":
         return {
           color: "bg-blue-100 text-blue-800 hover:bg-blue-200",
           label: "Tender",
           icon: <FileText className="h-4 w-4 mr-1" />,
-          actionText: "View Tender"
+          actionText: "View Tender Details"
         };
       case "announcement":
         return {
           color: "bg-amber-100 text-amber-800 hover:bg-amber-200",
           label: "Announcement",
           icon: <Megaphone className="h-4 w-4 mr-1" />,
-          actionText: "Read More"
+          actionText: "Read Full Announcement"
         };
       default:
         return {
