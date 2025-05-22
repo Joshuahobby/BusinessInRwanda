@@ -73,17 +73,23 @@ const LocationBrowser = () => {
       {isLoading ? (
         <div className="h-[300px] bg-neutral-100 animate-pulse rounded-lg"></div>
       ) : (
-        <div className="relative h-[300px] bg-neutral-100 rounded-lg overflow-hidden">
-            {/* Map background image */}
-            <div 
-              className="absolute inset-0 bg-cover bg-center opacity-30"
-              style={{ 
-                backgroundImage: "url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/54/Rwanda_relief_location_map.svg/800px-Rwanda_relief_location_map.svg.png')",
-                backgroundSize: "contain",
-                backgroundPosition: "center",
-                backgroundRepeat: "no-repeat"
-              }}
-            ></div>
+        <div className="relative h-[300px] bg-gradient-to-br from-green-50 to-blue-50 rounded-lg overflow-hidden border-2 border-green-200">
+            {/* Simple Rwanda map representation */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <svg className="w-full h-full max-w-[250px] max-h-[200px]" viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Rwanda country outline - simplified */}
+                <path 
+                  d="M50 50 Q150 30 250 50 Q270 100 250 150 Q150 170 50 150 Q30 100 50 50 Z" 
+                  fill="#10B981" 
+                  fillOpacity="0.2" 
+                  stroke="#059669" 
+                  strokeWidth="2"
+                />
+                <text x="150" y="105" textAnchor="middle" className="fill-green-700 text-sm font-bold">
+                  RWANDA
+                </text>
+              </svg>
+            </div>
             
             {/* Location markers */}
             {regions.map((region) => (
