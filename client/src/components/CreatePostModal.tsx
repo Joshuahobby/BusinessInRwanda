@@ -128,6 +128,22 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
       // Log form data for debugging
       console.log("Form data being submitted:", data);
       
+      // Initialize additionalData object
+      const additionalData: Record<string, any> = {};
+      
+      // Handle individual owner info if applicable
+      if (data.ownerType === 'individual') {
+        additionalData.ownerInfo = {
+          name: data.individualName,
+          contact: data.individualContact
+        };
+      }
+      
+      // Handle auction items if applicable
+      if (data.postType === 'auction' && data.auctionItems) {
+        additionalData.auctionItems = data.auctionItems.split('\n').filter(item => item.trim());
+      }
+      
       // Prepare the payload based on post type
       const payload = {
         title: data.title,
@@ -154,14 +170,6 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
           companyId: null,
           individualName: data.individualName,
           individualContact: data.individualContact,
-          // Store additional owner metadata
-          additionalData: {
-            ...(payload?.additionalData || {}),
-            ownerInfo: {
-              name: data.individualName,
-              contact: data.individualContact
-            }
-          }
         }),
         
         // Add auction specific fields if post type is auction
@@ -171,11 +179,6 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
           viewingDates: data.viewingDates,
           auctionItems: data.auctionItems,
           auctionRequirements: data.auctionRequirements,
-          // Store auction items as an array in additionalData
-          additionalData: {
-            ...(payload?.additionalData || {}),
-            auctionItems: data.auctionItems?.split('\n').filter(item => item.trim())
-          }
         }),
         
         // Add tender specific fields if post type is tender
@@ -183,7 +186,10 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
           tenderDeadline: data.tenderDeadline,
           tenderRequirements: data.tenderRequirements,
           tenderDocuments: data.tenderDocuments
-        })
+        }),
+        
+        // Add the additionalData if it has any properties
+        ...(Object.keys(additionalData).length > 0 && { additionalData })
       };
 
       // Send the request to create the post

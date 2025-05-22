@@ -169,14 +169,14 @@ const AdminDashboard = () => {
     enabled: currentUser?.role === "admin" && activeTab === "jobs",
   });
 
-  // Fetch companies
+  // Fetch companies - always enabled to support CreatePostModal
   const { 
     data: companies = [] as CompanyModel[], 
     isLoading: isLoadingCompanies,
     error: companiesError
   } = useQuery<CompanyModel[]>({
     queryKey: ["/api/admin/companies"],
-    enabled: currentUser?.role === "admin" && activeTab === "companies",
+    enabled: currentUser?.role === "admin", // Always fetch companies for modals
   });
   
   // Fetch categories
