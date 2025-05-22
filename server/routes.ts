@@ -512,7 +512,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       // In a real implementation, we would add pagination
       const users = await storage.getAllUsers();
-      res.json(users);
+      
+      // Remove sensitive data
+      const usersWithoutPasswords = users.map(user => {
+        const { password, ...userWithoutPassword } = user;
+        return userWithoutPassword;
+      });
+      
+      res.json(usersWithoutPasswords);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
@@ -526,13 +533,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
-      res.json(user);
+      
+      // Remove sensitive data
+      const { password, ...userWithoutPassword } = user;
+      res.json(userWithoutPassword);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
   });
 
-  // Update user (admin can change roles, status, etc.)
+  // Update user (admin can change roles, status, etc.) - PATCH for partial updates
   app.patch("/api/admin/users/:id", isAdmin, async (req, res) => {
     try {
       const userId = parseInt(req.params.id);
@@ -546,7 +556,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Update user
       const updatedUser = await storage.updateUser(userId, userData);
-      res.json(updatedUser);
+      
+      // Remove sensitive data
+      const { password, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Update user completely - PUT for full updates from admin panel
+  app.put("/api/admin/users/:id", isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const userData = req.body;
+      
+      // Verify user exists
+      const existingUser = await storage.getUser(userId);
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Preserve fields that shouldn't be updated via this endpoint
+      const protectedData = {
+        id: existingUser.id,
+        password: existingUser.password,
+        firebaseUid: existingUser.firebaseUid,
+        createdAt: existingUser.createdAt
+      };
+      
+      // Update user with merged data
+      const updatedUser = await storage.updateUser(userId, {
+        ...userData,
+        ...protectedData
+      });
+      
+      // Remove sensitive data
+      const { password, ...userWithoutPassword } = updatedUser;
+      res.json(userWithoutPassword);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

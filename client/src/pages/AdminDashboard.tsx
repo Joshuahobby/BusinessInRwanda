@@ -66,6 +66,8 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("all");
   const [jobStatusFilter, setJobStatusFilter] = useState("all");
+  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // Check if user is admin, redirect if not
   useEffect(() => {

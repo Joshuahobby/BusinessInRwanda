@@ -88,9 +88,12 @@ const UserEditModal = ({ isOpen, onClose, user }: UserEditModalProps) => {
     
     setIsSaving(true);
     try {
-      await apiRequest(`/api/admin/users/${user.id}`, {
+      await fetch(`/api/admin/users/${user.id}`, {
         method: "PUT",
-        data,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
       
       // Invalidate queries to refresh data
