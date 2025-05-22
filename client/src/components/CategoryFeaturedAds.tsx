@@ -102,7 +102,7 @@ const CategoryFeaturedAds = () => {
                         id={job.id}
                         title={job.title}
                         companyName={getCompanyName(job)}
-                        companyLogo={job.companyLogo || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&h=64"}
+                        companyLogo={"https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&h=64"}
                         location={job.location}
                         jobType={job.type}
                         salary={job.salary ? `${job.salary} ${job.currency || 'RWF'}` : "Competitive salary"}

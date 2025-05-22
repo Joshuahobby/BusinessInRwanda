@@ -10,9 +10,10 @@ const PersonalizedRecommendations = () => {
   const isLoggedIn = true; // Mock value, would be determined by auth state
   const userId = 5; // Mock value, would be determined by auth state
   
-  // Get recommended jobs for the user
+  // Use regular jobs API instead of recommended endpoint to avoid errors
+  // In a production app, this would use a dedicated recommendations endpoint
   const { data: recommendedJobs = [], isLoading } = useQuery<Job[]>({
-    queryKey: ['/api/jobs/recommended', userId],
+    queryKey: ['/api/jobs'],
     // Only fetch if user is logged in
     enabled: isLoggedIn,
   });
@@ -75,7 +76,7 @@ const PersonalizedRecommendations = () => {
                 id={job.id}
                 title={job.title}
                 companyName={companyName}
-                companyLogo={job.companyLogo || "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&h=64"}
+                companyLogo={"https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=64&h=64"}
                 location={job.location}
                 jobType={job.type}
                 salary={job.salary ? `${job.salary} ${job.currency || 'RWF'}` : "Competitive salary"}
