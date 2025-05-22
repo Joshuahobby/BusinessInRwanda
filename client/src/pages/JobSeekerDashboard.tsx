@@ -397,27 +397,27 @@ const JobSeekerDashboard = () => {
                                     <div className="flex items-start space-x-4">
                                       <Avatar className="h-10 w-10 mt-1">
                                         <AvatarFallback>
-                                          {application.job.companyName ? application.job.companyName.charAt(0) : 'C'}
+                                          {application && application.job && application.job.companyName ? application.job.companyName.charAt(0) : 'C'}
                                         </AvatarFallback>
                                       </Avatar>
                                       <div>
-                                        <p className="font-medium">{application.job.title}</p>
-                                        <p className="text-sm text-neutral-500">{application.job.companyName || 'Company'}</p>
+                                        <p className="font-medium">{application && application.job ? application.job.title : 'Job Title'}</p>
+                                        <p className="text-sm text-neutral-500">{application && application.job && application.job.companyName ? application.job.companyName : 'Company'}</p>
                                         <div className="flex items-center text-sm text-neutral-500 mt-1 space-x-2">
                                           <span className="flex items-center">
                                             <MapPin className="h-3 w-3 mr-1" />
-                                            {application.job.location}
+                                            {application && application.job ? application.job.location : 'Location'}
                                           </span>
                                           <span>•</span>
                                           <span className="flex items-center">
                                             <Clock className="h-3 w-3 mr-1" />
-                                            Applied {format(new Date(application.appliedAt), 'MMM d, yyyy')}
+                                            Applied {application && application.appliedAt ? format(new Date(application.appliedAt), 'MMM d, yyyy') : 'Recently'}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
                                     <div className="flex flex-col items-end">
-                                      {getStatusBadge(application.status)}
+                                      {application && application.status ? getStatusBadge(application.status) : getStatusBadge('applied')}
                                     </div>
                                   </div>
                                 </CardContent>
