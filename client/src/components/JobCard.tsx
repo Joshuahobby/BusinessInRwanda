@@ -92,6 +92,11 @@ const JobCard = ({
   if (!badgeText && postType !== "job") {
     badgeText = postTypeData.label;
   }
+  
+  // Make sure the card only displays essential information on the list page
+  const trimmedDescription = description.length > 100 ? 
+    `${description.substring(0, 100)}...` : 
+    description;
 
   return (
     <Card className={cn("job-card transition-all duration-300 group hover:-translate-y-1 hover:shadow-md border border-neutral-200", className)}>
@@ -173,12 +178,16 @@ const JobCard = ({
         </div>
         
         <p className="text-sm text-neutral-600 mb-4 line-clamp-2">
-          {description}
+          {trimmedDescription}
         </p>
         
         <div className="flex justify-between items-center">
           <span className="text-xs text-neutral-500">
-            Posted {formatDistanceToNow(postedAt, { addSuffix: true })}
+            {postType === "auction" && "Auction date: "}
+            {postType === "tender" && "Deadline: "}
+            {postType === "announcement" && "Published: "}
+            {(postType === "job" || postType === "all") && "Posted: "}
+            {formatDistanceToNow(postedAt, { addSuffix: true })}
           </span>
           <Link 
             href={`/${postType}/${id}`} 

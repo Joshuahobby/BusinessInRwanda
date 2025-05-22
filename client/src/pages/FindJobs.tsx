@@ -699,7 +699,22 @@ const FindJobs = () => {
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                   <div>
                     <h2 className="font-medium">
-                      {isLoading ? 'Loading jobs...' : `${jobs.length} Jobs Found`}
+                      {isLoading ? 
+                        `Loading ${postType === "all" ? "listings" : 
+                          postType === "job" ? "jobs" : 
+                          postType === "tender" ? "tenders" : 
+                          postType === "auction" ? "auctions" : 
+                          postType === "announcement" ? "announcements" : 
+                          "listings"}...` : 
+                        `${jobs.length} ${
+                          postType === "all" ? "Listings" : 
+                          postType === "job" ? "Jobs" : 
+                          postType === "tender" ? "Tenders" : 
+                          postType === "auction" ? "Auctions" : 
+                          postType === "announcement" ? "Announcements" : 
+                          "Listings"
+                        } Found`
+                      }
                     </h2>
                     {Object.keys(searchParams).length > 0 && (
                       <div className="flex flex-wrap gap-2 mt-2">
