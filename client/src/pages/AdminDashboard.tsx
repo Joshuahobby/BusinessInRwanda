@@ -711,15 +711,15 @@ const AdminDashboard = () => {
                   </Card>
                 </TabsContent>
 
-                {/* Jobs Tab */}
+                {/* Ads Tab (formerly Jobs Tab) */}
                 <TabsContent value="jobs" className="space-y-6">
                   <Card>
                     <CardHeader>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
-                          <CardTitle>Job Listings</CardTitle>
+                          <CardTitle>Ad Listings</CardTitle>
                           <CardDescription>
-                            Manage all job listings on the platform
+                            Manage all ad listings including jobs, auctions, tenders, and announcements
                           </CardDescription>
                         </div>
                         <Button 
@@ -727,20 +727,37 @@ const AdminDashboard = () => {
                           onClick={() => setIsCreatePostModalOpen(true)}
                         >
                           <PlusCircle className="h-4 w-4 mr-1.5" />
-                          Create New Post
+                          Create New Ad
                         </Button>
                       </div>
                     </CardHeader>
                     <CardContent>
                       <div className="flex flex-col md:flex-row gap-4 mb-6">
-                        <div className="relative w-full md:w-2/3">
+                        <div className="relative w-full md:w-1/3">
                           <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-neutral-500" />
                           <Input 
-                            placeholder="Search jobs by title or description..." 
+                            placeholder="Search ads by title or description..." 
                             className="pl-9"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                           />
+                        </div>
+                        <div className="w-full md:w-1/3">
+                          <Select
+                            value={postTypeFilter}
+                            onValueChange={setPostTypeFilter}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Filter by type" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Types</SelectItem>
+                              <SelectItem value="job">Jobs</SelectItem>
+                              <SelectItem value="auction">Auctions</SelectItem>
+                              <SelectItem value="tender">Tenders</SelectItem>
+                              <SelectItem value="announcement">Announcements</SelectItem>
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div className="w-full md:w-1/3">
                           <Select
@@ -751,9 +768,9 @@ const AdminDashboard = () => {
                               <SelectValue placeholder="Filter by status" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="all">All Jobs</SelectItem>
-                              <SelectItem value="active">Active Jobs</SelectItem>
-                              <SelectItem value="inactive">Inactive Jobs</SelectItem>
+                              <SelectItem value="all">All Statuses</SelectItem>
+                              <SelectItem value="active">Active</SelectItem>
+                              <SelectItem value="inactive">Inactive</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
