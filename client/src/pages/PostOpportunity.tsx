@@ -182,20 +182,7 @@ const PostOpportunity = () => {
   const createOpportunityMutation = useMutation({
     mutationFn: async (data: OpportunityFormValues) => {
       const { agreeToTerms, ...opportunityData } = data;
-      
-      // Convert date strings to Date objects for proper backend handling
-      const processedData = {
-        ...opportunityData,
-        deadline: opportunityData.deadline ? new Date(opportunityData.deadline) : null,
-        auctionDate: 'auctionDate' in opportunityData && opportunityData.auctionDate 
-          ? new Date(opportunityData.auctionDate) : undefined,
-        submissionDeadline: 'submissionDeadline' in opportunityData && opportunityData.submissionDeadline 
-          ? new Date(opportunityData.submissionDeadline) : undefined,
-        eventDate: 'eventDate' in opportunityData && opportunityData.eventDate 
-          ? new Date(opportunityData.eventDate) : undefined,
-      };
-      
-      const response = await apiRequest("POST", "/api/jobs", processedData);
+      const response = await apiRequest("POST", "/api/jobs", opportunityData);
       return response;
     },
     onSuccess: () => {
