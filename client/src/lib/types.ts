@@ -17,4 +17,5 @@ export interface JobSearchParams {
   minSalary?: number;
   maxSalary?: number;
   currency?: string;
+  postType?: string; // 'job', 'tender', 'auction', 'announcement'
 }

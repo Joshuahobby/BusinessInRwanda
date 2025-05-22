@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { Helmet } from 'react-helmet-async';
 import { JobSearchParams, JobType, ExperienceLevel } from '@/lib/types';
-import { Job } from '@shared/schema';
+import { Job, postTypeEnum } from '@shared/schema';
 import JobCard from '@/components/JobCard';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -12,7 +12,7 @@ import { Slider } from '@/components/ui/slider';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Search, MapPin, Briefcase, Filter, Calendar, Bookmark, Share2, Download, Bell } from 'lucide-react';
+import { Search, MapPin, Briefcase, Filter, Calendar, Bookmark, Share2, Download, Bell, FileText, Gavel, Megaphone } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Badge } from '@/components/ui/badge';
 import { 
@@ -41,6 +41,7 @@ const FindJobs = () => {
   const [showAlertDialog, setShowAlertDialog] = useState(false);
   const [alertKeyword, setAlertKeyword] = useState('');
   const [savedSearches, setSavedSearches] = useState<{name: string, params: JobSearchParams}[]>([]);
+  const [postType, setPostType] = useState<string>("all");
   
   const { toast } = useToast();
   const { isAuthenticated, currentUser } = useFirebaseAuth();
@@ -55,8 +56,14 @@ const FindJobs = () => {
     if (params.has('category')) initialParams.category = params.get('category') || undefined;
     if (params.has('jobType')) initialParams.jobType = params.get('jobType') as JobType || undefined;
     if (params.has('experienceLevel')) initialParams.experienceLevel = params.get('experienceLevel') as ExperienceLevel || undefined;
+    if (params.has('type')) initialParams.postType = params.get('type') || undefined;
     
     setSearchParams(initialParams);
+    
+    // Extract post type if present
+    if (params.has('type')) {
+      setPostType(params.get('type') || 'all');
+    }
     
     // Extract job type if present
     if (params.has('jobType')) {
@@ -288,8 +295,100 @@ const FindJobs = () => {
       <div className="bg-neutral-50 py-12">
         <div className="container mx-auto px-4">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold text-neutral-800 mb-2 font-heading">Find Jobs</h1>
-            <p className="text-neutral-600">Search opportunities across Rwanda's job market</p>
+            <h1 className="text-3xl font-bold text-neutral-800 mb-2 font-heading">
+              {postType === "all" && "Find Opportunities"}
+              {postType === "job" && "Find Jobs"}
+              {postType === "tender" && "Find Tenders"}
+              {postType === "auction" && "Find Auctions/Cyamunara"}
+              {postType === "announcement" && "Find Announcements"}
+            </h1>
+            <p className="text-neutral-600">
+              {postType === "all" && "Search all listings across Rwanda's marketplace"}
+              {postType === "job" && "Search job opportunities across Rwanda's job market"}
+              {postType === "tender" && "Search tender opportunities from organizations across Rwanda"}
+              {postType === "auction" && "Search auctions and Cyamunara listings in Rwanda"}
+              {postType === "announcement" && "Search official announcements from organizations"}
+            </p>
+          </div>
+          
+          {/* Post Type Selection Tabs */}
+          <div className="bg-white p-2 rounded-lg shadow-sm mb-4 overflow-x-auto">
+            <div className="flex space-x-1">
+              <button
+                onClick={() => {
+                  setPostType("all");
+                  handleFilterChange('postType', '');
+                }}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
+                  postType === "all" 
+                    ? "bg-[#0A3D62] text-white" 
+                    : "hover:bg-neutral-100 text-neutral-700"
+                }`}
+              >
+                <Briefcase className="h-4 w-4" />
+                <span>All Listings</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setPostType("job");
+                  handleFilterChange('postType', 'job');
+                }}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
+                  postType === "job" 
+                    ? "bg-[#0A3D62] text-white" 
+                    : "hover:bg-neutral-100 text-neutral-700"
+                }`}
+              >
+                <Briefcase className="h-4 w-4" />
+                <span>Jobs</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setPostType("tender");
+                  handleFilterChange('postType', 'tender');
+                }}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
+                  postType === "tender" 
+                    ? "bg-[#0A3D62] text-white" 
+                    : "hover:bg-neutral-100 text-neutral-700"
+                }`}
+              >
+                <FileText className="h-4 w-4" />
+                <span>Tenders</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setPostType("auction");
+                  handleFilterChange('postType', 'auction');
+                }}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
+                  postType === "auction" 
+                    ? "bg-[#0A3D62] text-white" 
+                    : "hover:bg-neutral-100 text-neutral-700"
+                }`}
+              >
+                <Gavel className="h-4 w-4" />
+                <span>Auctions/Cyamunara</span>
+              </button>
+              
+              <button
+                onClick={() => {
+                  setPostType("announcement");
+                  handleFilterChange('postType', 'announcement');
+                }}
+                className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
+                  postType === "announcement" 
+                    ? "bg-[#0A3D62] text-white" 
+                    : "hover:bg-neutral-100 text-neutral-700"
+                }`}
+              >
+                <Megaphone className="h-4 w-4" />
+                <span>Announcements</span>
+              </button>
+            </div>
           </div>
 
           {/* Search Form */}
