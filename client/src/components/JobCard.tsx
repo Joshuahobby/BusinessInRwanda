@@ -110,13 +110,10 @@ const JobCard = (props: JobCardProps) => {
   return (
     <Card className={cn("job-card transition-all duration-300 group hover:-translate-y-1 hover:shadow-md border border-neutral-200", className)}>
       <CardContent className="p-5">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex items-center">
-            <img className="w-10 h-10 rounded" src={companyLogo} alt={`${companyName} Logo`} />
-            <div className="ml-3">
-              <h3 className="font-medium text-lg text-neutral-800">{title}</h3>
-              <p className="text-sm text-neutral-600">{companyName}</p>
-            </div>
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <h3 className="font-medium text-lg text-neutral-800">{title}</h3>
+            <p className="text-sm text-neutral-600">{companyName}</p>
           </div>
           {badgeText && (
             <Badge className={postTypeData.color}>
@@ -125,77 +122,39 @@ const JobCard = (props: JobCardProps) => {
           )}
         </div>
         
-        <div className="mb-4">
-          <div className="flex items-center text-sm text-neutral-500 mb-1">
-            <MapPin className="h-4 w-4 mr-1" />
-            <span>{location}</span>
-          </div>
-          
-          {/* Show different details based on post type */}
-          {postType === "job" && (
-            <>
-              <div className="flex items-center text-sm text-neutral-500 mb-1">
-                <Briefcase className="h-4 w-4 mr-1" />
-                <span>{jobType}</span>
-              </div>
-              {salary && (
-                <div className="flex items-center text-sm text-neutral-500">
-                  <DollarSign className="h-4 w-4 mr-1" />
-                  <span>{salary}</span>
-                </div>
-              )}
-            </>
-          )}
-          
-          {postType === "auction" && (
-            <>
-              <div className="flex items-center text-sm text-neutral-500 mb-1">
-                <Calendar className="h-4 w-4 mr-1" />
-                <span>Auction Date: {new Date().toLocaleDateString()}</span>
-              </div>
-              <div className="flex items-center text-sm text-neutral-500 mb-1">
-                <DollarSign className="h-4 w-4 mr-1" />
-                <span>Starting Price: {currency || 'RWF'} {salary || 'Contact for details'}</span>
-              </div>
-            </>
-          )}
-          
-          {postType === "tender" && (
-            <>
-              <div className="flex items-center text-sm text-neutral-500 mb-1">
-                <Calendar className="h-4 w-4 mr-1" />
-                <span>Deadline: {new Date(new Date().setDate(new Date().getDate() + 30)).toLocaleDateString()}</span>
-              </div>
-              <div className="flex items-center text-sm text-neutral-500 mb-1">
-                <DollarSign className="h-4 w-4 mr-1" />
-                <span>Budget: {currency || 'RWF'} {salary || 'Contact for details'}</span>
-              </div>
-            </>
-          )}
-          
-          {postType === "announcement" && (
-            <div className="flex items-center text-sm text-neutral-500 mb-1">
-              <Calendar className="h-4 w-4 mr-1" />
-              <span>Published on: {new Date(postedAt).toLocaleDateString()}</span>
+        <div className="flex flex-wrap gap-3 mb-4">
+          {location && (
+            <div className="flex items-center text-sm text-neutral-500">
+              <MapPin className="h-4 w-4 mr-1" />
+              <span>{location}</span>
             </div>
           )}
           
-          <div className="flex items-center text-sm text-neutral-500 mb-1">
+          {/* Show job type for jobs */}
+          {postType === "job" && (jobType || type) && (
+            <div className="flex items-center text-sm text-neutral-500">
+              <Briefcase className="h-4 w-4 mr-1" />
+              <span>{jobType || type}</span>
+            </div>
+          )}
+          
+          {/* Show salary if available */}
+          {salary && (
+            <div className="flex items-center text-sm text-neutral-500">
+              <DollarSign className="h-4 w-4 mr-1" />
+              <span>{salary} {currency}</span>
+            </div>
+          )}
+          
+          {/* Display post type */}
+          <div className="flex items-center text-sm text-neutral-500">
             {postTypeData.icon}
             <span>{postTypeData.label}</span>
           </div>
         </div>
         
-        <p className="text-sm text-neutral-600 mb-4 line-clamp-2">
-          {trimmedDescription}
-        </p>
-        
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center pt-2 border-t border-neutral-100">
           <span className="text-xs text-neutral-500">
-            {postType === "auction" && "Auction date: "}
-            {postType === "tender" && "Deadline: "}
-            {postType === "announcement" && "Published: "}
-            {(postType === "job" || postType === "all") && "Posted: "}
             {postedAt instanceof Date && !isNaN(postedAt.getTime()) 
               ? formatDistanceToNow(postedAt, { addSuffix: true })
               : createdAt instanceof Date && !isNaN(createdAt.getTime())
@@ -206,7 +165,7 @@ const JobCard = (props: JobCardProps) => {
             href={`/${postType}/${id}`} 
             className="inline-flex items-center text-[#0A3D62] hover:text-[#082C46] font-medium text-sm group-hover:underline"
           >
-            {postTypeData.actionText}
+            View Details
             <ArrowRight className="h-4 w-4 ml-1" />
           </Link>
         </div>
