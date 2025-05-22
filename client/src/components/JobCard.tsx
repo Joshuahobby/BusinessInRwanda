@@ -196,12 +196,7 @@ const JobCard = (props: JobCardProps) => {
           </div>
         </div>
         
-        {/* Description */}
-        {trimmedDescription && (
-          <div className="mb-4 text-sm text-neutral-600 line-clamp-2">
-            {trimmedDescription}
-          </div>
-        )}
+        {/* Description - removed from home page as requested */}
         
         <div className="flex justify-between items-center pt-2 border-t border-neutral-100">
           <span className="text-xs text-neutral-500">
