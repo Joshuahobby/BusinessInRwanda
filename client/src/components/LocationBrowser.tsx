@@ -125,7 +125,7 @@ const LocationBrowser = () => {
               {regions.slice(0, 3).map((region) => (
                 <a 
                   key={region.slug}
-                  href={`/listings?location=${region.slug}`}
+                  href={`/opportunities?location=${region.slug}`}
                   className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow group"
                 >
                   <div className="flex items-center gap-3">
@@ -153,7 +153,7 @@ const LocationBrowser = () => {
             {regions.map((region) => (
               <a 
                 key={region.slug}
-                href={`/listings?location=${region.slug}`}
+                href={`/opportunities?location=${region.slug}`}
                 className="bg-white p-4 rounded-lg border border-neutral-200 hover:border-[#0A3D62] transition-colors"
               >
                 <div className="flex items-center gap-3">

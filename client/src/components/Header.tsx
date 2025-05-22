@@ -37,8 +37,8 @@ const Header = () => {
             <Link href="/" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/' ? 'text-[#0A3D62]' : ''}`}>
               Home
             </Link>
-            <Link href="/listings" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/listings' ? 'text-[#0A3D62]' : ''}`}>
-              Browse Listings
+            <Link href="/opportunities" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/opportunities' ? 'text-[#0A3D62]' : ''}`}>
+              Find Opportunities
             </Link>
             <Link href="/employers" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/employers' ? 'text-[#0A3D62]' : ''}`}>
               Employers
@@ -120,8 +120,8 @@ const Header = () => {
                   <Link href="/" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
                     Home
                   </Link>
-                  <Link href="/listings" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
-                    Browse Listings
+                  <Link href="/opportunities" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
+                    Find Opportunities
                   </Link>
                   <Link href="/employers" className="px-3 py-2 text-base font-medium text-neutral-700 hover:text-[#0A3D62]">
                     Employers
