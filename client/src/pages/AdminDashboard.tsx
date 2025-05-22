@@ -14,6 +14,7 @@ import JobManagementTable from "@/components/JobManagementTable";
 import JobApprovalModal from "@/components/JobApprovalModal";
 import JobDetailsModal from "@/components/JobDetailsModal";
 import CreatePostModal from "@/components/CreatePostModal";
+import CreateCompanyModal from "@/components/CreateCompanyModal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -826,6 +827,13 @@ const AdminDashboard = () => {
                             Manage all companies on the platform
                           </CardDescription>
                         </div>
+                        <Button 
+                          className="bg-[#0A3D62] hover:bg-[#082C46]"
+                          onClick={() => setIsCreateCompanyModalOpen(true)}
+                        >
+                          <PlusCircle className="h-4 w-4 mr-1.5" />
+                          Add Company
+                        </Button>
                       </div>
                     </CardHeader>
                     <CardContent>

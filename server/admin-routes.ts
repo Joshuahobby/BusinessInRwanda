@@ -105,6 +105,38 @@ export function setupAdminRoutes(app: Express) {
     }
   });
   
+  // Create a new user (admin only)
+  app.post('/api/admin/users', async (req: Request, res: Response) => {
+    try {
+      const { email, fullName, role, password } = req.body;
+      
+      if (!email || !fullName || !role) {
+        return res.status(400).json({ message: "Missing required fields: email, fullName, and role are required" });
+      }
+      
+      // Create the user
+      const user = await storage.createUser({
+        email,
+        fullName,
+        role,
+        password: password || null,
+        firebaseUid: null,
+        phone: null,
+        profilePicture: null,
+        bio: null,
+        location: null,
+      });
+      
+      // Remove sensitive info before sending response
+      const { password: _, ...sanitizedUser } = user;
+      
+      res.status(201).json(sanitizedUser);
+    } catch (error) {
+      console.error("Error creating user:", error);
+      res.status(500).json({ message: "Failed to create user" });
+    }
+  });
+  
   // Update user (admin only)
   app.patch('/api/admin/users/:id', async (req: Request, res: Response) => {
     try {
