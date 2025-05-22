@@ -1,0 +1,208 @@
+
+                
+          
+          
+          
+         Microsoft Edge is moving towards a new experience that allows users to choose to browse without third-party cookies.
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+react-dom.development.js:29895 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+use-size.tsx:12 [Intervention] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://fonts.gstatic.com/s/materialicons/v143/flUhRq6tzZclQEJ-Vdg-IuiaDsNc.woff2
+FirebaseAuthContext.tsx:61 Firebase auth change detected, syncing user: gashua02@gmail.com UID: gnmzM9vyPqSt1EwFoXFC78Iw5ni1
+FirebaseAuthContext.tsx:90 User data synced successfully: gashua02@gmail.com
+  Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components
+    at input
+    at _c (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/input.tsx:20:11)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:79:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:56:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/form.tsx:130:9
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/form.tsx:72:6
+    at Controller (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=7ff4d32a:298:35)
+    at FormField (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/form.tsx:33:6)
+    at div
+    at form
+    at FormProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=7ff4d32a:102:11)
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=7ff4d32a:42:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LLLTVKM7.js?v=7ff4d32a:61:7
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:79:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:56:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=7ff4d32a:42:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AYTFIHQ3.js?v=7ff4d32a:34:5
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:233:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:156:58
+    at Presence (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=7ff4d32a:24:11)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:147:64
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:79:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:56:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=7ff4d32a:42:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LLLTVKM7.js?v=7ff4d32a:260:22
+    at Presence (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=7ff4d32a:24:11)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=7ff4d32a:38:15)
+    at DialogPortal (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:109:11)
+    at _c3 (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/dialog.tsx:52:12)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=7ff4d32a:38:15)
+    at Dialog (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:50:5)
+    at CreatePostModal (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/CreatePostModal.tsx:94:28)
+    at AdminDashboard (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/pages/AdminDashboard.tsx:75:37)
+    at Route (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7ff4d32a:323:16)
+    at Switch (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7ff4d32a:379:17)
+    at main
+    at div
+    at AppRoutes
+    at FirebaseAuthProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/context/FirebaseAuthContext.tsx:31:40)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=7ff4d32a:38:15)
+    at TooltipProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=7ff4d32a:62:5)
+    at QueryClientProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=7ff4d32a:2805:3)
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=7ff4d32a:624:5)
+    at App
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=7ff4d32a:624:5)
+printWarning @ react-dom.development.js:86
+error @ react-dom.development.js:60
+updateWrapper @ react-dom.development.js:1813
+updateProperties @ react-dom.development.js:10151
+commitUpdate @ react-dom.development.js:11047
+commitMutationEffectsOnFiber @ react-dom.development.js:24428
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24385
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24385
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24385
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24385
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24495
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24385
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24385
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24371
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24332
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24615
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24371
+recursivelyTraverseMutationEffects @ react-dom.development.js:24312
+commitMutationEffectsOnFiber @ react-dom.development.js:24471
+commitMutationEffects @ react-dom.development.js:24282
+commitRootImpl @ react-dom.development.js:26849
+commitRoot @ react-dom.development.js:26721
+performSyncWorkOnRoot @ react-dom.development.js:26156
+flushSyncCallbacks @ react-dom.development.js:12042
+flushSync @ react-dom.development.js:26240
+finishEventHandler @ react-dom.development.js:3976
+batchedUpdates @ react-dom.development.js:3994
+dispatchEventForPluginEventSystem @ react-dom.development.js:9287
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ react-dom.development.js:6465
+dispatchEvent @ react-dom.development.js:6457
+dispatchDiscreteEvent @ react-dom.development.js:6430
+(anonymous) @ unknown
+setTimeout
+setSelectionAndCommit @ unknown
+selectRangeContainingDay @ unknown
+onClick @ unknown

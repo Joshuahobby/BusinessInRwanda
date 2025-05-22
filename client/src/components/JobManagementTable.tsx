@@ -22,7 +22,11 @@ import {
   StarOff,
   CheckCircle2,
   XCircle,
-  Clock
+  Clock,
+  Briefcase,
+  ShoppingBag,
+  FileText,
+  Megaphone
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -150,6 +154,43 @@ const JobManagementTable = ({
       });
     } finally {
       setActionInProgress(null);
+    }
+  };
+
+  // Helper function to get post type badge
+  const getPostTypeBadge = (job: Job) => {
+    const postType = job.postType || 'job';
+    
+    switch(postType) {
+      case 'auction':
+        return (
+          <Badge variant="outline" className="border-purple-500 text-purple-600">
+            <ShoppingBag className="h-3 w-3 mr-1" />
+            Auction
+          </Badge>
+        );
+      case 'tender':
+        return (
+          <Badge variant="outline" className="border-blue-500 text-blue-600">
+            <FileText className="h-3 w-3 mr-1" />
+            Tender
+          </Badge>
+        );
+      case 'announcement':
+        return (
+          <Badge variant="outline" className="border-amber-500 text-amber-600">
+            <Megaphone className="h-3 w-3 mr-1" />
+            Announcement
+          </Badge>
+        );
+      case 'job':
+      default:
+        return (
+          <Badge variant="outline" className="border-green-500 text-green-600">
+            <Briefcase className="h-3 w-3 mr-1" />
+            Job
+          </Badge>
+        );
     }
   };
 
