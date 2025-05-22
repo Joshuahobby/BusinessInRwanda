@@ -403,6 +403,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===== COMPANY ROUTES =====
   
+  // Create company (employer only)
+  app.post("/api/companies", isEmployer, async (req, res) => {
+    try {
+      const userId = (req.user as any).id;
+      
+      // Check if user already has a company
+      const existingCompany = await storage.getCompanyByUserId(userId);
+      if (existingCompany) {
+        return res.status(400).json({ message: "You already have a company profile" });
+      }
+      
+      const companyData = {
+        ...req.body,
+        userId,
+        employeeCount: req.body.employeeCount,
+        founded: req.body.founded || null,
+      };
+      
+      const company = await storage.createCompany(companyData);
+      res.status(201).json(company);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
   // Get featured companies
   app.get("/api/companies/featured", async (req, res) => {
     try {

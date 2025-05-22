@@ -18,6 +18,7 @@ import PostOpportunity from "@/pages/PostOpportunity";
 import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import CompanyProfile from "@/pages/CompanyProfile";
+import CreateCompany from "@/pages/CreateCompany";
 import Employers from "@/pages/Employers";
 import Resources from "@/pages/Resources";
 import Header from "@/components/Header";
@@ -43,6 +44,7 @@ function AppRoutes() {
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
           <Route path="/company/:id" component={CompanyProfile} />
+          <Route path="/create-company" component={CreateCompany} />
           <Route path="/employers" component={Employers} />
           <Route path="/resources" component={Resources} />
           {/* Fallback to 404 */}
