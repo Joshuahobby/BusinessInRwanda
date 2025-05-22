@@ -88,6 +88,11 @@ const OnboardingTour = ({ isOpen, onClose }: OnboardingTourProps) => {
   const nextStep = () => {
     if (currentStep < tourSteps.length - 1) {
       setCurrentStep(currentStep + 1);
+      // Small delay to allow smooth scrolling to complete
+      setTimeout(() => {
+        // Force re-render to update positions after scroll
+        setCurrentStep(prev => prev);
+      }, 500);
     } else {
       handleComplete();
     }
@@ -116,39 +121,67 @@ const OnboardingTour = ({ isOpen, onClose }: OnboardingTourProps) => {
     
     if (!targetElement || step.target === 'body') {
       return {
+        position: 'fixed' as const,
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)'
       };
     }
 
+    // Scroll the target element into view smoothly
+    targetElement.scrollIntoView({ 
+      behavior: 'smooth', 
+      block: 'center',
+      inline: 'center'
+    });
+
+    // Use fixed positioning to keep tour card visible
     const rect = targetElement.getBoundingClientRect();
-    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    const viewportHeight = window.innerHeight;
+    const viewportWidth = window.innerWidth;
 
-    let top = rect.top + scrollTop;
-    let left = rect.left + scrollLeft;
+    let top = '50%';
+    let left = '50%';
+    let transform = 'translate(-50%, -50%)';
 
+    // Ensure the tour card stays in viewport
     switch (step.position) {
       case 'top':
-        top = rect.top + scrollTop - 20;
-        left = rect.left + scrollLeft + rect.width / 2;
-        return { top: `${top}px`, left: `${left}px`, transform: 'translate(-50%, -100%)' };
+        if (rect.top > 200) {
+          top = `${Math.max(rect.top - 120, 20)}px`;
+          left = `${Math.min(Math.max(rect.left + rect.width / 2, 200), viewportWidth - 200)}px`;
+          transform = 'translate(-50%, 0)';
+        }
+        break;
       case 'bottom':
-        top = rect.bottom + scrollTop + 20;
-        left = rect.left + scrollLeft + rect.width / 2;
-        return { top: `${top}px`, left: `${left}px`, transform: 'translate(-50%, 0)' };
+        if (rect.bottom < viewportHeight - 200) {
+          top = `${Math.min(rect.bottom + 20, viewportHeight - 200)}px`;
+          left = `${Math.min(Math.max(rect.left + rect.width / 2, 200), viewportWidth - 200)}px`;
+          transform = 'translate(-50%, 0)';
+        }
+        break;
       case 'left':
-        top = rect.top + scrollTop + rect.height / 2;
-        left = rect.left + scrollLeft - 20;
-        return { top: `${top}px`, left: `${left}px`, transform: 'translate(-100%, -50%)' };
+        if (rect.left > 400) {
+          top = `${Math.min(Math.max(rect.top + rect.height / 2, 200), viewportHeight - 200)}px`;
+          left = `${rect.left - 20}px`;
+          transform = 'translate(-100%, -50%)';
+        }
+        break;
       case 'right':
-        top = rect.top + scrollTop + rect.height / 2;
-        left = rect.right + scrollLeft + 20;
-        return { top: `${top}px`, left: `${left}px`, transform: 'translate(0, -50%)' };
-      default:
-        return { top: `${top}px`, left: `${left}px` };
+        if (rect.right < viewportWidth - 400) {
+          top = `${Math.min(Math.max(rect.top + rect.height / 2, 200), viewportHeight - 200)}px`;
+          left = `${rect.right + 20}px`;
+          transform = 'translate(0, -50%)';
+        }
+        break;
     }
+
+    return {
+      position: 'fixed' as const,
+      top,
+      left,
+      transform
+    };
   };
 
   const highlightTarget = () => {
@@ -157,20 +190,19 @@ const OnboardingTour = ({ isOpen, onClose }: OnboardingTourProps) => {
     
     if (targetElement && step.target !== 'body') {
       const rect = targetElement.getBoundingClientRect();
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
 
       return {
-        position: 'absolute' as const,
-        top: rect.top + scrollTop - 4,
-        left: rect.left + scrollLeft - 4,
+        position: 'fixed' as const,
+        top: rect.top - 4,
+        left: rect.left - 4,
         width: rect.width + 8,
         height: rect.height + 8,
-        border: '2px solid #3B82F6',
+        border: '3px solid #3B82F6',
         borderRadius: '8px',
         backgroundColor: 'rgba(59, 130, 246, 0.1)',
         pointerEvents: 'none' as const,
-        zIndex: 9999
+        zIndex: 9999,
+        boxShadow: '0 0 0 9999px rgba(0, 0, 0, 0.5)'
       };
     }
     return null;
