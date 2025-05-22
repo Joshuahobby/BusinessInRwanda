@@ -291,17 +291,17 @@ const AdminDashboard = () => {
   return (
     <>
       <Helmet>
-        <title>Admin Dashboard - Business In Rwanda</title>
-        <meta name="description" content="Admin dashboard for managing the Business In Rwanda platform" />
+        <title>Ad Portal Admin - Business In Rwanda</title>
+        <meta name="description" content="Admin dashboard for managing jobs, tenders, auctions and announcements on the Business In Rwanda platform" />
       </Helmet>
 
       <div className="min-h-screen bg-neutral-50 dark:bg-neutral-950 pb-12">
         <div className="container mx-auto px-4 py-8">
           <div className="flex items-center justify-between mb-8">
             <div>
-              <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+              <h1 className="text-3xl font-bold">Ad Portal Dashboard</h1>
               <p className="text-neutral-600 dark:text-neutral-400 mt-1">
-                Manage users, jobs, and platform settings
+                Manage jobs, tenders, auctions, announcements, and platform settings
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -548,7 +548,7 @@ const AdminDashboard = () => {
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div>
-                                <p className="text-sm text-muted-foreground">Active Posts</p>
+                                <p className="text-sm text-muted-foreground">Total Advertisements</p>
                                 <h3 className="text-2xl font-bold mt-1">{stats?.totalJobs || 0}</h3>
                                 <div className="flex items-center mt-2 text-xs text-green-600 dark:text-green-400">
                                   <TrendingUp className="h-3 w-3 mr-1" />
