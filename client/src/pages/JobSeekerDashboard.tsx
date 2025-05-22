@@ -290,10 +290,22 @@ const JobSeekerDashboard = () => {
             <div className="col-span-12 md:col-span-9">
               <Tabs value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid grid-cols-4 w-full md:w-auto">
-                  <TabsTrigger value="overview">Overview</TabsTrigger>
-                  <TabsTrigger value="applications">Applications</TabsTrigger>
-                  <TabsTrigger value="profile">Profile</TabsTrigger>
-                  <TabsTrigger value="settings">Account</TabsTrigger>
+                  <TabsTrigger value="overview" className="flex items-center gap-1">
+                    <BarChart className="h-4 w-4" />
+                    <span>Overview</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="applications" className="flex items-center gap-1">
+                    <FileText className="h-4 w-4" />
+                    <span>Applications</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="profile" className="flex items-center gap-1">
+                    <User className="h-4 w-4" />
+                    <span>Profile</span>
+                  </TabsTrigger>
+                  <TabsTrigger value="settings" className="flex items-center gap-1">
+                    <Settings className="h-4 w-4" />
+                    <span>Account</span>
+                  </TabsTrigger>
                 </TabsList>
                 
                 {/* Overview Tab */}

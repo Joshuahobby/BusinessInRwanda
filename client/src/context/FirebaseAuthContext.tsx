@@ -90,12 +90,23 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
           console.log("User data synced successfully:", userData.email);
           setCurrentUser(userData);
           
-          // Check if we're on the login page or home page and redirect to appropriate dashboard
+          // Enhanced redirect logic with role verification
           const currentPath = window.location.pathname;
-          const isLoginPage = currentPath === '/login' || currentPath === '/';
+          const params = new URLSearchParams(window.location.search);
+          const redirectReason = params.get('redirect');
           
-          // Only redirect if we're on login/home and not already on a dashboard
-          if (isLoginPage) {
+          // Check if user is on public pages or was redirected after role change
+          const isPublicPage = currentPath === '/login' || currentPath === '/' || currentPath === '/register';
+          const isRoleChange = redirectReason === 'role_change';
+          
+          // Check if user is on a dashboard that doesn't match their role
+          const isOnWrongDashboard = 
+            (currentPath.includes('/jobseeker') && userData.role !== 'job_seeker') ||
+            (currentPath.includes('/employer') && userData.role !== 'employer') ||
+            (currentPath.includes('/admin') && userData.role !== 'admin');
+
+          // Redirect if on public page, after role change, or on wrong dashboard
+          if (isPublicPage || isRoleChange || isOnWrongDashboard) {
             // Use React Router's navigation instead of window.location to prevent refresh loops
             if (userData.role === 'job_seeker') {
               // Using setTimeout to ensure this doesn't happen during render
@@ -129,20 +140,47 @@ export const FirebaseAuthProvider = ({ children }: FirebaseAuthProviderProps) =>
 
   const handleAuthError = (error: any) => {
     let message = "Authentication failed. Please try again.";
+    let title = "Authentication failed";
     
     // Firebase error codes
     if (error.code === "auth/email-already-in-use") {
+      title = "Email already in use";
       message = "This email is already registered. Please login instead.";
     } else if (error.code === "auth/invalid-email") {
-      message = "Invalid email address.";
-    } else if (error.code === "auth/user-not-found" || error.code === "auth/wrong-password") {
-      message = "Invalid email or password.";
+      title = "Invalid email";
+      message = "Please enter a valid email address.";
+    } else if (error.code === "auth/user-not-found") {
+      title = "User not found";
+      message = "No account found with this email. Please register first.";
+    } else if (error.code === "auth/wrong-password") {
+      title = "Incorrect password";
+      message = "The password you entered is incorrect. Please try again.";
+    } else if (error.code === "auth/too-many-requests") {
+      title = "Too many attempts";
+      message = "Too many failed login attempts. Please wait before trying again or reset your password.";
+    } else if (error.code === "auth/network-request-failed") {
+      title = "Network error";
+      message = "There was a network error. Please check your internet connection and try again.";
+    } else if (error.code === "auth/popup-closed-by-user") {
+      title = "Login cancelled";
+      message = "The login popup was closed. Please try again when you're ready.";
+    } else if (error.code === "auth/requires-recent-login") {
+      title = "Session expired";
+      message = "Your login session has expired. Please log in again to continue.";
+    } else if (error.code === "auth/account-exists-with-different-credential") {
+      title = "Account already exists";
+      message = "An account already exists with the same email but different sign-in credentials. Try signing in using a different method.";
+    } else if (error.code === "auth/user-disabled") {
+      title = "Account disabled";
+      message = "This account has been disabled. Please contact support for assistance.";
     } else if (error.message) {
       message = error.message;
     }
     
+    console.error("Authentication error:", error.code, error.message);
+    
     toast({
-      title: "Authentication failed",
+      title: title,
       description: message,
       variant: "destructive",
     });
