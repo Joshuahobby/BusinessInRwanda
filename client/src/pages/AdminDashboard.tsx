@@ -11,6 +11,7 @@ import {
 } from "@shared/schema";
 import UserEditModal from "@/components/UserEditModal";
 import JobManagementTable from "@/components/JobManagementTable";
+import PostManagementTable from "@/components/PostManagementTable";
 import JobApprovalModal from "@/components/JobApprovalModal";
 import JobDetailsModal from "@/components/JobDetailsModal";
 import CreatePostModal from "@/components/CreatePostModal";
@@ -77,6 +78,7 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("all");
   const [jobStatusFilter, setJobStatusFilter] = useState("all");
+  const [postTypeFilter, setPostTypeFilter] = useState("all");
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobModel | null>(null);
