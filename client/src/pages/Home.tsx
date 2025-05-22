@@ -97,13 +97,13 @@ const Home = () => {
                 </div>
                 <div className="p-6">
                   <nav className="space-y-2">
-                    <a href="/find-jobs" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-1">
+                    <a href="/listings" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-1">
                       Browse All Listings
                     </a>
-                    <a href="/find-jobs?type=job" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-2">
+                    <a href="/listings?type=job" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-2">
                       Job Opportunities
                     </a>
-                    <a href="/find-jobs?type=tender" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-3">
+                    <a href="/listings?type=tender" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-3">
                       Tenders
                     </a>
                     <a href="/find-jobs?type=auction" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-4">
