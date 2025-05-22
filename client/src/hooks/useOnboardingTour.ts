@@ -9,18 +9,13 @@ export const useOnboardingTour = () => {
     // Check if user should see the tour
     if (isAuthenticated && currentUser) {
       const tourCompleted = localStorage.getItem(`tour_completed_${currentUser.id}`);
-      const userRegistrationDate = new Date();
-      const daysSinceRegistration = 1; // Assume new user for demo purposes
       
-      // Show tour if:
-      // 1. Tour hasn't been completed
-      // 2. User registered within the last 7 days (new user)
-      // 3. User has logged in less than 3 times (could be tracked separately)
-      if (!tourCompleted && daysSinceRegistration <= 7) {
+      // Show tour if user hasn't completed it yet
+      if (!tourCompleted) {
         // Small delay to let the page load completely
         const timer = setTimeout(() => {
           setIsTourOpen(true);
-        }, 2000);
+        }, 3000);
         
         return () => clearTimeout(timer);
       }
