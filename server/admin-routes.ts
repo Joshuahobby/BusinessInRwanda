@@ -217,6 +217,35 @@ export function setupAdminRoutes(app: Express) {
     }
   });
   
+  // Create a new company (admin only)
+  app.post('/api/admin/companies', async (req: Request, res: Response) => {
+    try {
+      const { name, industry, location, logo, website, description, employeeCount, founded, userId } = req.body;
+      
+      if (!name || !industry || !location || !userId) {
+        return res.status(400).json({ message: "Missing required fields: name, industry, location, and userId are required" });
+      }
+      
+      // Create the company
+      const company = await storage.createCompany({
+        name,
+        industry,
+        location,
+        userId,
+        logo: logo || null,
+        website: website || null,
+        description: description || null,
+        employeeCount: employeeCount || null,
+        founded: founded || null,
+      });
+      
+      res.status(201).json(company);
+    } catch (error) {
+      console.error("Error creating company:", error);
+      res.status(500).json({ message: "Failed to create company" });
+    }
+  });
+  
   // Create new post (admin only)
   app.post('/api/admin/jobs', async (req: Request, res: Response) => {
     try {
