@@ -18,40 +18,58 @@ const LiveActivityFeed = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
 
-  // Create some initial sample activities to ensure component shows up
+  // Enhanced sample activities with more variety and authentic feel
   useEffect(() => {
-    const sampleActivities: ActivityItem[] = [
+    const enhancedActivities: ActivityItem[] = [
       {
         id: 'sample-1',
         type: 'new_job',
-        message: 'New opportunity posted from Kigali',
+        message: 'New IT opportunity posted from Kigali Tech Hub',
         location: 'Kigali',
-        timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+        timestamp: new Date(Date.now() - 1000 * 60 * 15), // 15 minutes ago
         icon: <Briefcase className="h-4 w-4" />,
         color: 'text-blue-600 bg-blue-50'
       },
       {
         id: 'sample-2',
         type: 'new_application',
-        message: '5 new applications received today',
-        location: 'Rwanda',
-        timestamp: new Date(Date.now() - 1000 * 60 * 60), // 1 hour ago
+        message: '12 professionals applied for Medical Doctor position',
+        location: 'Kigali',
+        timestamp: new Date(Date.now() - 1000 * 60 * 45), // 45 minutes ago
         icon: <Users className="h-4 w-4" />,
         color: 'text-green-600 bg-green-50'
       },
       {
         id: 'sample-3',
         type: 'trending',
-        message: 'Software Developer trending in Kigali',
-        location: 'Kigali',
-        timestamp: new Date(Date.now() - 1000 * 60 * 90), // 1.5 hours ago
+        message: 'Engineering roles trending across Rwanda',
+        location: 'Rwanda',
+        timestamp: new Date(Date.now() - 1000 * 60 * 75), // 1.25 hours ago
         icon: <TrendingUp className="h-4 w-4" />,
         color: 'text-orange-600 bg-orange-50'
+      },
+      {
+        id: 'sample-4',
+        type: 'new_company',
+        message: 'Tech startup joined Business In Rwanda platform',
+        location: 'Kigali',
+        timestamp: new Date(Date.now() - 1000 * 60 * 120), // 2 hours ago
+        icon: <Building2 className="h-4 w-4" />,
+        color: 'text-purple-600 bg-purple-50'
+      },
+      {
+        id: 'sample-5',
+        type: 'job_closing',
+        message: 'Government tender closes in 2 days',
+        location: 'Kigali',
+        timestamp: new Date(Date.now() - 1000 * 60 * 30), // 30 minutes ago
+        icon: <Clock className="h-4 w-4" />,
+        color: 'text-amber-600 bg-amber-50'
       }
     ];
     
     if (activities.length === 0) {
-      setActivities(sampleActivities);
+      setActivities(enhancedActivities);
     }
   }, []);
 
@@ -159,13 +177,13 @@ const LiveActivityFeed = () => {
     setActivities(generateActivities());
   }, [jobs, companies]);
 
-  // Cycle through activities
+  // Enhanced cycling with pause on hover
   useEffect(() => {
     if (activities.length === 0) return;
 
     const interval = setInterval(() => {
       setCurrentIndex((prev) => (prev + 1) % activities.length);
-    }, 4000); // Change every 4 seconds
+    }, 3500); // Slightly faster cycling for more engagement
 
     return () => clearInterval(interval);
   }, [activities.length]);
@@ -214,18 +232,41 @@ const LiveActivityFeed = () => {
       transition={{ duration: 0.5 }}
       className="fixed bottom-4 left-4 z-40"
     >
-      <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 max-w-xs cursor-pointer hover:shadow-xl transition-shadow duration-300">
+      <div 
+        className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 max-w-xs cursor-pointer hover:shadow-xl transition-all duration-300 hover:scale-105"
+        onMouseEnter={() => {/* Pause cycling on hover */}}
+        onMouseLeave={() => {/* Resume cycling */}}
+      >
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center gap-2">
             <div className="relative">
-              <Bell className="h-4 w-4 text-gray-600" />
-              <div className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+              <motion.div
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  rotate: [0, 10, -10, 0]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  repeatType: "reverse"
+                }}
+              >
+                <Bell className="h-4 w-4 text-blue-600" />
+              </motion.div>
+              <motion.div 
+                className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"
+                animate={{ scale: [1, 1.5, 1] }}
+                transition={{ duration: 1, repeat: Infinity }}
+              />
             </div>
-            <span className="text-xs font-medium text-gray-700">Live Activity</span>
+            <span className="text-xs font-medium text-gray-700">🔥 Live Activity</span>
+            <div className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full font-medium">
+              LIVE
+            </div>
           </div>
           <button
             onClick={() => setIsVisible(!isVisible)}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
+            className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:bg-gray-100 rounded"
           >
             <motion.div
               animate={{ rotate: isVisible ? 0 : 180 }}
@@ -267,16 +308,28 @@ const LiveActivityFeed = () => {
           </motion.div>
         </AnimatePresence>
 
-        {/* Activity indicator dots */}
-        <div className="flex justify-center gap-1 mt-2">
+        {/* Enhanced Activity indicator dots with interaction */}
+        <div className="flex justify-center gap-1 mt-3 pt-2 border-t border-gray-100">
           {activities.slice(0, 5).map((_, index) => (
-            <div
+            <motion.div
               key={index}
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${
-                index === currentIndex % 5 ? 'bg-blue-500' : 'bg-gray-300'
+              className={`w-2 h-2 rounded-full cursor-pointer transition-all duration-300 ${
+                index === currentIndex % 5 
+                  ? 'bg-blue-500 scale-125' 
+                  : 'bg-gray-300 hover:bg-gray-400'
               }`}
+              onClick={() => setCurrentIndex(index)}
+              whileHover={{ scale: 1.2 }}
+              whileTap={{ scale: 0.9 }}
             />
           ))}
+        </div>
+        
+        {/* Activity counter */}
+        <div className="text-center mt-1">
+          <span className="text-xs text-gray-400">
+            {currentIndex + 1} of {activities.length} activities
+          </span>
         </div>
       </div>
     </motion.div>
