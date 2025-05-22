@@ -45,6 +45,7 @@ function AppRoutes() {
           <Route path="/login" component={Login} />
           <Route path="/company/:id" component={CompanyProfile} />
           <Route path="/create-company" component={CreateCompany} />
+          <Route path="/company/create" component={CreateCompany} />
           <Route path="/employers" component={Employers} />
           <Route path="/resources" component={Resources} />
           {/* Fallback to 404 */}
