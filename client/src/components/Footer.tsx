@@ -28,7 +28,7 @@ const Footer = () => {
           <div>
             <h3 className="text-white text-lg font-bold mb-4 font-heading">For Job Seekers</h3>
             <ul className="space-y-2">
-              <li><Link href="/find-jobs" className="hover:text-white transition-colors">Browse Jobs</Link></li>
+              <li><Link href="/listings" className="hover:text-white transition-colors">Browse Listings</Link></li>
               <li><Link href="/profile" className="hover:text-white transition-colors">Create Resume</Link></li>
               <li><Link href="/job-alerts" className="hover:text-white transition-colors">Job Alerts</Link></li>
               <li><Link href="/career-advice" className="hover:text-white transition-colors">Career Advice</Link></li>

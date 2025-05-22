@@ -29,7 +29,7 @@ const FeaturedJobs = () => {
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center mb-8">
           <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 font-heading">Featured Advertisements</h2>
-          <Link href="/find-jobs" className="text-[#0A3D62] hover:text-[#082C46] font-medium flex items-center">
+          <Link href="/listings" className="text-[#0A3D62] hover:text-[#082C46] font-medium flex items-center">
             View All Listings
             <ArrowRight className="h-4 w-4 ml-1" />
           </Link>

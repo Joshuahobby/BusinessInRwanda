@@ -104,9 +104,9 @@ const JobCategories = () => {
             <CategoryCard name="Management & Admin" icon="business" count={124} href="/listings?category=management" />
             <CategoryCard name="Healthcare" icon="health_and_safety" count={76} href="/listings?category=healthcare" />
             <CategoryCard name="Education & Training" icon="school" count={93} href="/listings?category=education" />
-            <CategoryCard name="Engineering" icon="engineering" count={67} href="/find-jobs?category=engineering" />
-            <CategoryCard name="Marketing & Sales" icon="campaign" count={102} href="/find-jobs?category=marketing" />
-            <CategoryCard name="Agriculture" icon="agriculture" count={45} href="/find-jobs?category=agriculture" />
+            <CategoryCard name="Engineering" icon="engineering" count={67} href="/listings?category=engineering" />
+            <CategoryCard name="Marketing & Sales" icon="campaign" count={102} href="/listings?category=marketing" />
+            <CategoryCard name="Agriculture" icon="agriculture" count={45} href="/listings?category=agriculture" />
           </div>
         )}
       </div>
