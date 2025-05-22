@@ -1163,9 +1163,9 @@ const AdminDashboard = () => {
                     <CardHeader>
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                         <div>
-                          <CardTitle>Company Management</CardTitle>
+                          <CardTitle>Organization Management</CardTitle>
                           <CardDescription>
-                            Manage all companies on the platform
+                            Manage all partner organizations posting advertisements
                           </CardDescription>
                         </div>
                         <Button 
@@ -1197,7 +1197,7 @@ const AdminDashboard = () => {
                       ) : companiesError ? (
                         <div className="p-4 bg-red-50 text-red-700 rounded-md">
                           <AlertTriangle className="h-5 w-5 inline mr-2" />
-                          Failed to load companies. Please try again later.
+                          Failed to load organizations. Please try again later.
                         </div>
                       ) : (
                         <div className="space-y-4">
@@ -1313,7 +1313,7 @@ const AdminDashboard = () => {
                               <TableRow>
                                 <TableHead>Category Name</TableHead>
                                 <TableHead>Icon</TableHead>
-                                <TableHead>Job Count</TableHead>
+                                <TableHead>Advertisement Count</TableHead>
                                 <TableHead className="text-right">Actions</TableHead>
                               </TableRow>
                             </TableHeader>
