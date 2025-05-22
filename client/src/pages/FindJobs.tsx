@@ -449,9 +449,15 @@ const FindJobs = () => {
                 <h2 className="font-medium text-lg mb-4">Filters</h2>
                 
                 <div className="space-y-6">
-                  {/* Job Category */}
+                  {/* Category - Label changes based on post type */}
                   <div>
-                    <Label className="font-medium mb-2 block">Job Category</Label>
+                    <Label className="font-medium mb-2 block">
+                      {postType === "job" && "Job Category"}
+                      {postType === "tender" && "Tender Category"}
+                      {postType === "auction" && "Property Category"}
+                      {postType === "announcement" && "Announcement Category"}
+                      {postType === "all" && "Category"}
+                    </Label>
                     <Select 
                       value={searchParams.category || 'all-categories'} 
                       onValueChange={(value) => handleFilterChange('category', value === 'all-categories' ? '' : value)}
@@ -470,79 +476,85 @@ const FindJobs = () => {
                     </Select>
                   </div>
                   
-                  {/* Job Type */}
-                  <div>
-                    <Label className="font-medium mb-2 block">Job Type</Label>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="type-fulltime"
-                          checked={selectedJobTypes.includes('full_time')}
-                          onCheckedChange={(checked) => handleJobTypeChange('full_time', checked as boolean)}
-                        />
-                        <label htmlFor="type-fulltime" className="text-sm">Full Time</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="type-parttime" 
-                          checked={selectedJobTypes.includes('part_time')}
-                          onCheckedChange={(checked) => handleJobTypeChange('part_time', checked as boolean)}
-                        />
-                        <label htmlFor="type-parttime" className="text-sm">Part Time</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="type-contract" 
-                          checked={selectedJobTypes.includes('contract')}
-                          onCheckedChange={(checked) => handleJobTypeChange('contract', checked as boolean)}
-                        />
-                        <label htmlFor="type-contract" className="text-sm">Contract</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="type-internship" 
-                          checked={selectedJobTypes.includes('internship')}
-                          onCheckedChange={(checked) => handleJobTypeChange('internship', checked as boolean)}
-                        />
-                        <label htmlFor="type-internship" className="text-sm">Internship</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="type-remote" 
-                          checked={selectedJobTypes.includes('remote')}
-                          onCheckedChange={(checked) => handleJobTypeChange('remote', checked as boolean)}
-                        />
-                        <label htmlFor="type-remote" className="text-sm">Remote</label>
+                  {/* Job Type - Only show for jobs */}
+                  {(postType === "job" || postType === "all") && (
+                    <div>
+                      <Label className="font-medium mb-2 block">Job Type</Label>
+                      <div className="space-y-2">
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="type-fulltime"
+                            checked={selectedJobTypes.includes('full_time')}
+                            onCheckedChange={(checked) => handleJobTypeChange('full_time', checked as boolean)}
+                          />
+                          <label htmlFor="type-fulltime" className="text-sm">Full Time</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="type-parttime" 
+                            checked={selectedJobTypes.includes('part_time')}
+                            onCheckedChange={(checked) => handleJobTypeChange('part_time', checked as boolean)}
+                          />
+                          <label htmlFor="type-parttime" className="text-sm">Part Time</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="type-contract" 
+                            checked={selectedJobTypes.includes('contract')}
+                            onCheckedChange={(checked) => handleJobTypeChange('contract', checked as boolean)}
+                          />
+                          <label htmlFor="type-contract" className="text-sm">Contract</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="type-internship" 
+                            checked={selectedJobTypes.includes('internship')}
+                            onCheckedChange={(checked) => handleJobTypeChange('internship', checked as boolean)}
+                          />
+                          <label htmlFor="type-internship" className="text-sm">Internship</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Checkbox 
+                            id="type-remote" 
+                            checked={selectedJobTypes.includes('remote')}
+                            onCheckedChange={(checked) => handleJobTypeChange('remote', checked as boolean)}
+                          />
+                          <label htmlFor="type-remote" className="text-sm">Remote</label>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                   
-                  {/* Experience Level */}
-                  <div>
-                    <Label className="font-medium mb-2 block">Experience Level</Label>
-                    <RadioGroup 
-                      value={experienceLevel} 
-                      onValueChange={(value) => handleExperienceLevelChange(value as ExperienceLevel)}
-                      className="space-y-2"
-                    >
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="entry" id="exp-entry" />
-                        <label htmlFor="exp-entry" className="text-sm">Entry Level</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="intermediate" id="exp-intermediate" />
-                        <label htmlFor="exp-intermediate" className="text-sm">Intermediate</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="senior" id="exp-senior" />
-                        <label htmlFor="exp-senior" className="text-sm">Senior</label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="executive" id="exp-executive" />
-                        <label htmlFor="exp-executive" className="text-sm">Executive</label>
-                      </div>
-                    </RadioGroup>
-                  </div>
+                  {/* Experience Level - Only for jobs and tenders */}
+                  {(postType === "job" || postType === "tender" || postType === "all") && (
+                    <div>
+                      <Label className="font-medium mb-2 block">
+                        {postType === "tender" ? "Required Experience" : "Experience Level"}
+                      </Label>
+                      <RadioGroup 
+                        value={experienceLevel} 
+                        onValueChange={(value) => handleExperienceLevelChange(value as ExperienceLevel)}
+                        className="space-y-2"
+                      >
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="entry" id="exp-entry" />
+                          <label htmlFor="exp-entry" className="text-sm">Entry Level</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="intermediate" id="exp-intermediate" />
+                          <label htmlFor="exp-intermediate" className="text-sm">Intermediate</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="senior" id="exp-senior" />
+                          <label htmlFor="exp-senior" className="text-sm">Senior</label>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <RadioGroupItem value="executive" id="exp-executive" />
+                          <label htmlFor="exp-executive" className="text-sm">Executive</label>
+                        </div>
+                      </RadioGroup>
+                    </div>
+                  )}
                   
                   {/* Salary Range */}
                   <div>
