@@ -42,8 +42,8 @@ const Home = () => {
       <section className="bg-neutral-50 py-16">
         <div className="container mx-auto px-4">
           {/* "Coming Soon" Banner for new features */}
-          <div className="mb-10 bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center">
-            <Bell className="text-blue-500 mr-3 h-5 w-5" />
+          <div className="mb-10 bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center animate-fadeIn">
+            <Bell className="text-blue-500 mr-3 h-5 w-5 animate-pulse-slow" />
             <p className="text-blue-700 text-sm">
               <span className="font-semibold">New features coming soon!</span> Mobile apps, personalized recommendations, and industry insights will be available in our next update.
             </p>
@@ -53,9 +53,11 @@ const Home = () => {
             {/* Main content column */}
             <div className="lg:col-span-2 space-y-12">
               {/* Deadline Highlights */}
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100">
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100 hover-lift animate-fadeIn">
                 <div className="border-b border-neutral-100 px-6 py-4">
-                  <h2 className="text-xl font-bold text-[#0A3D62]">Closing Soon</h2>
+                  <h2 className="text-xl font-bold text-[#0A3D62] flex items-center">
+                    <span className="animate-pulse-slow mr-2">⏱️</span> Closing Soon
+                  </h2>
                 </div>
                 <div className="p-6">
                   <DeadlineHighlights />
@@ -63,7 +65,7 @@ const Home = () => {
               </div>
               
               {/* Category Featured Ads */}
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100">
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100 hover-lift animate-fadeIn delay-1">
                 <div className="border-b border-neutral-100 px-6 py-4">
                   <h2 className="text-xl font-bold text-[#0A3D62]">Browse by Category</h2>
                 </div>
@@ -73,8 +75,8 @@ const Home = () => {
               </div>
               
               {/* Personalized Recommendations - Marked as "Coming Soon" */}
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100 relative">
-                <div className="absolute top-4 right-4 bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full">
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100 relative hover-lift animate-fadeIn delay-2">
+                <div className="absolute top-4 right-4 bg-amber-100 text-amber-800 text-xs px-2 py-1 rounded-full animate-pulse-slow">
                   Coming Soon
                 </div>
                 <div className="border-b border-neutral-100 px-6 py-4">
@@ -89,28 +91,28 @@ const Home = () => {
             {/* Sidebar column */}
             <div className="space-y-8">
               {/* Quick Links */}
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100">
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100 hover-lift animate-fadeIn">
                 <div className="border-b border-neutral-100 px-6 py-4">
                   <h2 className="text-xl font-bold text-[#0A3D62]">Quick Links</h2>
                 </div>
                 <div className="p-6">
                   <nav className="space-y-2">
-                    <a href="/find-jobs" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors">
+                    <a href="/find-jobs" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-1">
                       Browse All Listings
                     </a>
-                    <a href="/find-jobs?type=job" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors">
+                    <a href="/find-jobs?type=job" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-2">
                       Job Opportunities
                     </a>
-                    <a href="/find-jobs?type=tender" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors">
+                    <a href="/find-jobs?type=tender" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-3">
                       Tenders
                     </a>
-                    <a href="/find-jobs?type=auction" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors">
+                    <a href="/find-jobs?type=auction" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-4">
                       Auctions/Cyamunara
                     </a>
-                    <a href="/find-jobs?type=announcement" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors">
+                    <a href="/find-jobs?type=announcement" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">
                       Announcements
                     </a>
-                    <a href="/companies" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors">
+                    <a href="/companies" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">
                       Partner Organizations
                     </a>
                   </nav>
@@ -118,7 +120,7 @@ const Home = () => {
               </div>
               
               {/* Recent Activity Feed */}
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100">
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-neutral-100 hover-lift animate-fadeIn delay-1">
                 <div className="border-b border-neutral-100 px-6 py-4">
                   <h2 className="text-xl font-bold text-[#0A3D62]">Recent Activity</h2>
                 </div>
@@ -134,22 +136,28 @@ const Home = () => {
       {/* Browse by Location Section */}
       <section className="bg-white border-y border-neutral-100 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 animate-slideUp">
             <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Find Opportunities Near You</h2>
             <p className="text-neutral-600">Discover listings across Rwanda's provinces or work remotely</p>
+            <div className="w-20 h-1 bg-[#0A3D62] mx-auto mt-6 rounded-full animate-shimmer"></div>
           </div>
-          <LocationBrowser />
+          <div className="hover-scale">
+            <LocationBrowser />
+          </div>
         </div>
       </section>
       
       {/* Categories Section */}
       <section className="bg-neutral-50 border-b border-neutral-100 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 animate-slideUp">
             <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Explore by Category</h2>
             <p className="text-neutral-600">Browse opportunities across different industries and sectors</p>
+            <div className="w-20 h-1 bg-[#0A3D62] mx-auto mt-6 rounded-full animate-shimmer"></div>
           </div>
-          <JobCategories />
+          <div className="hover-scale">
+            <JobCategories />
+          </div>
         </div>
       </section>
       
@@ -159,47 +167,60 @@ const Home = () => {
       {/* Industry Insights Section - Marked as "Coming Soon" */}
       <section className="bg-white border-y border-neutral-100 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 animate-slideUp">
             <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Industry Insights</h2>
             <p className="text-neutral-600">Stay informed about Rwanda's job market trends</p>
-            <div className="inline-block mt-4 bg-amber-100 text-amber-800 text-sm px-3 py-1 rounded-full">
+            <div className="inline-block mt-4 bg-amber-100 text-amber-800 text-sm px-3 py-1 rounded-full animate-pulse-slow">
               Coming Soon in Next Update
             </div>
+            <div className="w-20 h-1 bg-[#0A3D62] mx-auto mt-6 rounded-full animate-shimmer"></div>
           </div>
-          <IndustryInsights />
+          <div className="opacity-75 hover-lift transition-all duration-300">
+            <IndustryInsights />
+          </div>
         </div>
       </section>
       
       {/* Mobile App Promo Section - Marked as "Coming Soon" */}
       <section className="bg-neutral-50 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 animate-slideUp">
             <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Stay Connected On The Go</h2>
             <p className="text-neutral-600">Access opportunities anywhere with our mobile application</p>
-            <div className="inline-block mt-4 bg-amber-100 text-amber-800 text-sm px-3 py-1 rounded-full">
+            <div className="inline-block mt-4 bg-amber-100 text-amber-800 text-sm px-3 py-1 rounded-full animate-pulse-slow">
               Coming Soon in Next Update
             </div>
+            <div className="w-20 h-1 bg-[#0A3D62] mx-auto mt-6 rounded-full animate-shimmer"></div>
           </div>
-          <MobileAppPromo />
+          <div className="hover-scale">
+            <MobileAppPromo />
+          </div>
         </div>
       </section>
       
       {/* For Employers Section */}
-      <EmployerCTA />
+      <div className="animate-fadeIn">
+        <EmployerCTA />
+      </div>
       
       {/* Featured Employers Section */}
       <section className="bg-white border-t border-neutral-100 py-16">
         <div className="container mx-auto px-4">
-          <div className="max-w-3xl mx-auto text-center mb-12">
+          <div className="max-w-3xl mx-auto text-center mb-12 animate-slideUp">
             <h2 className="text-3xl font-bold text-[#0A3D62] mb-4">Featured Organizations</h2>
             <p className="text-neutral-600">Connect with Rwanda's leading employers and partners</p>
+            <div className="w-20 h-1 bg-[#0A3D62] mx-auto mt-6 rounded-full animate-shimmer"></div>
           </div>
-          <FeaturedEmployers />
+          <div className="hover-scale">
+            <FeaturedEmployers />
+          </div>
         </div>
       </section>
       
       {/* Final CTA Section */}
-      <CTASection />
+      <div className="animate-fadeIn delay-2">
+        <CTASection />
+      </div>
     </>
   );
 };
