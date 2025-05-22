@@ -503,6 +503,120 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Admin routes are defined below
+
+  // Admin routes
+  
+  // Get all users
+  app.get("/api/admin/users", isAdmin, async (req, res) => {
+    try {
+      // In a real implementation, we would add pagination
+      const users = await storage.getAllUsers();
+      res.json(users);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get user by ID
+  app.get("/api/admin/users/:id", isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const user = await storage.getUser(userId);
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      res.json(user);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Update user (admin can change roles, status, etc.)
+  app.patch("/api/admin/users/:id", isAdmin, async (req, res) => {
+    try {
+      const userId = parseInt(req.params.id);
+      const userData = req.body;
+      
+      // Verify user exists
+      const existingUser = await storage.getUser(userId);
+      if (!existingUser) {
+        return res.status(404).json({ message: "User not found" });
+      }
+      
+      // Update user
+      const updatedUser = await storage.updateUser(userId, userData);
+      res.json(updatedUser);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get all jobs (with filtering options)
+  app.get("/api/admin/jobs", isAdmin, async (req, res) => {
+    try {
+      // In a production app, this would use query params for filtering
+      const jobs = await storage.searchJobs({});
+      res.json(jobs);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Update job status (approve, reject, feature, etc.)
+  app.patch("/api/admin/jobs/:id", isAdmin, async (req, res) => {
+    try {
+      const jobId = parseInt(req.params.id);
+      const jobData = req.body;
+      
+      // Verify job exists
+      const existingJob = await storage.getJob(jobId);
+      if (!existingJob) {
+        return res.status(404).json({ message: "Job not found" });
+      }
+      
+      // Update job
+      const updatedJob = await storage.updateJob(jobId, {
+        ...existingJob,
+        ...jobData
+      });
+      res.json(updatedJob);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get all companies
+  app.get("/api/admin/companies", isAdmin, async (req, res) => {
+    try {
+      // This would need to be implemented in the storage interface
+      const companies = await storage.getAllCompanies();
+      res.json(companies);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get platform statistics
+  app.get("/api/admin/statistics", isAdmin, async (req, res) => {
+    try {
+      // This would calculate various platform statistics
+      // For now, we'll return mock data
+      const stats = {
+        totalUsers: await storage.getUserCount(),
+        totalJobs: await storage.getJobCount(),
+        totalCompanies: await storage.getCompanyCount(),
+        totalApplications: await storage.getApplicationCount(),
+        usersByRole: await storage.getUserCountByRole(),
+        recentJobs: await storage.getRecentJobs(5),
+        recentApplications: await storage.getRecentApplications(5)
+      };
+      res.json(stats);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Create the HTTP server
   const httpServer = createServer(app);
 

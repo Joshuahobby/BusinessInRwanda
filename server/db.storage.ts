@@ -5,11 +5,12 @@ import {
   jobs, type Job, type InsertJob,
   applications, type Application, type InsertApplication,
   categories, type Category, type InsertCategory,
+  userRoleEnum
 } from "@shared/schema";
 import { JobSearchParams } from "@/lib/types";
 import { IStorage } from "./storage";
 import { db } from "./db";
-import { eq, like, and, or, desc, sql } from "drizzle-orm";
+import { eq, like, and, or, desc, sql, count } from "drizzle-orm";
 
 // Database storage implementation
 export class DatabaseStorage implements IStorage {

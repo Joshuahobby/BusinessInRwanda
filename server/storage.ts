@@ -49,6 +49,17 @@ export interface IStorage {
   
   // Category operations
   getAllCategories(): Promise<(Category & { count: number })[]>;
+  
+  // Admin operations
+  getAllUsers(): Promise<User[]>;
+  getAllCompanies(): Promise<Company[]>;
+  getUserCount(): Promise<number>;
+  getJobCount(): Promise<number>;
+  getCompanyCount(): Promise<number>;
+  getApplicationCount(): Promise<number>;
+  getUserCountByRole(): Promise<{role: string, count: number}[]>;
+  getRecentJobs(limit: number): Promise<Job[]>;
+  getRecentApplications(limit: number): Promise<Application[]>;
 }
 
 // In-memory storage implementation
