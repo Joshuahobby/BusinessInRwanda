@@ -1319,6 +1319,49 @@ const AdminDashboard = () => {
         isOpen={isCreateCompanyModalOpen}
         onClose={() => setIsCreateCompanyModalOpen(false)}
       />
+      
+      {/* Category Management Modals */}
+      <CategoryModal
+        isOpen={isCreateCategoryModalOpen}
+        onClose={() => setIsCreateCategoryModalOpen(false)}
+        mode="create"
+      />
+      
+      <CategoryModal
+        isOpen={isEditCategoryModalOpen}
+        onClose={() => setIsEditCategoryModalOpen(false)}
+        category={editingCategory}
+        mode="edit"
+      />
+      
+      <DeleteCategoryDialog
+        isOpen={isDeleteCategoryModalOpen}
+        onClose={() => setIsDeleteCategoryModalOpen(false)}
+        category={deletingCategory}
+      />
+      
+      {/* Featured Sections Modal */}
+      <FeaturedSectionsModal
+        isOpen={isFeaturedSectionsModalOpen}
+        onClose={() => setIsFeaturedSectionsModalOpen(false)}
+        initialData={featuredSectionsData}
+        jobs={stats?.recentJobs || []}
+        companies={companies || []}
+      />
+      
+      {/* Notification Modals */}
+      <NotificationModal
+        isOpen={isCreateNotificationModalOpen}
+        onClose={() => setIsCreateNotificationModalOpen(false)}
+        mode="create"
+      />
+      
+      <NotificationModal
+        isOpen={isEditNotificationModalOpen}
+        onClose={() => setIsEditNotificationModalOpen(false)}
+        notification={editingNotification}
+        mode="edit"
+      />
     </>
   );
 };
