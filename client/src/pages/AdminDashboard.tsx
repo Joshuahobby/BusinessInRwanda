@@ -4,7 +4,8 @@ import { Helmet } from "react-helmet-async";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
 import { 
-  User, User as UserModel, 
+  User as DbUser, 
+  User as UserModel, 
   Job as JobModel, 
   Company as CompanyModel, 
   Application as ApplicationModel 
@@ -68,7 +69,21 @@ import {
   Megaphone,
   ChevronDown,
   Calendar,
-  GanttChartSquare
+  GanttChartSquare,
+  Loader2,
+  Bell,
+  Menu,
+  LogOut,
+  PanelLeft,
+  LayoutDashboard,
+  CircleCheck,
+  ChevronLeft,
+  Clock,
+  Filter,
+  FilePlus2,
+  MoveUpRight,
+  TrendingUp,
+  CircleUser
 } from "lucide-react";
 import { format } from "date-fns";
 import AccountSettings from "@/components/AccountSettings";
@@ -92,7 +107,7 @@ const AdminDashboard = () => {
   const [userRoleFilter, setUserRoleFilter] = useState("all");
   const [jobStatusFilter, setJobStatusFilter] = useState("all");
   const [postTypeFilter, setPostTypeFilter] = useState("all");
-  const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [editingUser, setEditingUser] = useState<DbUser | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobModel | null>(null);
   const [isJobDetailsModalOpen, setIsJobDetailsModalOpen] = useState(false);
