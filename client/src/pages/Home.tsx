@@ -97,19 +97,19 @@ const Home = () => {
                 </div>
                 <div className="p-6">
                   <nav className="space-y-2">
-                    <a href="/listings" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-1">
-                      Browse All Listings
+                    <a href="/opportunities" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-1">
+                      Browse All Opportunities
                     </a>
-                    <a href="/listings?type=job" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-2">
+                    <a href="/opportunities?type=job" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-2">
                       Job Opportunities
                     </a>
-                    <a href="/listings?type=tender" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-3">
+                    <a href="/opportunities?type=tender" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-3">
                       Tenders
                     </a>
-                    <a href="/listings?type=auction" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-4">
+                    <a href="/opportunities?type=auction" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-4">
                       Auctions/Cyamunara
                     </a>
-                    <a href="/listings?type=announcement" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">
+                    <a href="/opportunities?type=announcement" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">
                       Announcements
                     </a>
                     <a href="/companies" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">

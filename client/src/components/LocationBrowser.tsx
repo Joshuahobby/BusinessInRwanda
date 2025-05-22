@@ -102,7 +102,7 @@ const LocationBrowser = () => {
                 }}
               >
                 <a 
-                  href={`/listings?location=${region.slug}`}
+                  href={`/opportunities?location=${region.slug}`}
                   className="group flex flex-col items-center"
                 >
                   <div className="relative">

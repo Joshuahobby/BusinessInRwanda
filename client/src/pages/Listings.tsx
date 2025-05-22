@@ -245,10 +245,10 @@ const Listings = () => {
     <>
       <Helmet>
         <title>
-          {postType === "all" ? "Browse Listings - Business In Rwanda" :
-          postType === "job" ? "Job Listings - Business In Rwanda" :
-          postType === "tender" ? "Tenders - Business In Rwanda" :
-          postType === "auction" ? "Auctions/Cyamunara - Business In Rwanda" :
+          {postType === "all" ? "Browse Opportunities - Business In Rwanda" :
+          postType === "job" ? "Job Opportunities - Business In Rwanda" :
+          postType === "tender" ? "Tender Opportunities - Business In Rwanda" :
+          postType === "auction" ? "Auction/Cyamunara Opportunities - Business In Rwanda" :
           "Announcements - Business In Rwanda"}
         </title>
         <meta name="description" content={
