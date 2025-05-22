@@ -28,13 +28,50 @@ export function setupAdminRoutes(app: Express) {
   // Get admin dashboard statistics
   app.get('/api/admin/statistics', async (req: Request, res: Response) => {
     try {
-      const userCount = await storage.getUserCount();
-      const jobCount = await storage.getJobCount();
-      const companyCount = await storage.getCompanyCount();
-      const applicationCount = await storage.getApplicationCount();
-      const usersByRole = await storage.getUserCountByRole();
-      const recentJobs = await storage.getRecentJobs(5);
-      const recentApplications = await storage.getRecentApplications(5);
+      // Get basic statistics
+      const [
+        userCount,
+        jobCount,
+        companyCount,
+        applicationCount,
+        usersByRole
+      ] = await Promise.all([
+        storage.getUserCount(),
+        storage.getJobCount(),
+        storage.getCompanyCount(),
+        storage.getApplicationCount(),
+        storage.getUserCountByRole()
+      ]);
+      
+      // For recent jobs, handle directly to avoid company_name issues
+      let recentJobs = [];
+      try {
+        const jobResults = await db.select()
+          .from(jobs)
+          .orderBy(desc(jobs.createdAt))
+          .limit(5);
+          
+        // Add company name through manual lookup
+        recentJobs = await Promise.all(jobResults.map(async (job) => {
+          const company = await storage.getCompany(job.companyId);
+          return {
+            ...job,
+            companyName: company?.name || "Unknown Company"
+          };
+        }));
+      } catch (error) {
+        console.error("Error fetching recent jobs:", error);
+        recentJobs = [];
+      }
+      
+      // Get recent applications
+      let recentApplications = [];
+      try {
+        recentApplications = await storage.getRecentApplications(5);
+      } catch (error) {
+        console.error("Error fetching recent applications:", error);
+        recentApplications = [];
+      }
       
       res.json({
         totalUsers: userCount,

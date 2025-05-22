@@ -456,7 +456,7 @@ const AdminDashboard = () => {
                                     <h4 className="text-sm font-medium mb-2">Recent Jobs</h4>
                                     <div className="space-y-2">
                                       {(stats?.recentJobs || []).length > 0 ? (
-                                        (stats.recentJobs || []).map((job: any) => (
+                                        (stats?.recentJobs || []).map((job: any) => (
                                           <div key={job.id} className="flex items-center justify-between py-1">
                                             <div className="flex items-center">
                                               <Briefcase className="h-4 w-4 mr-2 text-neutral-400" />
@@ -479,7 +479,7 @@ const AdminDashboard = () => {
                                     <h4 className="text-sm font-medium mb-2">Recent Applications</h4>
                                     <div className="space-y-2">
                                       {(stats?.recentApplications || []).length > 0 ? (
-                                        (stats.recentApplications || []).map((app: any) => (
+                                        (stats?.recentApplications || []).map((app: any) => (
                                           <div key={app.id} className="flex items-center justify-between py-1">
                                             <div className="flex items-center">
                                               <FileText className="h-4 w-4 mr-2 text-neutral-400" />
@@ -1051,7 +1051,7 @@ const AdminDashboard = () => {
       <CreatePostModal
         isOpen={isCreatePostModalOpen}
         onClose={() => setIsCreatePostModalOpen(false)}
-        companies={companiesData?.length ? companiesData : []}
+        companies={companies || []}
       />
     </>
   );
