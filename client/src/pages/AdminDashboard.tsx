@@ -56,7 +56,19 @@ import {
   PieChart,
   Zap,
   Shield,
-  Database
+  Database,
+  ChevronRight,
+  ArrowUpRight,
+  ArrowDownRight,
+  ClipboardCheck,
+  UserCircle,
+  FileDown,
+  TagIcon,
+  Gavel,
+  Megaphone,
+  ChevronDown,
+  Calendar,
+  GanttChartSquare
 } from "lucide-react";
 import { format } from "date-fns";
 import AccountSettings from "@/components/AccountSettings";
