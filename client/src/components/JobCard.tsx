@@ -187,7 +187,7 @@ const JobCard = ({
             {postType === "tender" && "Deadline: "}
             {postType === "announcement" && "Published: "}
             {(postType === "job" || postType === "all") && "Posted: "}
-            {formatDistanceToNow(postedAt, { addSuffix: true })}
+            {postedAt instanceof Date && !isNaN(postedAt.getTime()) ? formatDistanceToNow(postedAt, { addSuffix: true }) : 'Recently'}
           </span>
           <Link 
             href={`/${postType}/${id}`} 
