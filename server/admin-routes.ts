@@ -237,6 +237,9 @@ export function setupAdminRoutes(app: Express) {
       if (postData.salary === '') postData.salary = null;
       if (postData.responsibilities === '') postData.responsibilities = null;
       
+      // Handle currency with RWF as default if not provided
+      if (!postData.currency) postData.currency = 'RWF';
+      
       // Add default status
       postData.status = 'pending';
       

@@ -98,6 +98,7 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
         responsibilities: data.responsibilities || "",
         category: data.category,
         salary: data.salary || "",
+        currency: data.currency,
         experienceLevel: data.experienceLevel,
         companyId: data.companyId,
         postType: data.postType // Include postType in the payload

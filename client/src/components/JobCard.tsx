@@ -13,6 +13,7 @@ interface JobCardProps {
   location: string;
   jobType: string;
   salary?: string;
+  currency?: string;
   description: string;
   postedAt: Date;
   isNew?: boolean;
@@ -29,6 +30,7 @@ const JobCard = ({
   location,
   jobType,
   salary,
+  currency = "RWF",
   description,
   postedAt,
   isNew,
@@ -70,7 +72,7 @@ const JobCard = ({
           {salary && (
             <div className="flex items-center text-sm text-neutral-500">
               <DollarSign className="h-4 w-4 mr-1" />
-              <span>{salary}</span>
+              <span>{salary} {currency}</span>
             </div>
           )}
         </div>

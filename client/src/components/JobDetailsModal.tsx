@@ -144,6 +144,12 @@ const JobDetailsModal = ({ isOpen, onClose, job }: JobDetailsModalProps) => {
               <Tag className="h-4 w-4" />
               <span>{job.category}</span>
             </div>
+            {job.salary && (
+              <div className="flex items-center gap-2 text-neutral-600 col-span-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-banknote"><rect width="20" height="12" x="2" y="6" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+                <span>Salary: {job.salary} {job.currency || 'RWF'}</span>
+              </div>
+            )}
           </div>
 
           <div className="space-y-2 mt-4">
