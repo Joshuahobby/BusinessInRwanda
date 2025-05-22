@@ -198,6 +198,16 @@ const JobSeekerDashboard = () => {
                     
                     <Separator />
                     
+                    {/* Tour Button */}
+                    <Button
+                      onClick={startTour}
+                      variant="outline"
+                      size="sm"
+                      className="w-full bg-blue-50 hover:bg-blue-100 text-blue-600 border-blue-200"
+                    >
+                      🎯 Take Platform Tour
+                    </Button>
+                    
                     <div className="space-y-4">
                       <Button 
                         variant="outline" 
@@ -993,6 +1003,9 @@ const JobSeekerDashboard = () => {
           </div>
         </div>
       </div>
+      
+      {/* Onboarding Tour */}
+      <OnboardingTour isOpen={isTourOpen} onClose={closeTour} />
     </>
   );
 };
