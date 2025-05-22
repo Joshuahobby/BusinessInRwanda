@@ -608,31 +608,31 @@ const JobSeekerDashboard = () => {
                                     <div className="flex items-start space-x-4">
                                       <Avatar className="h-12 w-12 mt-1">
                                         <AvatarFallback>
-                                          {application.job.companyName ? application.job.companyName.charAt(0) : 'C'}
+                                          {application && application.job && application.job.companyName ? application.job.companyName.charAt(0) : 'C'}
                                         </AvatarFallback>
                                       </Avatar>
                                       <div>
-                                        <p className="font-medium">{application.job.title}</p>
-                                        <p className="text-sm text-neutral-500">{application.job.companyName || 'Company'}</p>
+                                        <p className="font-medium">{application && application.job ? application.job.title : 'Job Title'}</p>
+                                        <p className="text-sm text-neutral-500">{application && application.job && application.job.companyName ? application.job.companyName : 'Company'}</p>
                                         <div className="flex flex-wrap items-center text-sm text-neutral-500 mt-1 gap-x-2 gap-y-1">
                                           <span className="flex items-center">
                                             <MapPin className="h-3 w-3 mr-1" />
-                                            {application.job.location}
+                                            {application && application.job ? application.job.location : 'Location'}
                                           </span>
                                           <span>•</span>
                                           <span className="flex items-center">
                                             <Building className="h-3 w-3 mr-1" />
-                                            {application.job.type.replace('_', ' ')}
+                                            {application && application.job && application.job.type ? application.job.type.replace('_', ' ') : 'Job Type'}
                                           </span>
                                           <span>•</span>
                                           <span className="flex items-center">
                                             <Calendar className="h-3 w-3 mr-1" />
-                                            Applied {format(new Date(application.appliedAt), 'MMM d, yyyy')}
+                                            Applied {application && application.appliedAt ? format(new Date(application.appliedAt), 'MMM d, yyyy') : 'Recently'}
                                           </span>
                                         </div>
                                         
                                         {/* Interview Info - Shown only if interview is scheduled */}
-                                        {application.status === 'interview_scheduled' && (
+                                        {application && application.status === 'interview_scheduled' && (
                                           <div className="mt-2 bg-purple-50 p-2 rounded-md">
                                             <p className="text-sm font-medium text-purple-800 flex items-center">
                                               <Calendar className="h-3.5 w-3.5 mr-1.5" />
@@ -695,15 +695,15 @@ const JobSeekerDashboard = () => {
                                       </div>
                                     </div>
                                     <div className="flex flex-col md:items-end gap-3 self-end md:self-auto">
-                                      {getStatusBadge(application.status)}
+                                      {application && application.status ? getStatusBadge(application.status) : getStatusBadge('applied')}
                                       <div className="flex gap-2">
                                         <Button variant="outline" size="sm" asChild>
-                                          <Link href={`/jobs/${application.job.id}`}>
+                                          <Link href={application && application.job && application.job.id ? `/jobs/${application.job.id}` : '/jobs'}>
                                             <Eye className="h-4 w-4 mr-1" />
                                             View Job
                                           </Link>
                                         </Button>
-                                        {application.resumeUrl && (
+                                        {application && application.resumeUrl && (
                                           <Button variant="outline" size="sm" asChild>
                                             <a href={application.resumeUrl} target="_blank" rel="noopener noreferrer">
                                               <Download className="h-4 w-4 mr-1" />
