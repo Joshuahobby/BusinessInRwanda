@@ -633,7 +633,11 @@ const FindJobs = () => {
                       className="w-full bg-[#0A3D62] hover:bg-[#082C46]"
                       onClick={handleApplyFilters}
                     >
-                      Apply Filters
+                      {postType === "job" && "Apply Job Filters"}
+                      {postType === "tender" && "Apply Tender Filters"}
+                      {postType === "auction" && "Apply Auction Filters"}
+                      {postType === "announcement" && "Apply Filters"}
+                      {postType === "all" && "Apply All Filters"}
                     </Button>
                     
                     <Button 
@@ -641,7 +645,7 @@ const FindJobs = () => {
                       className="w-full"
                       onClick={clearAllFilters}
                     >
-                      Clear Filters
+                      Clear {postType !== "all" ? postType.charAt(0).toUpperCase() + postType.slice(1) : ""} Filters
                     </Button>
                   </div>
                   
