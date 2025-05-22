@@ -182,7 +182,7 @@ const PostOpportunity = () => {
   const createOpportunityMutation = useMutation({
     mutationFn: async (data: OpportunityFormValues) => {
       const { agreeToTerms, ...opportunityData } = data;
-      const response = await apiRequest("/api/jobs", "POST", opportunityData);
+      const response = await apiRequest("POST", "/api/jobs", opportunityData);
       return response;
     },
     onSuccess: () => {
