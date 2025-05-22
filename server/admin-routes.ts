@@ -93,26 +93,9 @@ export function setupAdminRoutes(app: Express) {
   // Get all jobs for admin management
   app.get('/api/admin/jobs', async (req: Request, res: Response) => {
     try {
-      // Get all jobs from database
-      const allJobs = await db.select().from(jobs).orderBy(desc(jobs.createdAt));
-      
-      // Enhance jobs with company information
-      const enhancedJobs = await Promise.all(allJobs.map(async (job) => {
-        try {
-          const company = await storage.getCompany(job.companyId);
-          return {
-            ...job,
-            companyName: company?.name || "Unknown Company"
-          };
-        } catch (e) {
-          return {
-            ...job,
-            companyName: "Unknown Company"
-          };
-        }
-      }));
-      
-      res.json(enhancedJobs);
+      // Use storage method that already handles company name enhancement
+      const allJobs = await storage.getRecentJobs(100); // Get up to 100 recent jobs
+      res.json(allJobs);
     } catch (error) {
       console.error("Error fetching jobs:", error);
       res.status(500).json({ message: "Failed to fetch jobs" });

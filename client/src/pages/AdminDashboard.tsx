@@ -660,6 +660,13 @@ const AdminDashboard = () => {
                             Manage all job listings on the platform
                           </CardDescription>
                         </div>
+                        <Button 
+                          className="bg-[#0A3D62] hover:bg-[#082C46]"
+                          onClick={() => setIsCreatePostModalOpen(true)}
+                        >
+                          <PlusCircle className="h-4 w-4 mr-1.5" />
+                          Create New Post
+                        </Button>
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -1038,6 +1045,13 @@ const AdminDashboard = () => {
         isOpen={isJobDetailsModalOpen}
         onClose={() => setIsJobDetailsModalOpen(false)}
         job={selectedJob}
+      />
+
+      {/* Create Post Modal */}
+      <CreatePostModal
+        isOpen={isCreatePostModalOpen}
+        onClose={() => setIsCreatePostModalOpen(false)}
+        companies={companiesData?.length ? companiesData : []}
       />
     </>
   );
