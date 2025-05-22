@@ -138,23 +138,33 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    // Sanitize date fields to prevent toISOString errors
-    const sanitizedData = {...enhancedJobData};
+    // Sanitize ALL fields to prevent toISOString errors
+    const sanitizedData: any = {};
     
-    // Clean up date fields - set to null if empty or invalid
-    const dateFields = ['deadline', 'auctionDate', 'tenderDeadline'];
-    dateFields.forEach(field => {
-      if (sanitizedData[field as keyof typeof sanitizedData]) {
-        const dateValue = sanitizedData[field as keyof typeof sanitizedData] as string;
-        if (!dateValue || dateValue.trim() === '' || dateValue === 'null' || dateValue === 'undefined') {
-          sanitizedData[field as keyof typeof sanitizedData] = null as any;
-        }
-      } else {
-        sanitizedData[field as keyof typeof sanitizedData] = null as any;
+    // Copy all non-problematic fields
+    Object.keys(enhancedJobData).forEach(key => {
+      const value = enhancedJobData[key as keyof typeof enhancedJobData];
+      
+      // Skip createdAt and updatedAt - let database handle these
+      if (key === 'createdAt' || key === 'updatedAt') {
+        return;
       }
+      
+      // Handle date fields as text (not timestamp)
+      if (['deadline', 'auctionDate', 'tenderDeadline', 'eventDate', 'submissionDeadline'].includes(key)) {
+        if (value && typeof value === 'string' && value.trim() !== '' && value !== 'null' && value !== 'undefined') {
+          sanitizedData[key] = value.trim();
+        } else {
+          sanitizedData[key] = null;
+        }
+        return;
+      }
+      
+      // Copy other fields as-is
+      sanitizedData[key] = value;
     });
     
-    // Clean up additional data fields that might contain dates
+    // Handle additionalData separately
     if (sanitizedData.additionalData && typeof sanitizedData.additionalData === 'object') {
       const additionalData = {...sanitizedData.additionalData};
       const additionalDateFields = ['eventDate', 'submissionDeadline', 'auctionDate', 'deadline'];
