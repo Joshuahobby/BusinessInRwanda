@@ -1,6 +1,9 @@
 import { Link } from "wouter";
 import { formatDistanceToNow } from "date-fns";
-import { BadgeCheck, MapPin, Briefcase, DollarSign, ArrowRight } from "lucide-react";
+import { 
+  MapPin, Briefcase, DollarSign, ArrowRight, 
+  Calendar, FileText, Megaphone, Gavel
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -19,6 +22,10 @@ interface JobCardProps {
   isNew?: boolean;
   isFeatured?: boolean;
   isRemote?: boolean;
+  postType?: string;
+  isAuction?: boolean;
+  isTender?: boolean; 
+  isAnnouncement?: boolean;
   className?: string;
 }
 
@@ -30,17 +37,61 @@ const JobCard = ({
   location,
   jobType,
   salary,
-  currency = "RWF",
+  currency,
   description,
   postedAt,
   isNew,
   isFeatured,
   isRemote,
+  postType = "job",
+  isAuction,
+  isTender,
+  isAnnouncement,
   className
 }: JobCardProps) => {
-  // Create badge text and style based on job status
+  // Get post type specific colors and labels
+  const getPostTypeData = () => {
+    switch(postType) {
+      case "auction":
+        return {
+          color: "bg-purple-100 text-purple-800 hover:bg-purple-200",
+          label: "Auction",
+          icon: <Gavel className="h-4 w-4 mr-1" />,
+          actionText: "View Details"
+        };
+      case "tender":
+        return {
+          color: "bg-blue-100 text-blue-800 hover:bg-blue-200",
+          label: "Tender",
+          icon: <FileText className="h-4 w-4 mr-1" />,
+          actionText: "View Tender"
+        };
+      case "announcement":
+        return {
+          color: "bg-amber-100 text-amber-800 hover:bg-amber-200",
+          label: "Announcement",
+          icon: <Megaphone className="h-4 w-4 mr-1" />,
+          actionText: "Read More"
+        };
+      default:
+        return {
+          color: "bg-green-100 text-green-800 hover:bg-green-200",
+          label: "Job",
+          icon: <Briefcase className="h-4 w-4 mr-1" />,
+          actionText: "Apply Now"
+        };
+    }
+  };
+
+  const postTypeData = getPostTypeData();
+
+  // Create badge text and style based on post status
   let badgeText = isNew ? "New" : isFeatured ? "Featured" : isRemote ? "Remote" : null;
-  let badgeVariant = isNew ? "secondary" : isFeatured ? "secondary" : isRemote ? "secondary" : "default";
+
+  // Add postType specific badge if no other badge is showing
+  if (!badgeText && postType !== "job") {
+    badgeText = postTypeData.label;
+  }
 
   return (
     <Card className={cn("job-card transition-all duration-300 group hover:-translate-y-1 hover:shadow-md border border-neutral-200", className)}>
@@ -54,7 +105,7 @@ const JobCard = ({
             </div>
           </div>
           {badgeText && (
-            <Badge variant={badgeVariant as "default" | "secondary" | "outline" | "destructive"} className="bg-[#00A86B]/10 text-[#008F5B] hover:bg-[#00A86B]/20">
+            <Badge className={postTypeData.color}>
               {badgeText}
             </Badge>
           )}
@@ -65,16 +116,41 @@ const JobCard = ({
             <MapPin className="h-4 w-4 mr-1" />
             <span>{location}</span>
           </div>
-          <div className="flex items-center text-sm text-neutral-500 mb-1">
-            <Briefcase className="h-4 w-4 mr-1" />
-            <span>{jobType}</span>
-          </div>
-          {salary && (
-            <div className="flex items-center text-sm text-neutral-500">
-              <DollarSign className="h-4 w-4 mr-1" />
-              <span>{salary} {currency}</span>
+          
+          {/* Show different details based on post type */}
+          {postType === "job" && (
+            <>
+              <div className="flex items-center text-sm text-neutral-500 mb-1">
+                <Briefcase className="h-4 w-4 mr-1" />
+                <span>{jobType}</span>
+              </div>
+              {salary && (
+                <div className="flex items-center text-sm text-neutral-500">
+                  <DollarSign className="h-4 w-4 mr-1" />
+                  <span>{salary}</span>
+                </div>
+              )}
+            </>
+          )}
+          
+          {postType === "auction" && (
+            <div className="flex items-center text-sm text-neutral-500 mb-1">
+              <Calendar className="h-4 w-4 mr-1" />
+              <span>Auction Date TBD</span>
             </div>
           )}
+          
+          {postType === "tender" && (
+            <div className="flex items-center text-sm text-neutral-500 mb-1">
+              <Calendar className="h-4 w-4 mr-1" />
+              <span>Deadline TBD</span>
+            </div>
+          )}
+          
+          <div className="flex items-center text-sm text-neutral-500 mb-1">
+            {postTypeData.icon}
+            <span>{postTypeData.label}</span>
+          </div>
         </div>
         
         <p className="text-sm text-neutral-600 mb-4 line-clamp-2">
@@ -85,8 +161,11 @@ const JobCard = ({
           <span className="text-xs text-neutral-500">
             Posted {formatDistanceToNow(postedAt, { addSuffix: true })}
           </span>
-          <Link href={`/job/${id}`} className="inline-flex items-center text-[#0A3D62] hover:text-[#082C46] font-medium text-sm group-hover:underline">
-            Apply Now
+          <Link 
+            href={`/${postType}/${id}`} 
+            className="inline-flex items-center text-[#0A3D62] hover:text-[#082C46] font-medium text-sm group-hover:underline"
+          >
+            {postTypeData.actionText}
             <ArrowRight className="h-4 w-4 ml-1" />
           </Link>
         </div>
