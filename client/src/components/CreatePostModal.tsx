@@ -44,6 +44,7 @@ const createPostSchema = z.object({
   responsibilities: z.string().optional(),
   category: z.string().min(2, "Category is required"),
   salary: z.string().optional(),
+  currency: z.enum(["RWF", "USD", "EUR"]).default("RWF"),
   experienceLevel: z.enum(["entry", "intermediate", "senior", "executive"]),
   postType: z.enum(["job", "tender", "announcement"]),
   // Allow company ID to be either a number or a string (since select values are strings)
@@ -74,6 +75,7 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
       responsibilities: "",
       category: "",
       salary: "",
+      currency: "RWF",
       experienceLevel: "entry",
       postType: "job",
       companyId: companies.length > 0 ? companies[0].id : undefined,
@@ -347,6 +349,36 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
                 )}
               />
             </div>
+
+            <FormField
+              control={form.control}
+              name="currency"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Currency</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={field.value}
+                      onValueChange={field.onChange}
+                      disabled={isSubmitting}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select currency" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="RWF">Rwandan Franc (RWF)</SelectItem>
+                        <SelectItem value="USD">US Dollar (USD)</SelectItem>
+                        <SelectItem value="EUR">Euro (EUR)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormDescription>
+                    Select the currency for the salary (RWF is default)
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
 
             <FormField
               control={form.control}

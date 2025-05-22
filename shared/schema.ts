@@ -8,6 +8,7 @@ export const jobTypeEnum = pgEnum('job_type', ['full_time', 'part_time', 'contra
 export const experienceLevelEnum = pgEnum('experience_level', ['entry', 'intermediate', 'senior', 'executive']);
 export const applicationStatusEnum = pgEnum('application_status', ['applied', 'reviewed', 'interview_scheduled', 'rejected', 'hired']);
 export const jobStatusEnum = pgEnum('job_status', ['pending', 'approved', 'rejected']);
+export const currencyEnum = pgEnum('currency_type', ['RWF', 'USD', 'EUR']);
 
 // Users table
 export const users = pgTable("users", {
@@ -62,6 +63,7 @@ export const jobs = pgTable("jobs", {
   responsibilities: text("responsibilities"),
   requirements: text("requirements").notNull(),
   salary: text("salary"),
+  currency: currencyEnum("currency").default('RWF').notNull(),
   experienceLevel: experienceLevelEnum("experience_level").notNull(),
   deadline: timestamp("deadline"),
   isActive: boolean("is_active").default(true).notNull(),
