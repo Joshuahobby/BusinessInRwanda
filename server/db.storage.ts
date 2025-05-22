@@ -138,7 +138,38 @@ export class DatabaseStorage implements IStorage {
       }
     }
     
-    const [job] = await db.insert(jobs).values(enhancedJobData).returning();
+    // Sanitize date fields to prevent toISOString errors
+    const sanitizedData = {...enhancedJobData};
+    
+    // Clean up date fields - set to null if empty or invalid
+    const dateFields = ['deadline', 'auctionDate', 'tenderDeadline'];
+    dateFields.forEach(field => {
+      if (sanitizedData[field as keyof typeof sanitizedData]) {
+        const dateValue = sanitizedData[field as keyof typeof sanitizedData] as string;
+        if (!dateValue || dateValue.trim() === '' || dateValue === 'null' || dateValue === 'undefined') {
+          sanitizedData[field as keyof typeof sanitizedData] = null as any;
+        }
+      } else {
+        sanitizedData[field as keyof typeof sanitizedData] = null as any;
+      }
+    });
+    
+    // Clean up additional data fields that might contain dates
+    if (sanitizedData.additionalData && typeof sanitizedData.additionalData === 'object') {
+      const additionalData = {...sanitizedData.additionalData};
+      const additionalDateFields = ['eventDate', 'submissionDeadline', 'auctionDate', 'deadline'];
+      additionalDateFields.forEach(field => {
+        if (additionalData[field]) {
+          const dateValue = additionalData[field];
+          if (!dateValue || dateValue.trim() === '' || dateValue === 'null' || dateValue === 'undefined') {
+            delete additionalData[field];
+          }
+        }
+      });
+      sanitizedData.additionalData = additionalData;
+    }
+    
+    const [job] = await db.insert(jobs).values(sanitizedData).returning();
     return job;
   }
 
