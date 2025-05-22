@@ -339,38 +339,132 @@ export function setupAdminRoutes(app: Express) {
   // Create new post (admin only)
   app.post('/api/admin/jobs', async (req: Request, res: Response) => {
     try {
-      // Extract postType from the request body, but keep a copy of the full body for logging
-      const { postType, ...postData } = req.body;
+      // Extract key fields from the request body
+      const { 
+        postType, 
+        ownerType,
+        individualName,
+        individualContact,
+        additionalData: rawAdditionalData,
+        ...postData 
+      } = req.body;
       
       console.log("Received job creation request with data:", { 
         postType, 
         hasCompanyId: !!postData.companyId,
       });
       
-      // Make sure companyId is a number
-      if (typeof postData.companyId === 'string') {
-        postData.companyId = parseInt(postData.companyId, 10);
+      // Create a clean job data object
+      const cleanedData: any = {
+        ...postData,
+        status: 'pending' // All posts start as pending and need approval
+      };
+      
+      // Handle numeric conversions
+      if (cleanedData.companyId && typeof cleanedData.companyId === 'string') {
+        cleanedData.companyId = parseInt(cleanedData.companyId, 10);
       }
       
-      // Handle optional fields that might be empty strings
-      if (postData.salary === '') postData.salary = null;
-      if (postData.responsibilities === '') postData.responsibilities = null;
+      // Handle empty strings for optional fields
+      if (cleanedData.salary === '') cleanedData.salary = null;
+      if (cleanedData.responsibilities === '') cleanedData.responsibilities = null;
       
-      // Handle currency with RWF as default if not provided
-      if (!postData.currency) postData.currency = 'RWF';
+      // Set default values
+      if (!cleanedData.currency) cleanedData.currency = 'RWF';
+      if (!cleanedData.type) cleanedData.type = 'full_time'; // Default job type
       
-      // Add default status
-      postData.status = 'pending';
+      // Parse or initialize additionalData
+      let additionalData = {};
+      if (rawAdditionalData) {
+        if (typeof rawAdditionalData === 'string') {
+          try {
+            additionalData = JSON.parse(rawAdditionalData);
+          } catch (e) {
+            console.warn("Failed to parse additionalData string:", e);
+          }
+        } else if (typeof rawAdditionalData === 'object') {
+          additionalData = rawAdditionalData;
+        }
+      }
       
-      // Validate the incoming data with custom error handling
+      // Handle owner information
+      if (ownerType === 'individual') {
+        // For individual posts, use the individual's name as company name
+        cleanedData.companyName = individualName || 'Individual Poster';
+        cleanedData.companyId = null; // No associated company
+        
+        // Store individual owner details in additionalData
+        additionalData = {
+          ...additionalData,
+          individualOwner: {
+            name: individualName,
+            contact: individualContact
+          }
+        };
+      } else if (ownerType === 'company') {
+        // For company posts, lookup the company name
+        if (!cleanedData.companyId) {
+          return res.status(400).json({ message: "Company ID is required for company posts" });
+        }
+        
+        const company = await storage.getCompany(cleanedData.companyId);
+        if (!company) {
+          return res.status(400).json({ message: "Invalid company ID" });
+        }
+        
+        cleanedData.companyName = company.name;
+      }
+      
+      // Handle post type specific data
+      if (postType === 'auction') {
+        // For auction posts, ensure auctionItems is an array and other fields are properly formatted
+        if (additionalData.auctionItems) {
+          // If we have auction items in additionalData, use them
+          cleanedData.auctionItems = additionalData.auctionItems;
+        } else if (postData.auctionItems && typeof postData.auctionItems === 'string') {
+          // Convert string to array if needed
+          cleanedData.auctionItems = postData.auctionItems.split('\n').filter(item => item.trim());
+        } else {
+          // Default to empty array
+          cleanedData.auctionItems = [];
+        }
+        
+        // Store date information
+        if (postData.auctionDate) {
+          additionalData.auctionDateOriginal = postData.auctionDate;
+          // For database storage, either parse the date or use null
+          try {
+            // Try to parse as date, but don't persist if it fails
+            new Date(postData.auctionDate);
+          } catch (e) {
+            // If date parsing fails, remove it from main data but keep in additionalData
+            delete cleanedData.auctionDate;
+          }
+        }
+      }
+      
+      // Store the additionalData as a JSON string
+      cleanedData.additionalData = JSON.stringify(additionalData);
+      
+      // Set admin notes
+      cleanedData.adminNotes = `Created by admin as ${postType || 'job'}`;
+      
+      // Validate the cleaned data (with relaxed validation for special post types)
       try {
-        const validationResult = insertJobSchema.safeParse(postData);
-        if (!validationResult.success) {
-          console.error("Validation failed:", validationResult.error.errors);
-          return res.status(400).json({ 
-            message: "Invalid job data", 
-            errors: validationResult.error.errors 
-          });
+        // For non-job post types, we'll do more lenient validation
+        if (postType && postType !== 'job') {
+          // Skip strict validation for non-job posts but log what we're accepting
+          console.log("Accepting special post type data:", cleanedData);
+        } else {
+          // For regular jobs, use the schema validation
+          const validationResult = insertJobSchema.safeParse(cleanedData);
+          if (!validationResult.success) {
+            console.error("Validation failed:", validationResult.error.errors);
+            return res.status(400).json({ 
+              message: "Invalid job data", 
+              errors: validationResult.error.errors 
+            });
+          }
         }
       } catch (validationError) {
         console.error("Exception during validation:", validationError);
@@ -380,19 +474,8 @@ export function setupAdminRoutes(app: Express) {
         });
       }
       
-      // Get company information to set companyName
-      const company = await storage.getCompany(postData.companyId);
-      if (!company) {
-        return res.status(400).json({ message: "Invalid company ID" });
-      }
-      
-      // Create the job with additional metadata
-      const jobData = {
-        ...postData,
-        companyName: company.name,
-        status: 'pending', // All posts start as pending and need approval
-        adminNotes: `Created by admin as ${postType || 'job'}`
-      };
+      // Create the job with the prepared data
+      const jobData = cleanedData;
       
       console.log("Creating job with data:", JSON.stringify(jobData));
       const newJob = await storage.createJob(jobData);

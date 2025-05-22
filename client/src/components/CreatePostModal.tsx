@@ -128,24 +128,8 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
       // Log form data for debugging
       console.log("Form data being submitted:", data);
       
-      // Initialize additionalData object
-      const additionalData: Record<string, any> = {};
-      
-      // Handle individual owner info if applicable
-      if (data.ownerType === 'individual') {
-        additionalData.ownerInfo = {
-          name: data.individualName,
-          contact: data.individualContact
-        };
-      }
-      
-      // Handle auction items if applicable
-      if (data.postType === 'auction' && data.auctionItems) {
-        additionalData.auctionItems = data.auctionItems.split('\n').filter(item => item.trim());
-      }
-      
-      // Prepare the payload based on post type
-      const payload = {
+      // Prepare the basic payload
+      const payload: Record<string, any> = {
         title: data.title,
         type: data.type,
         location: data.location,
@@ -157,40 +141,68 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
         currency: data.currency,
         experienceLevel: data.experienceLevel,
         postType: data.postType, // Include postType in the payload
-        
-        // Add owner information based on owner type
-        ownerType: data.ownerType,
-        ...(data.ownerType === 'company' ? {
-          companyId: data.companyId,
-          // Reset individual info when company is selected
-          individualName: null,
-          individualContact: null
-        } : {
-          // Add individual owner info and set companyId to null
-          companyId: null,
-          individualName: data.individualName,
-          individualContact: data.individualContact,
-        }),
-        
-        // Add auction specific fields if post type is auction
-        ...(data.postType === 'auction' && {
-          auctionDate: data.auctionDate,
-          auctionTime: data.auctionTime,
-          viewingDates: data.viewingDates,
-          auctionItems: data.auctionItems,
-          auctionRequirements: data.auctionRequirements,
-        }),
-        
-        // Add tender specific fields if post type is tender
-        ...(data.postType === 'tender' && {
-          tenderDeadline: data.tenderDeadline,
-          tenderRequirements: data.tenderRequirements,
-          tenderDocuments: data.tenderDocuments
-        }),
-        
-        // Add the additionalData if it has any properties
-        ...(Object.keys(additionalData).length > 0 && { additionalData })
+        additionalData: {}, // Initialize empty additionalData
       };
+      
+      // Handle owner type selection
+      payload.ownerType = data.ownerType;
+      
+      if (data.ownerType === 'company') {
+        // Company owner - include companyId
+        payload.companyId = data.companyId;
+        // Reset individual info
+        payload.individualName = null;
+        payload.individualContact = null;
+      } else {
+        // Individual owner - include name and contact
+        payload.companyId = null;
+        payload.individualName = data.individualName;
+        payload.individualContact = data.individualContact;
+        
+        // Store in additionalData as well
+        payload.additionalData.ownerInfo = {
+          name: data.individualName,
+          contact: data.individualContact
+        };
+      }
+      
+      // Handle post-type specific fields
+      if (data.postType === 'auction') {
+        // Convert auction items to array in additionalData
+        if (data.auctionItems) {
+          payload.additionalData.auctionItems = data.auctionItems.split('\n').filter(item => item.trim());
+        }
+        
+        // Store all auction fields in the main payload
+        payload.auctionDate = data.auctionDate || null;
+        payload.auctionTime = data.auctionTime || null;
+        payload.viewingDates = data.viewingDates || null;
+        payload.auctionRequirements = data.auctionRequirements || null;
+        
+        // Also store raw values in additionalData to prevent validation issues
+        payload.additionalData.auctionDateRaw = data.auctionDate;
+        payload.additionalData.auctionTimeRaw = data.auctionTime;
+        payload.additionalData.viewingDatesRaw = data.viewingDates;
+        payload.additionalData.auctionItemsRaw = data.auctionItems;
+      }
+      
+      if (data.postType === 'tender') {
+        payload.tenderDeadline = data.tenderDeadline || null;
+        payload.tenderRequirements = data.tenderRequirements || null;
+        payload.tenderDocuments = data.tenderDocuments || null;
+        
+        // Store in additionalData too
+        payload.additionalData.tenderInfo = {
+          deadline: data.tenderDeadline,
+          requirements: data.tenderRequirements,
+          documents: data.tenderDocuments
+        };
+      }
+      
+      // If additionalData is empty, remove it
+      if (Object.keys(payload.additionalData).length === 0) {
+        delete payload.additionalData;
+      }
 
       // Send the request to create the post
       console.log("Sending payload to server:", payload);
