@@ -10,9 +10,9 @@ const CTASection = () => {
           Join thousands of job seekers and employers on Rwanda's premier job platform
         </p>
         <div className="flex flex-wrap justify-center gap-4">
-          <Link href="/listings">
+          <Link href="/opportunities">
             <Button className="bg-white text-[#BD2031] hover:bg-neutral-100 font-medium py-3 px-8">
-              Find Jobs
+              Find Opportunities
             </Button>
           </Link>
           <Link href="/post-job">
