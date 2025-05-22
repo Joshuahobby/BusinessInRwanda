@@ -396,14 +396,13 @@ const JobSeekerDashboard = () => {
                                   <div className="flex items-start justify-between">
                                     <div className="flex items-start space-x-4">
                                       <Avatar className="h-10 w-10 mt-1">
-                                        <AvatarImage src={application.job.company.logo} alt={application.job.company.name} />
                                         <AvatarFallback>
-                                          {application.job.company.name.charAt(0)}
+                                          {application.job.companyName ? application.job.companyName.charAt(0) : 'C'}
                                         </AvatarFallback>
                                       </Avatar>
                                       <div>
                                         <p className="font-medium">{application.job.title}</p>
-                                        <p className="text-sm text-neutral-500">{application.job.company.name}</p>
+                                        <p className="text-sm text-neutral-500">{application.job.companyName || 'Company'}</p>
                                         <div className="flex items-center text-sm text-neutral-500 mt-1 space-x-2">
                                           <span className="flex items-center">
                                             <MapPin className="h-3 w-3 mr-1" />
@@ -451,14 +450,13 @@ const JobSeekerDashboard = () => {
                                   <div className="flex items-start justify-between">
                                     <div className="flex items-start space-x-4">
                                       <Avatar className="h-10 w-10 mt-1">
-                                        <AvatarImage src={job.company?.logo} alt={job.company?.name} />
                                         <AvatarFallback>
-                                          {job.company?.name?.charAt(0) || 'C'}
+                                          {job.companyName ? job.companyName.charAt(0) : 'C'}
                                         </AvatarFallback>
                                       </Avatar>
                                       <div>
                                         <p className="font-medium">{job.title}</p>
-                                        <p className="text-sm text-neutral-500">{job.company?.name}</p>
+                                        <p className="text-sm text-neutral-500">{job.companyName || 'Company'}</p>
                                         <div className="flex items-center text-sm text-neutral-500 mt-1 space-x-2">
                                           <span className="flex items-center">
                                             <MapPin className="h-3 w-3 mr-1" />
