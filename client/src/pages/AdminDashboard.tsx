@@ -3,6 +3,12 @@ import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
+import { 
+  User as UserModel, 
+  Job as JobModel, 
+  Company as CompanyModel, 
+  Application as ApplicationModel 
+} from "@shared/schema";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -32,7 +38,7 @@ import {
   Search,
   PlusCircle,
   AlertTriangle,
-  User,
+  UserIcon,
   BarChart4,
   LineChart,
   PieChart,
@@ -85,42 +91,53 @@ const AdminDashboard = () => {
     }
   }, [currentUser, navigate, toast]);
 
+  // Define the stats type
+  interface AdminStatistics {
+    totalUsers: number;
+    totalJobs: number;
+    totalCompanies: number;
+    totalApplications: number;
+    usersByRole: { role: string; count: number }[];
+    recentJobs: JobModel[];
+    recentApplications: ApplicationModel[];
+  }
+
   // Fetch platform statistics
   const { 
     data: stats, 
     isLoading: isLoadingStats,
     error: statsError
-  } = useQuery({
+  } = useQuery<AdminStatistics>({
     queryKey: ["/api/admin/statistics"],
     enabled: currentUser?.role === "admin",
   });
 
   // Fetch users
   const { 
-    data: users = [], 
+    data: users = [] as UserModel[], 
     isLoading: isLoadingUsers,
     error: usersError
-  } = useQuery({
+  } = useQuery<UserModel[]>({
     queryKey: ["/api/admin/users"],
     enabled: currentUser?.role === "admin" && activeTab === "users",
   });
 
   // Fetch jobs
   const { 
-    data: jobs = [], 
+    data: jobs = [] as JobModel[], 
     isLoading: isLoadingJobs,
     error: jobsError
-  } = useQuery({
+  } = useQuery<JobModel[]>({
     queryKey: ["/api/admin/jobs"],
     enabled: currentUser?.role === "admin" && activeTab === "jobs",
   });
 
   // Fetch companies
   const { 
-    data: companies = [], 
+    data: companies = [] as CompanyModel[], 
     isLoading: isLoadingCompanies,
     error: companiesError
-  } = useQuery({
+  } = useQuery<CompanyModel[]>({
     queryKey: ["/api/admin/companies"],
     enabled: currentUser?.role === "admin" && activeTab === "companies",
   });
@@ -130,7 +147,7 @@ const AdminDashboard = () => {
   }
 
   // Filter users based on search query and role filter
-  const filteredUsers = users.filter((user: any) => {
+  const filteredUsers = users.filter((user) => {
     const matchesSearch = 
       user.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       user.email?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -141,7 +158,7 @@ const AdminDashboard = () => {
   });
 
   // Filter jobs based on search query and status filter
-  const filteredJobs = jobs.filter((job: any) => {
+  const filteredJobs = jobs.filter((job) => {
     const matchesSearch = 
       job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       job.description?.toLowerCase().includes(searchQuery.toLowerCase());
@@ -154,7 +171,7 @@ const AdminDashboard = () => {
   });
 
   // Filter companies based on search query
-  const filteredCompanies = companies.filter((company: any) => {
+  const filteredCompanies = companies.filter((company) => {
     return (
       company.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       company.industry?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -404,7 +421,7 @@ const AdminDashboard = () => {
                                   <PieChart className="h-40 w-40 text-neutral-300" />
                                 </div>
                                 <div className="grid grid-cols-3 gap-2 mt-4">
-                                  {(stats?.usersByRole || []).map((item: any) => (
+                                  {(stats?.usersByRole || []).map((item) => (
                                     <div key={item.role} className="text-center">
                                       <div className={`h-3 rounded-full mb-1 mx-auto w-4/5 ${
                                         item.role === 'job_seeker' ? 'bg-blue-400' :
@@ -458,9 +475,8 @@ const AdminDashboard = () => {
                                               <span className="text-sm truncate max-w-[200px]">{app.job?.title || 'Unknown Job'}</span>
                                             </div>
                                             <Badge 
-                                              className="text-xs"
-                                              variant={app.status === 'applied' ? 'default' : 
-                                                app.status === 'hired' ? 'success' : 'outline'}
+                                              className={`text-xs ${app.status === 'hired' ? 'bg-green-100 text-green-800' : ''}`}
+                                              variant={app.status === 'applied' ? 'default' : 'outline'}
                                             >
                                               {app.status.replace('_', ' ')}
                                             </Badge>
