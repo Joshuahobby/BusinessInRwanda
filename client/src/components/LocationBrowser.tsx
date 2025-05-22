@@ -77,16 +77,31 @@ const LocationBrowser = () => {
             {/* Simple Rwanda map representation */}
             <div className="absolute inset-0 flex items-center justify-center">
               <svg className="w-full h-full max-w-[250px] max-h-[200px]" viewBox="0 0 300 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-                {/* Rwanda country outline - simplified */}
+                {/* Rwanda country outline - more accurate shape */}
                 <path 
-                  d="M50 50 Q150 30 250 50 Q270 100 250 150 Q150 170 50 150 Q30 100 50 50 Z" 
+                  d="M60 70 L80 50 L120 45 L160 50 L200 55 L240 65 L250 80 L245 110 L240 140 L230 160 L210 170 L180 175 L140 170 L100 165 L70 155 L50 140 L45 120 L50 100 L55 85 Z" 
                   fill="#10B981" 
-                  fillOpacity="0.2" 
+                  fillOpacity="0.3" 
                   stroke="#059669" 
                   strokeWidth="2"
                 />
-                <text x="150" y="105" textAnchor="middle" className="fill-green-700 text-sm font-bold">
+                {/* Lake Kivu indication */}
+                <path 
+                  d="M50 100 Q45 110 50 120 Q55 115 50 100" 
+                  fill="#3B82F6" 
+                  fillOpacity="0.6"
+                />
+                {/* Hills indication */}
+                <circle cx="120" cy="100" r="3" fill="#059669" fillOpacity="0.4"/>
+                <circle cx="140" cy="90" r="2" fill="#059669" fillOpacity="0.4"/>
+                <circle cx="160" cy="110" r="2.5" fill="#059669" fillOpacity="0.4"/>
+                <circle cx="180" cy="95" r="2" fill="#059669" fillOpacity="0.4"/>
+                
+                <text x="150" y="115" textAnchor="middle" className="fill-green-700 text-xs font-bold">
                   RWANDA
+                </text>
+                <text x="150" y="130" textAnchor="middle" className="fill-green-600 text-xs">
+                  Land of 1000 Hills
                 </text>
               </svg>
             </div>
