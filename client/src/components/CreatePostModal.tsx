@@ -294,65 +294,68 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="type"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Job Type</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        disabled={isSubmitting}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select job type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="full_time">Full Time</SelectItem>
-                          <SelectItem value="part_time">Part Time</SelectItem>
-                          <SelectItem value="contract">Contract</SelectItem>
-                          <SelectItem value="internship">Internship</SelectItem>
-                          <SelectItem value="remote">Remote</SelectItem>
-                          <SelectItem value="temporary">Temporary</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            {/* Job-specific fields */}
+            {form.watch("postType") === "job" && (
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Job Type</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          disabled={isSubmitting}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select job type" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="full_time">Full Time</SelectItem>
+                            <SelectItem value="part_time">Part Time</SelectItem>
+                            <SelectItem value="contract">Contract</SelectItem>
+                            <SelectItem value="internship">Internship</SelectItem>
+                            <SelectItem value="remote">Remote</SelectItem>
+                            <SelectItem value="temporary">Temporary</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="experienceLevel"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Experience Level</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value}
-                        onValueChange={field.onChange}
-                        disabled={isSubmitting}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select experience level" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="entry">Entry Level</SelectItem>
-                          <SelectItem value="intermediate">Intermediate</SelectItem>
-                          <SelectItem value="senior">Senior</SelectItem>
-                          <SelectItem value="executive">Executive</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
+                <FormField
+                  control={form.control}
+                  name="experienceLevel"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Experience Level</FormLabel>
+                      <FormControl>
+                        <Select
+                          value={field.value}
+                          onValueChange={field.onChange}
+                          disabled={isSubmitting}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select experience level" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="entry">Entry Level</SelectItem>
+                            <SelectItem value="intermediate">Intermediate</SelectItem>
+                            <SelectItem value="senior">Senior</SelectItem>
+                            <SelectItem value="executive">Executive</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <FormField
