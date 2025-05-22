@@ -237,8 +237,9 @@ const AdminDashboard = () => {
       job.description?.toLowerCase().includes(searchQuery.toLowerCase());
     
     const matchesStatus = jobStatusFilter === "all" || 
-      (jobStatusFilter === "active" && job.isActive) ||
-      (jobStatusFilter === "inactive" && !job.isActive);
+      (jobStatusFilter === "pending" && job.status === "pending") ||
+      (jobStatusFilter === "approved" && job.status === "approved") ||
+      (jobStatusFilter === "rejected" && job.status === "rejected");
     
     const matchesPostType = postTypeFilter === "all" || 
       job.postType === postTypeFilter || 
@@ -774,8 +775,9 @@ const AdminDashboard = () => {
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="all">All Statuses</SelectItem>
-                              <SelectItem value="active">Active</SelectItem>
-                              <SelectItem value="inactive">Inactive</SelectItem>
+                              <SelectItem value="pending">Pending</SelectItem>
+                              <SelectItem value="approved">Approved</SelectItem>
+                              <SelectItem value="rejected">Rejected</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
