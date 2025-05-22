@@ -24,6 +24,7 @@ export function getSessionConfig() {
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
+    rolling: false, // Prevent session refresh on every request
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",

@@ -70,19 +70,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   passport.deserializeUser(async (id: number, done) => {
     try {
-      console.log("Deserializing user:", id);
+      // Cache user data to reduce database calls
       const user = await storage.getUser(id);
       if (!user) {
-        console.log("User not found during deserialization:", id);
         return done(null, false);
       }
       
       // Remove password from user object
       const { password: _, ...userWithoutPassword } = user;
-      console.log("User deserialized successfully:", id);
       done(null, userWithoutPassword);
     } catch (error) {
-      console.error("Error deserializing user:", error);
       done(error);
     }
   });
