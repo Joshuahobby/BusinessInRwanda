@@ -68,7 +68,7 @@ export const jobs = pgTable("jobs", {
   salary: text("salary"),
   currency: currencyEnum("currency").default('RWF').notNull(),
   experienceLevel: experienceLevelEnum("experience_level").notNull(),
-  deadline: timestamp("deadline"),
+  deadline: text("deadline"),
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   category: text("category").notNull(),

@@ -295,16 +295,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You can only post jobs for your own company" });
       }
       
-      // Handle date field conversions properly
-      const processedJobData = {
-        ...jobData,
-        deadline: jobData.deadline && jobData.deadline.trim() ? new Date(jobData.deadline) : null,
-        auctionDate: jobData.auctionDate && jobData.auctionDate.trim() ? new Date(jobData.auctionDate) : null,
-        submissionDeadline: jobData.submissionDeadline && jobData.submissionDeadline.trim() ? new Date(jobData.submissionDeadline) : null,
-        eventDate: jobData.eventDate && jobData.eventDate.trim() ? new Date(jobData.eventDate) : null,
-      };
-      
-      const newJob = await storage.createJob(processedJobData);
+      const newJob = await storage.createJob(jobData);
       res.status(201).json(newJob);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
