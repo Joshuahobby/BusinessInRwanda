@@ -94,9 +94,9 @@ const JobCard = ({
   }
   
   // Make sure the card only displays essential information on the list page
-  const trimmedDescription = description.length > 100 ? 
-    `${description.substring(0, 100)}...` : 
-    description;
+  const trimmedDescription = description && description.length > 100 
+    ? `${description.substring(0, 100)}...` 
+    : description || "";
 
   return (
     <Card className={cn("job-card transition-all duration-300 group hover:-translate-y-1 hover:shadow-md border border-neutral-200", className)}>
