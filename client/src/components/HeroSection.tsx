@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { Search, MapPin, Briefcase, FileText, Gavel, Bell } from "lucide-react";
+import { Search, MapPin, Briefcase, FileText, Gavel, Bell, TrendingUp, Users, Star } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
 import { JobSearchParams } from "@/lib/types";
 import { motion } from "framer-motion";
 
@@ -14,16 +13,15 @@ const HeroSection = () => {
     keyword: "",
     location: ""
   });
+  const [searchType, setSearchType] = useState<string>("all");
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Create query string for search
     const queryParams = new URLSearchParams();
     if (searchParams.keyword) queryParams.append("keyword", searchParams.keyword);
     if (searchParams.location) queryParams.append("location", searchParams.location);
     
-    // Add the post type to the search query
     if (searchType !== "all") {
       queryParams.append("type", searchType);
     }
@@ -45,197 +43,214 @@ const HeroSection = () => {
     }));
   };
 
-  const [searchType, setSearchType] = useState<string>("all");
-
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
+  const fadeInUp = {
+    initial: { opacity: 0, y: 60 },
+    animate: { 
       opacity: 1, 
       y: 0,
-      transition: { duration: 0.6 }
+      transition: { duration: 0.8, ease: "easeOut" }
     }
   };
 
   const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
+    initial: {},
+    animate: {
       transition: {
-        staggerChildren: 0.1
+        staggerChildren: 0.2
+      }
+    }
+  };
+
+  const floatingAnimation = {
+    initial: { y: 0 },
+    animate: {
+      y: [-10, 10, -10],
+      transition: {
+        duration: 6,
+        repeat: Infinity,
+        ease: "easeInOut"
       }
     }
   };
 
   return (
-    <section className="relative bg-gradient-to-br from-[#0A3D62] to-[#0d2f45] text-white overflow-hidden">
-      {/* Background with improved overlay */}
-      <div className="absolute inset-0 bg-black bg-opacity-40" 
-        style={{ 
-          backgroundImage: `url('https://pixabay.com/get/gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg')`, 
-          backgroundSize: 'cover', 
-          backgroundPosition: 'center',
-          filter: 'contrast(1.1) brightness(0.7)'
-        }}
-      />
-      
-      {/* Abstract shapes for modern look */}
-      <div className="absolute inset-0 overflow-hidden opacity-10">
-        <div className="absolute -right-40 top-10 w-96 h-96 rounded-full bg-blue-400 blur-3xl"></div>
-        <div className="absolute -left-20 top-40 w-72 h-72 rounded-full bg-red-400 blur-3xl"></div>
-        <div className="absolute right-1/4 bottom-0 w-80 h-80 rounded-full bg-yellow-300 blur-3xl"></div>
-      </div>
-      
-      <div className="container mx-auto px-4 py-20 md:py-28 relative z-10">
+    <section className="relative min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 overflow-hidden">
+      {/* Decorative Background Elements */}
+      <div className="absolute inset-0">
+        {/* Large circles */}
         <motion.div 
-          className="max-w-3xl mx-auto"
-          initial="hidden"
-          animate="visible"
+          {...floatingAnimation}
+          className="absolute top-20 right-20 w-72 h-72 bg-gradient-to-br from-blue-200/30 to-indigo-300/30 rounded-full blur-3xl"
+        />
+        <motion.div 
+          {...floatingAnimation}
+          transition={{ delay: 2 }}
+          className="absolute bottom-20 left-20 w-96 h-96 bg-gradient-to-br from-emerald-200/30 to-teal-300/30 rounded-full blur-3xl"
+        />
+        <motion.div 
+          {...floatingAnimation}
+          transition={{ delay: 4 }}
+          className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-br from-amber-200/20 to-orange-300/20 rounded-full blur-3xl"
+        />
+        
+        {/* Grid pattern */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"></div>
+      </div>
+
+      <div className="container mx-auto px-4 py-20 relative z-10">
+        <motion.div 
+          className="max-w-6xl mx-auto"
           variants={staggerContainer}
+          initial="initial"
+          animate="animate"
         >
-          <motion.h1 
-            variants={fadeIn} 
-            className="text-4xl md:text-6xl font-bold mb-6 leading-tight tracking-tight"
-          >
-            Your Gateway to <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-blue-200">Opportunities</span> in Rwanda
-          </motion.h1>
-          
-          <motion.p 
-            variants={fadeIn}
-            className="text-xl md:text-2xl mb-10 text-blue-100 font-light"
-          >
-            Find jobs, tenders, auctions, and announcements in Rwanda's growing economy
-          </motion.p>
-          
-          {/* Search Form with improved design */}
+          {/* Hero Content */}
+          <div className="text-center mb-16">
+            <motion.div variants={fadeInUp} className="mb-6">
+              <span className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100 text-blue-700 rounded-full text-sm font-medium mb-6">
+                <Star className="h-4 w-4" />
+                Rwanda's #1 Opportunity Platform
+              </span>
+            </motion.div>
+            
+            <motion.h1 
+              variants={fadeInUp}
+              className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-gray-900 via-blue-900 to-gray-900 bg-clip-text text-transparent leading-tight"
+            >
+              Discover Your Next
+              <br />
+              <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+                Big Opportunity
+              </span>
+            </motion.h1>
+            
+            <motion.p 
+              variants={fadeInUp}
+              className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed"
+            >
+              Connect with thousands of jobs, tenders, auctions, and announcements across Rwanda. 
+              Your career journey starts here.
+            </motion.p>
+          </div>
+
+          {/* Enhanced Search Section */}
           <motion.div 
-            variants={fadeIn}
-            className="bg-white/10 backdrop-blur-lg p-5 rounded-2xl shadow-xl border border-white/10 mb-10"
+            variants={fadeInUp}
+            className="max-w-4xl mx-auto mb-16"
           >
-            <div className="flex justify-center overflow-hidden rounded-xl bg-white/10 mb-6 p-1">
-              <div className="flex w-full max-w-xl">
-                <button 
-                  type="button"
-                  onClick={() => setSearchType("all")}
-                  className={`flex-1 flex justify-center items-center py-3 px-3 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    searchType === "all" 
-                      ? "bg-white text-[#0A3D62] shadow-lg" 
-                      : "text-white hover:bg-white/20"
-                  }`}
-                >
-                  All Types
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => setSearchType("job")}
-                  className={`flex-1 flex justify-center items-center gap-1 py-3 px-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    searchType === "job" 
-                      ? "bg-white text-[#0A3D62] shadow-lg" 
-                      : "text-white hover:bg-white/20"
-                  }`}
-                >
-                  <Briefcase className="h-4 w-4" /> Jobs
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => setSearchType("tender")}
-                  className={`flex-1 flex justify-center items-center gap-1 py-3 px-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    searchType === "tender" 
-                      ? "bg-white text-[#0A3D62] shadow-lg" 
-                      : "text-white hover:bg-white/20"
-                  }`}
-                >
-                  <FileText className="h-4 w-4" /> Tenders
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => setSearchType("auction")}
-                  className={`flex-1 flex justify-center items-center gap-1 py-3 px-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    searchType === "auction" 
-                      ? "bg-white text-[#0A3D62] shadow-lg" 
-                      : "text-white hover:bg-white/20"
-                  }`}
-                >
-                  <Gavel className="h-4 w-4" /> Auctions
-                </button>
+            {/* Search Type Tabs */}
+            <div className="flex justify-center mb-8">
+              <div className="inline-flex bg-white rounded-2xl p-2 shadow-lg border border-gray-100">
+                {[
+                  { id: "all", label: "All Types", icon: Search },
+                  { id: "job", label: "Jobs", icon: Briefcase },
+                  { id: "tender", label: "Tenders", icon: FileText },
+                  { id: "auction", label: "Auctions", icon: Gavel }
+                ].map((tab) => {
+                  const Icon = tab.icon;
+                  return (
+                    <button
+                      key={tab.id}
+                      onClick={() => setSearchType(tab.id)}
+                      className={`flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 ${
+                        searchType === tab.id
+                          ? "bg-blue-600 text-white shadow-lg shadow-blue-600/25"
+                          : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                      }`}
+                    >
+                      <Icon className="h-4 w-4" />
+                      {tab.label}
+                    </button>
+                  );
+                })}
               </div>
             </div>
-            
-            <form className="flex flex-col md:flex-row md:items-end gap-4" onSubmit={handleSearch}>
-              <div className="flex-1">
-                <Label htmlFor="keyword" className="text-white text-sm font-medium mb-2 block">What are you looking for?</Label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50" />
-                  <Input 
-                    id="keyword" 
-                    placeholder={searchType === "job" ? "Job title or skill" : 
-                                searchType === "tender" ? "Tender title or category" : 
-                                searchType === "auction" ? "Property or item" : 
-                                "Keywords (title, description)"}
-                    className="pl-10 py-6 bg-white/10 text-white border-white/20 placeholder:text-white/50 focus:border-white focus:ring-2 focus:ring-white/30"
-                    value={searchParams.keyword}
-                    onChange={handleInputChange}
-                  />
+
+            {/* Search Form */}
+            <form onSubmit={handleSearch} className="bg-white rounded-3xl shadow-xl border border-gray-100 p-8">
+              <div className="grid md:grid-cols-12 gap-6 items-end">
+                <div className="md:col-span-5">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    What are you looking for?
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
+                    <Input 
+                      id="keyword"
+                      placeholder={
+                        searchType === "job" ? "Job title, skills, or company" : 
+                        searchType === "tender" ? "Tender category or description" : 
+                        searchType === "auction" ? "Property, vehicle, or item" : 
+                        "Search for anything..."
+                      }
+                      className="pl-12 h-14 text-lg border-gray-200 focus:border-blue-500 focus:ring-blue-500/20 rounded-xl"
+                      value={searchParams.keyword}
+                      onChange={handleInputChange}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="flex-1">
-                <Label htmlFor="location" className="text-white text-sm font-medium mb-2 block">Where?</Label>
-                <div className="relative">
-                  <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-white/50 z-10" />
-                  <Select onValueChange={handleLocationChange} value={searchParams.location || 'all'}>
-                    <SelectTrigger className="pl-10 py-6 h-auto bg-white/10 text-white border-white/20 focus:ring-2 focus:ring-white/30 focus:border-white">
-                      <SelectValue placeholder="All locations" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-[#0A3D62] border-white/20 text-white">
-                      <SelectItem value="all">All locations</SelectItem>
-                      <SelectItem value="kigali">Kigali</SelectItem>
-                      <SelectItem value="northern">Northern Province</SelectItem>
-                      <SelectItem value="southern">Southern Province</SelectItem>
-                      <SelectItem value="eastern">Eastern Province</SelectItem>
-                      <SelectItem value="western">Western Province</SelectItem>
-                    </SelectContent>
-                  </Select>
+                
+                <div className="md:col-span-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Location
+                  </label>
+                  <div className="relative">
+                    <MapPin className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+                    <Select onValueChange={handleLocationChange} value={searchParams.location || 'all'}>
+                      <SelectTrigger className="pl-12 h-14 text-lg border-gray-200 focus:ring-blue-500/20 focus:border-blue-500 rounded-xl">
+                        <SelectValue placeholder="Anywhere in Rwanda" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-gray-200">
+                        <SelectItem value="all">Anywhere in Rwanda</SelectItem>
+                        <SelectItem value="kigali">Kigali City</SelectItem>
+                        <SelectItem value="northern">Northern Province</SelectItem>
+                        <SelectItem value="southern">Southern Province</SelectItem>
+                        <SelectItem value="eastern">Eastern Province</SelectItem>
+                        <SelectItem value="western">Western Province</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-              </div>
-              <div>
-                <Button type="submit" className="w-full md:w-auto py-6 px-8 bg-gradient-to-r from-[#BD2031] to-[#A31B2A] hover:from-[#A31B2A] hover:to-[#8F1725] text-white border-0 shadow-lg font-medium text-base">
-                  Search Now
-                </Button>
+                
+                <div className="md:col-span-3">
+                  <Button 
+                    type="submit" 
+                    className="w-full h-14 text-lg font-semibold bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  >
+                    Search Now
+                  </Button>
+                </div>
               </div>
             </form>
           </motion.div>
-          
-          {/* Quick Stats with improved styling */}
+
+          {/* Stats Section */}
           <motion.div 
-            variants={fadeIn}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-6"
+            variants={fadeInUp}
+            className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto"
           >
-            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl backdrop-blur-sm border border-white/10 transform hover:scale-105 transition-transform">
-              <div className="bg-white/10 rounded-full p-3">
-                <Bell className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="block text-2xl font-bold">1,500+</span>
-                <span className="text-sm text-blue-100">Ads Available</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl backdrop-blur-sm border border-white/10 transform hover:scale-105 transition-transform">
-              <div className="bg-white/10 rounded-full p-3">
-                <Briefcase className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="block text-2xl font-bold">300+</span>
-                <span className="text-sm text-blue-100">Organizations</span>
-              </div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/5 p-4 rounded-xl backdrop-blur-sm border border-white/10 transform hover:scale-105 transition-transform">
-              <div className="bg-white/10 rounded-full p-3">
-                <Search className="h-6 w-6 text-white" />
-              </div>
-              <div>
-                <span className="block text-2xl font-bold">5,000+</span>
-                <span className="text-sm text-blue-100">Active Users</span>
-              </div>
-            </div>
+            {[
+              { icon: TrendingUp, value: "1,500+", label: "Active Opportunities", color: "from-blue-500 to-blue-600" },
+              { icon: Users, value: "5,000+", label: "Registered Users", color: "from-emerald-500 to-emerald-600" },
+              { icon: Briefcase, value: "300+", label: "Partner Organizations", color: "from-indigo-500 to-indigo-600" }
+            ].map((stat, index) => {
+              const Icon = stat.icon;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.6 + index * 0.1, duration: 0.5 }}
+                  className="bg-white rounded-2xl p-8 shadow-lg border border-gray-100 text-center hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                >
+                  <div className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-r ${stat.color} mb-4`}>
+                    <Icon className="h-8 w-8 text-white" />
+                  </div>
+                  <div className="text-3xl font-bold text-gray-900 mb-2">{stat.value}</div>
+                  <div className="text-gray-600 font-medium">{stat.label}</div>
+                </motion.div>
+              );
+            })}
           </motion.div>
         </motion.div>
       </div>
