@@ -107,7 +107,7 @@ const DeadlineHighlights = () => {
             <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 font-heading">Closing Soon</h2>
             <p className="text-neutral-600 mt-1">Don't miss these opportunities with approaching deadlines</p>
           </div>
-          <Link href="/listings?sort=deadline" className="text-[#0A3D62] hover:text-[#082C46] font-medium flex items-center">
+          <Link href="/opportunities?sort=deadline" className="text-[#0A3D62] hover:text-[#082C46] font-medium flex items-center">
             View All
             <ArrowRight className="h-4 w-4 ml-1" />
           </Link>

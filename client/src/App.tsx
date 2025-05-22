@@ -8,7 +8,7 @@ import { HelmetProvider } from "react-helmet-async";
 
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
-import Listings from "@/pages/Listings";
+import Opportunities from "@/pages/Opportunities";
 import JobDetail from "@/pages/JobDetail";
 import EmployerDashboard from "@/pages/EmployerDashboard";
 import JobSeekerDashboard from "@/pages/JobSeekerDashboard";
@@ -29,7 +29,7 @@ function AppRoutes() {
       <main className="flex-grow">
         <Switch>
           <Route path="/" component={Home} />
-          <Route path="/opportunities" component={Listings} />
+          <Route path="/opportunities" component={Opportunities} />
           <Route path="/job/:id" component={JobDetail} />
           <Route path="/tender/:id" component={JobDetail} />
           <Route path="/auction/:id" component={JobDetail} />
