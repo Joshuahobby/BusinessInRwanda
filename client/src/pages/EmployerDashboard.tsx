@@ -162,46 +162,51 @@ const EmployerDashboard = () => {
                     </div>
                   )}
 
-                  <nav className="space-y-1">
+                  <nav className="space-y-2">
                     <Button
                       variant={activeTab === "overview" ? "default" : "ghost"}
-                      className="w-full justify-start"
+                      className={`w-full justify-start transition-all ${activeTab === "overview" ? "font-medium bg-primary text-primary-foreground hover:bg-primary/90" : "hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
                       onClick={() => setActiveTab("overview")}
                     >
                       <BarChart className="h-4 w-4 mr-2" />
-                      Overview
+                      <span>Overview</span>
+                      {activeTab === "overview" && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>}
                     </Button>
                     <Button
                       variant={activeTab === "jobs" ? "default" : "ghost"}
-                      className="w-full justify-start"
+                      className={`w-full justify-start transition-all ${activeTab === "jobs" ? "font-medium bg-primary text-primary-foreground hover:bg-primary/90" : "hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
                       onClick={() => setActiveTab("jobs")}
                     >
                       <Briefcase className="h-4 w-4 mr-2" />
-                      Manage Jobs
+                      <span>Manage Jobs</span>
+                      {activeTab === "jobs" && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>}
                     </Button>
                     <Button
                       variant={activeTab === "applications" ? "default" : "ghost"}
-                      className="w-full justify-start"
+                      className={`w-full justify-start transition-all ${activeTab === "applications" ? "font-medium bg-primary text-primary-foreground hover:bg-primary/90" : "hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
                       onClick={() => setActiveTab("applications")}
                     >
                       <FileText className="h-4 w-4 mr-2" />
-                      Applications
+                      <span>Applications</span>
+                      {activeTab === "applications" && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>}
                     </Button>
                     <Button
                       variant={activeTab === "company" ? "default" : "ghost"}
-                      className="w-full justify-start"
+                      className={`w-full justify-start transition-all ${activeTab === "company" ? "font-medium bg-primary text-primary-foreground hover:bg-primary/90" : "hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
                       onClick={() => setActiveTab("company")}
                     >
                       <Building className="h-4 w-4 mr-2" />
-                      Company Profile
+                      <span>Company Profile</span>
+                      {activeTab === "company" && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>}
                     </Button>
                     <Button
                       variant={activeTab === "settings" ? "default" : "ghost"}
-                      className="w-full justify-start"
+                      className={`w-full justify-start transition-all ${activeTab === "settings" ? "font-medium bg-primary text-primary-foreground hover:bg-primary/90" : "hover:bg-neutral-100 dark:hover:bg-neutral-800"}`}
                       onClick={() => setActiveTab("settings")}
                     >
                       <Settings className="h-4 w-4 mr-2" />
-                      Account Settings
+                      <span>Account Settings</span>
+                      {activeTab === "settings" && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white"></div>}
                     </Button>
                   </nav>
                 </CardContent>

@@ -26,7 +26,9 @@ import {
   CheckCircle2,
   XCircle,
   Eye,
-  Download
+  Download,
+  Settings,
+  BarChart
 } from "lucide-react";
 import { ApplicationStatus } from "@/lib/types";
 import { Application, Job } from "@shared/schema";
