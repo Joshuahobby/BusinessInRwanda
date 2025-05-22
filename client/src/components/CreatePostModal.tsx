@@ -357,111 +357,175 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
               </div>
             )}
 
-            <div className="grid grid-cols-2 gap-4">
+            {/* Location field for job, auction and tender types (with different labels) */}
+            {(form.watch("postType") === "job" || form.watch("postType") === "auction" || form.watch("postType") === "tender") && (
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="location"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {form.watch("postType") === "job" && "Job Location"}
+                        {form.watch("postType") === "auction" && "Auction Location"}
+                        {form.watch("postType") === "tender" && "Tender Location"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          disabled={isSubmitting} 
+                          placeholder={form.watch("postType") === "job" 
+                            ? "e.g., Kigali, Remote, Hybrid" 
+                            : form.watch("postType") === "auction"
+                            ? "e.g., Company premises, Auction house"
+                            : "e.g., Company address, Online submission"
+                          }
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        {form.watch("postType") === "job" && "Where the job is located or if it's remote"}
+                        {form.watch("postType") === "auction" && "Where the auction will take place"}
+                        {form.watch("postType") === "tender" && "Where tender documents should be submitted"}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Salary only for jobs */}
+                {form.watch("postType") === "job" && (
+                  <FormField
+                    control={form.control}
+                    name="salary"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Salary (Optional)</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            disabled={isSubmitting} 
+                            placeholder="e.g., 500,000-700,000, Negotiable, Competitive"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Salary or compensation range
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                )}
+              </div>
+            )}
+
+            {/* Currency selector only for jobs */}
+            {form.watch("postType") === "job" && (
               <FormField
                 control={form.control}
-                name="location"
+                name="currency"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Location</FormLabel>
+                    <FormLabel>Currency</FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                        disabled={isSubmitting}
+                      >
+                        <SelectTrigger className="w-[180px]">
+                          <SelectValue placeholder="Select currency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="RWF">Rwandan Franc (RWF)</SelectItem>
+                          <SelectItem value="USD">US Dollar (USD)</SelectItem>
+                          <SelectItem value="EUR">Euro (EUR)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
+                    <FormDescription>
+                      Currency for the salary (RWF is default)
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+            )}
 
+            {/* Common description field with post-type specific labels and placeholders */}
+            {form.watch("postType") !== "announcement" && (
               <FormField
                 control={form.control}
-                name="salary"
+                name="description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Salary (Optional)</FormLabel>
+                    <FormLabel>
+                      {form.watch("postType") === "job" && "Job Description"}
+                      {form.watch("postType") === "auction" && "Auction Description"}
+                      {form.watch("postType") === "tender" && "Tender Description"}
+                    </FormLabel>
                     <FormControl>
-                      <Input {...field} disabled={isSubmitting} />
+                      <Textarea
+                        {...field}
+                        rows={5}
+                        className="resize-none"
+                        disabled={isSubmitting}
+                        placeholder={form.watch("postType") === "job" 
+                          ? "Describe the job position, roles, and opportunities in detail..."
+                          : form.watch("postType") === "auction" 
+                          ? "Provide details about the auction, its background and importance..."
+                          : "Describe the tender opportunity and what your organization is seeking..."
+                        }
+                      />
                     </FormControl>
+                    <FormDescription>
+                      {form.watch("postType") === "job" && "Describe the job position in detail, including daily tasks and work environment"}
+                      {form.watch("postType") === "auction" && "Provide a detailed overview of this auction, its purpose, and background information"}
+                      {form.watch("postType") === "tender" && "Explain what your organization is seeking from bidders and provide context"}
+                    </FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
+            )}
 
-            <FormField
-              control={form.control}
-              name="currency"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Currency</FormLabel>
-                  <FormControl>
-                    <Select
-                      value={field.value}
-                      onValueChange={field.onChange}
-                      disabled={isSubmitting}
-                    >
-                      <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Select currency" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="RWF">Rwandan Franc (RWF)</SelectItem>
-                        <SelectItem value="USD">US Dollar (USD)</SelectItem>
-                        <SelectItem value="EUR">Euro (EUR)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormDescription>
-                    Select the currency for the salary (RWF is default)
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            {/* Post-specific requirements field */}
+            {form.watch("postType") !== "announcement" && (
+              <FormField
+                control={form.control}
+                name="requirements"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>
+                      {form.watch("postType") === "job" && "Job Requirements"}
+                      {form.watch("postType") === "auction" && "Bidder Requirements"}
+                      {form.watch("postType") === "tender" && "Eligibility Requirements"}
+                    </FormLabel>
+                    <FormControl>
+                      <Textarea
+                        {...field}
+                        rows={4}
+                        className="resize-none"
+                        disabled={isSubmitting}
+                        placeholder={form.watch("postType") === "job" 
+                          ? "List required qualifications, experience, skills, education, etc."
+                          : form.watch("postType") === "auction" 
+                          ? "List requirements for bidders like registration, deposits, documentation, etc."
+                          : "Detail eligibility criteria such as licenses, certifications, experience, etc."
+                        }
+                      />
+                    </FormControl>
+                    <FormDescription>
+                      {form.watch("postType") === "job" && "List qualifications, skills, education, and experience required for this position"}
+                      {form.watch("postType") === "auction" && "Specify requirements that bidders must meet to participate in this auction"}
+                      {form.watch("postType") === "tender" && "Detail the requirements and qualifications bidders must meet for this tender"}
+                    </FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
 
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      rows={5}
-                      className="resize-none"
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    Provide a detailed description of the {form.watch("postType")}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="requirements"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Requirements</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      rows={3}
-                      className="resize-none"
-                      disabled={isSubmitting}
-                    />
-                  </FormControl>
-                  <FormDescription>
-                    List the requirements for this {form.watch("postType")}
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            {form.watch("postType") !== "auction" && (
+            {form.watch("postType") === "job" && (
               <FormField
                 control={form.control}
                 name="responsibilities"
@@ -474,10 +538,11 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
                         rows={3}
                         className="resize-none"
                         disabled={isSubmitting}
+                        placeholder="e.g., Managing team of 5 developers, Coordinating with stakeholders, etc."
                       />
                     </FormControl>
                     <FormDescription>
-                      List the responsibilities for this position
+                      List the key responsibilities for this job position
                     </FormDescription>
                     <FormMessage />
                   </FormItem>
@@ -595,6 +660,169 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
                       </FormControl>
                       <FormDescription>
                         Special requirements for bidders
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+            
+            {/* Tender-specific fields */}
+            {form.watch("postType") === "tender" && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="tenderDeadline"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Submission Deadline</FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="date" 
+                            {...field} 
+                            disabled={isSubmitting} 
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The deadline for tender submissions
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Tender Category</FormLabel>
+                        <FormControl>
+                          <Input {...field} disabled={isSubmitting} placeholder="e.g., Construction, IT Services, Supplies" />
+                        </FormControl>
+                        <FormDescription>
+                          Category of goods or services being sought
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="tenderRequirements"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Eligibility Requirements</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={4}
+                          className="resize-none"
+                          disabled={isSubmitting}
+                          placeholder="e.g., Minimum years in business, required certifications, financial requirements"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Requirements bidders must meet to be eligible
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="tenderDocuments"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Documents & Instructions</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={4}
+                          className="resize-none"
+                          disabled={isSubmitting}
+                          placeholder="e.g., How to obtain tender documents, submission process, evaluation criteria"
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Information about required documents and submission process
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
+            
+            {/* Announcement-specific fields */}
+            {form.watch("postType") === "announcement" && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="location"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Location</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            disabled={isSubmitting} 
+                            placeholder="e.g., Kigali, Online, Company offices"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          Where this announcement is relevant to
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Announcement Type</FormLabel>
+                        <FormControl>
+                          <Input 
+                            {...field} 
+                            disabled={isSubmitting} 
+                            placeholder="e.g., Event, Public Notice, Opportunity"
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          The type or category of announcement
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Announcement Details</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          rows={6}
+                          className="resize-none"
+                          disabled={isSubmitting}
+                          placeholder="Provide comprehensive details about this announcement. Include all relevant information such as dates, times, purposes, benefits, and any other important information for the audience."
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Complete details of the announcement
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
