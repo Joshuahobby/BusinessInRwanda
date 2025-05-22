@@ -35,40 +35,7 @@ const Home = () => {
       {/* Hero Section */}
       <HeroSection />
       
-      {/* Search Section */}
-      <section className="bg-gray-50 py-8 border-b border-gray-200">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg shadow-lg p-6">
-              <h2 className="text-xl font-bold text-[#0A3D62] mb-4 text-center">Find Your Perfect Opportunity</h2>
-              <div className="flex flex-col sm:flex-row gap-3">
-                <div className="flex-1">
-                  <input 
-                    type="text" 
-                    placeholder="Search jobs, tenders, auctions..." 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-                  />
-                </div>
-                <div className="sm:w-48">
-                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
-                    <option value="">All Locations</option>
-                    <option value="kigali">Kigali</option>
-                    <option value="northern">Northern Province</option>
-                    <option value="southern">Southern Province</option>
-                    <option value="eastern">Eastern Province</option>
-                    <option value="western">Western Province</option>
-                    <option value="remote">Remote</option>
-                  </select>
-                </div>
-                <button className="bg-[#0A3D62] text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-medium text-sm whitespace-nowrap">
-                  Search Now
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-      
+
       {/* Key Statistics Section */}
       <section className="bg-[#0A3D62] py-12">
         <div className="container mx-auto px-4">
