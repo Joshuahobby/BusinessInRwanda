@@ -35,15 +35,9 @@ import { Application, Job } from "@shared/schema";
 import { format, addDays } from "date-fns";
 import AccountSettings from "@/components/AccountSettings";
 
-// Extended types with additional details
+// Extended types for applications with job details
 type ApplicationWithJob = Application & {
-  job: Job & {
-    company: {
-      id: number;
-      name: string;
-      logo?: string;
-    }
-  }
+  job: Job;
 };
 
 const JobSeekerDashboard = () => {
@@ -615,14 +609,13 @@ const JobSeekerDashboard = () => {
                                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <div className="flex items-start space-x-4">
                                       <Avatar className="h-12 w-12 mt-1">
-                                        <AvatarImage src={application.job.company.logo} alt={application.job.company.name} />
                                         <AvatarFallback>
-                                          {application.job.company.name.charAt(0)}
+                                          {application.job.companyName ? application.job.companyName.charAt(0) : 'C'}
                                         </AvatarFallback>
                                       </Avatar>
                                       <div>
                                         <p className="font-medium">{application.job.title}</p>
-                                        <p className="text-sm text-neutral-500">{application.job.company.name}</p>
+                                        <p className="text-sm text-neutral-500">{application.job.companyName || 'Company'}</p>
                                         <div className="flex flex-wrap items-center text-sm text-neutral-500 mt-1 gap-x-2 gap-y-1">
                                           <span className="flex items-center">
                                             <MapPin className="h-3 w-3 mr-1" />
