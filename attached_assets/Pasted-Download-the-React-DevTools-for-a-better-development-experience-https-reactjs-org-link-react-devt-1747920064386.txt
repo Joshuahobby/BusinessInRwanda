@@ -1,0 +1,64 @@
+Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+FirebaseAuthContext.tsx:61 Firebase auth change detected, syncing user: gashua02@gmail.com UID: gnmzM9vyPqSt1EwFoXFC78Iw5ni1
+FirebaseAuthContext.tsx:90 User data synced successfully: gashua02@gmail.com
+react-dom.development.js:86  Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components
+    at input
+    at _c (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/input.tsx:20:11)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:79:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:56:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/form.tsx:130:9
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/form.tsx:72:6
+    at Controller (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=7ff4d32a:298:35)
+    at FormField (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/form.tsx:33:6)
+    at div
+    at form
+    at FormProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=7ff4d32a:102:11)
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=7ff4d32a:42:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LLLTVKM7.js?v=7ff4d32a:61:7
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:79:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:56:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=7ff4d32a:42:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AYTFIHQ3.js?v=7ff4d32a:34:5
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:233:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:156:58
+    at Presence (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=7ff4d32a:24:11)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:147:64
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:79:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=7ff4d32a:56:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=7ff4d32a:42:13
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LLLTVKM7.js?v=7ff4d32a:260:22
+    at Presence (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=7ff4d32a:24:11)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=7ff4d32a:38:15)
+    at DialogPortal (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:109:11)
+    at _c3 (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/dialog.tsx:52:12)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=7ff4d32a:38:15)
+    at Dialog (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-32HFFLTK.js?v=7ff4d32a:50:5)
+    at CreatePostModal (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/CreatePostModal.tsx:94:28)
+    at AdminDashboard (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/pages/AdminDashboard.tsx:75:37)
+    at Route (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7ff4d32a:323:16)
+    at Switch (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=7ff4d32a:379:17)
+    at main
+    at div
+    at AppRoutes
+    at FirebaseAuthProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/context/FirebaseAuthContext.tsx:31:40)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=7ff4d32a:38:15)
+    at TooltipProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=7ff4d32a:62:5)
+    at QueryClientProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=7ff4d32a:2805:3)
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=7ff4d32a:624:5)
+    at App
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=7ff4d32a:624:5)
+printWarning @ react-dom.development.js:86
+CreatePostModal.tsx:129 Form data being submitted: Object
+CreatePostModal.tsx:208 Sending payload to server: Object
+/api/admin/jobs:1 
+            
+            
+            Failed to load resource: the server responded with a status of 500 (Internal Server Error)
+CreatePostModal.tsx:217 Response status: 500
+CreatePostModal.tsx:221  Server error: Object
+onSubmit @ CreatePostModal.tsx:221
+CreatePostModal.tsx:243  Error creating post: Error: Failed to create post: {"message":"Failed to create job"}
+    at onSubmit (CreatePostModal.tsx:222:15)
+    at async createFormControl.ts:1247:11

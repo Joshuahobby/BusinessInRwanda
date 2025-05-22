@@ -56,8 +56,8 @@ export const jobSeekerProfiles = pgTable("job_seeker_profiles", {
 export const jobs = pgTable("jobs", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
-  companyId: integer("company_id").notNull().references(() => companies.id),
-  companyName: text("company_name"),
+  companyId: integer("company_id").references(() => companies.id), // Make nullable for individual posters
+  companyName: text("company_name"), // Store individual name here for individual posters
   location: text("location").notNull(),
   type: jobTypeEnum("type").notNull(),
   description: text("description").notNull(),
@@ -77,14 +77,14 @@ export const jobs = pgTable("jobs", {
   // Add post type field to differentiate between different kinds of posts
   postType: postTypeEnum("post_type").default('job').notNull(),
   
-  // Fields specific to auctions
-  auctionDate: timestamp("auction_date"),
+  // Fields specific to auctions - all made optional
+  auctionDate: text("auction_date"), // Store as text for flexibility
   viewingDates: text("viewing_dates"),
-  auctionItems: text("auction_items").array(),
+  auctionItems: text("auction_items"), // Store as text instead of array
   auctionRequirements: text("auction_requirements"),
   
-  // Fields specific to tenders
-  tenderDeadline: timestamp("tender_deadline"),
+  // Fields specific to tenders - all made optional
+  tenderDeadline: text("tender_deadline"), // Store as text for flexibility
   tenderRequirements: text("tender_requirements"),
   tenderDocuments: text("tender_documents"),
   
