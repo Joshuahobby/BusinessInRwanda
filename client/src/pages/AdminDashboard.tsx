@@ -451,8 +451,8 @@ const AdminDashboard = () => {
                 <TabsContent value="overview" className="space-y-6">
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h2 className="text-2xl font-bold">Dashboard Overview</h2>
-                      <p className="text-muted-foreground">Monitor platform performance and key metrics</p>
+                      <h2 className="text-2xl font-bold">Ad Portal Analytics</h2>
+                      <p className="text-muted-foreground">Monitor ad performance across jobs, tenders, auctions and announcements</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <Select defaultValue="week">
@@ -556,7 +556,7 @@ const AdminDashboard = () => {
                                 </div>
                               </div>
                               <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-md">
-                                <Briefcase className="h-5 w-5 text-green-600 dark:text-green-400" />
+                                <FileText className="h-5 w-5 text-green-600 dark:text-green-400" />
                               </div>
                             </div>
                           </CardContent>
@@ -566,7 +566,7 @@ const AdminDashboard = () => {
                           <CardContent className="p-6">
                             <div className="flex justify-between items-start">
                               <div>
-                                <p className="text-sm text-muted-foreground">Companies</p>
+                                <p className="text-sm text-muted-foreground">Partner Organizations</p>
                                 <h3 className="text-2xl font-bold mt-1">{stats?.totalCompanies || 0}</h3>
                                 <div className="flex items-center mt-2 text-xs text-green-600 dark:text-green-400">
                                   <TrendingUp className="h-3 w-3 mr-1" />
@@ -701,7 +701,7 @@ const AdminDashboard = () => {
                         <div className="space-y-6">
                           <Card>
                             <CardHeader className="flex flex-row items-center justify-between pb-2">
-                              <CardTitle className="text-lg">Recent Posts</CardTitle>
+                              <CardTitle className="text-lg">Recent Advertisements</CardTitle>
                               <Button variant="ghost" size="sm" className="h-8 text-xs gap-1" onClick={() => setActiveTab("posts")}>
                                 View All
                                 <ChevronRight className="h-3 w-3" />
@@ -944,14 +944,14 @@ const AdminDashboard = () => {
                 <TabsContent value="posts" className="space-y-6">
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h2 className="text-2xl font-bold">Post Management</h2>
-                      <p className="text-muted-foreground">Manage jobs, auctions, tenders, and announcements in one place</p>
+                      <h2 className="text-2xl font-bold">Advertisement Management</h2>
+                      <p className="text-muted-foreground">Manage all ad types: jobs, tenders, auctions, and announcements</p>
                     </div>
                     <Button 
                       onClick={() => setIsCreatePostModalOpen(true)}
                     >
                       <PlusCircle className="h-4 w-4 mr-2" />
-                      New Post
+                      New Advertisement
                     </Button>
                   </div>
                   
