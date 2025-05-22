@@ -252,10 +252,24 @@ export function setupAdminRoutes(app: Express) {
   // Create a new company (admin only)
   app.post('/api/admin/companies', async (req: Request, res: Response) => {
     try {
-      const { name, industry, location, logo, website, description, employeeCount, founded, userId } = req.body;
+      const { name, industry, location, logo, website, description, employeeCount, founded, userId, email, phone } = req.body;
       
       if (!name || !industry || !location || !userId) {
         return res.status(400).json({ message: "Missing required fields: name, industry, location, and userId are required" });
+      }
+      
+      let logoPath = null;
+      
+      // Handle logo if it's a data URL
+      if (logo && logo.startsWith('data:image')) {
+        try {
+          const { saveDataUrlAsFile } = await import('./upload-utils');
+          logoPath = await saveDataUrlAsFile(logo, userId);
+          console.log(`Saved logo to: ${logoPath}`);
+        } catch (uploadError) {
+          console.error("Error saving logo:", uploadError);
+          // Continue with creation process even if logo upload fails
+        }
       }
       
       // Create the company
@@ -264,7 +278,7 @@ export function setupAdminRoutes(app: Express) {
         industry,
         location,
         userId,
-        logo: logo || null,
+        logo: logoPath || logo || null,
         website: website || null,
         description: description || null,
         employeeCount: employeeCount || null,
