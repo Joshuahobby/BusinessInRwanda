@@ -35,6 +35,10 @@ const JobApprovalModal = ({ isOpen, onClose, job }: JobApprovalModalProps) => {
   const handleApprove = async () => {
     setIsProcessing(true);
     try {
+      if (!job || !job.id) {
+        throw new Error("Job information is missing");
+      }
+      
       await fetch(`/api/admin/jobs/${job.id}/approve`, {
         method: "PATCH",
         headers: {
@@ -79,6 +83,10 @@ const JobApprovalModal = ({ isOpen, onClose, job }: JobApprovalModalProps) => {
 
     setIsProcessing(true);
     try {
+      if (!job || !job.id) {
+        throw new Error("Job information is missing");
+      }
+      
       await fetch(`/api/admin/jobs/${job.id}/reject`, {
         method: "PATCH",
         headers: {
