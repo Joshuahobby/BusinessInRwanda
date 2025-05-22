@@ -645,35 +645,40 @@ const EmployerDashboard = () => {
                                         <div className="flex items-center gap-3 mb-3">
                                           <Avatar>
                                             <AvatarImage 
-                                              src={application.applicant.profilePicture} 
-                                              alt={application.applicant.fullName}
+                                              src={application && application.applicant ? application.applicant.profilePicture : undefined} 
+                                              alt={application && application.applicant ? application.applicant.fullName : 'Applicant'}
                                             />
                                             <AvatarFallback className="bg-neutral-200 text-neutral-700">
-                                              {application.applicant.fullName.split(' ').map(n => n[0]).join('')}
+                                              {application && application.applicant && application.applicant.fullName 
+                                                ? application.applicant.fullName.split(' ').map(n => n[0]).join('') 
+                                                : 'U'
+                                              }
                                             </AvatarFallback>
                                           </Avatar>
                                           <div>
-                                            <h3 className="font-medium">{application.applicant.fullName}</h3>
-                                            <p className="text-sm text-neutral-500">{application.applicant.email}</p>
+                                            <h3 className="font-medium">{application && application.applicant ? application.applicant.fullName : 'Unknown Applicant'}</h3>
+                                            <p className="text-sm text-neutral-500">{application && application.applicant ? application.applicant.email : 'No email provided'}</p>
                                           </div>
                                         </div>
                                         <div className="flex mb-2">
                                           <Select 
-                                            defaultValue={application.status}
+                                            defaultValue={application && application.status ? application.status : 'applied'}
                                             onValueChange={(value) => {
                                               toast({
                                                 title: "Status Updated",
-                                                description: `${application.applicant.fullName}'s application status updated to ${value.replace('_', ' ')}`,
+                                                description: `${application && application.applicant ? application.applicant.fullName : 'Applicant'}'s application status updated to ${value.replace('_', ' ')}`,
                                               });
                                             }}
                                           >
                                             <SelectTrigger 
                                               className={`text-xs h-8 py-1 px-2 w-40 ${
-                                                application.status === 'applied' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
-                                                application.status === 'reviewed' ? 'bg-purple-50 border-purple-200 text-purple-700' : 
-                                                application.status === 'interview_scheduled' ? 'bg-amber-50 border-amber-200 text-amber-700' : 
-                                                application.status === 'hired' ? 'bg-green-50 border-green-200 text-green-700' : 
-                                                'bg-red-50 border-red-200 text-red-700'
+                                                application && application.status ? (
+                                                  application.status === 'applied' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
+                                                  application.status === 'reviewed' ? 'bg-purple-50 border-purple-200 text-purple-700' : 
+                                                  application.status === 'interview_scheduled' ? 'bg-amber-50 border-amber-200 text-amber-700' : 
+                                                  application.status === 'hired' ? 'bg-green-50 border-green-200 text-green-700' : 
+                                                  'bg-red-50 border-red-200 text-red-700'
+                                                ) : 'bg-blue-50 border-blue-200 text-blue-700'
                                               }`}
                                             >
                                               <SelectValue />
@@ -690,9 +695,9 @@ const EmployerDashboard = () => {
                                       </div>
                                       <div className="sm:w-3/4">
                                         <div className="mb-3">
-                                          <h4 className="font-medium">{application.job.title}</h4>
+                                          <h4 className="font-medium">{application && application.job ? application.job.title : 'Unknown Position'}</h4>
                                           <p className="text-sm text-neutral-500">
-                                            Applied {format(new Date(application.appliedAt), 'MMM d, yyyy')}
+                                            Applied {application && application.appliedAt ? format(new Date(application.appliedAt), 'MMM d, yyyy') : 'Recently'}
                                           </p>
                                         </div>
                                         <div className="flex flex-wrap gap-2">
