@@ -14,14 +14,27 @@ import { MapPin, Calendar, Clock, Briefcase, DollarSign, Building, Share2, Bookm
 import { formatDistanceToNow } from 'date-fns';
 
 const JobDetail = () => {
-  // Use the useRoute hook from wouter to get route parameters
-  const [, params] = useRoute<{ id: string }>('/job/:id');
+  // Use the useRoute hook from wouter to get route parameters for various post types
+  const [matchesJob, jobParams] = useRoute<{ id: string }>('/job/:id');
+  const [matchesTender, tenderParams] = useRoute<{ id: string }>('/tender/:id');
+  const [matchesAuction, auctionParams] = useRoute<{ id: string }>('/auction/:id');
+  const [matchesAnnouncement, announcementParams] = useRoute<{ id: string }>('/announcement/:id');
+  
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const { isAuthenticated, isJobSeeker } = useFirebaseAuth();
   
+  // Determine which route matched and set corresponding post type
+  const postType = matchesJob ? 'job' : 
+                  matchesTender ? 'tender' : 
+                  matchesAuction ? 'auction' :
+                  matchesAnnouncement ? 'announcement' : null;
+                  
+  // Extract post ID from appropriate params
+  const postId = jobParams?.id || tenderParams?.id || auctionParams?.id || announcementParams?.id || null;
+  
   // Extract job ID from params, if available
-  const jobId = params ? parseInt(params.id) : null;
+  const jobId = postId ? parseInt(postId) : null;
 
   // Fetch job details
   const { data: job, isLoading, error } = useQuery<Job>({
@@ -101,8 +114,19 @@ const JobDetail = () => {
   return (
     <>
       <Helmet>
-        <title>{`${job.title} at Company Name - Business In Rwanda`}</title>
-        <meta name="description" content={`Apply for ${job.title} position at Company Name. ${job.description.substring(0, 150)}...`} />
+        <title>{`${job.title} ${
+          postType === 'job' ? 'Job' :
+          postType === 'tender' ? 'Tender' :
+          postType === 'auction' ? 'Auction' :
+          postType === 'announcement' ? 'Announcement' : ''
+        } - Business In Rwanda`}</title>
+        <meta name="description" content={`${
+          postType === 'job' ? `Apply for ${job.title} position` :
+          postType === 'tender' ? `Submit proposal for ${job.title} tender` :
+          postType === 'auction' ? `Place bid on ${job.title} auction` :
+          postType === 'announcement' ? `View details of ${job.title} announcement` :
+          `View ${job.title}`
+        }. ${job.description.substring(0, 150)}...`} />
       </Helmet>
 
       <div className="bg-neutral-50 py-12">
@@ -142,7 +166,13 @@ const JobDetail = () => {
                       onClick={handleApply}
                       disabled={applyMutation.isPending}
                     >
-                      {applyMutation.isPending ? 'Submitting...' : 'Apply Now'}
+                      {applyMutation.isPending ? 'Submitting...' : 
+                        postType === 'job' ? 'Apply Now' :
+                        postType === 'tender' ? 'Submit Proposal' :
+                        postType === 'auction' ? 'Place Bid' :
+                        postType === 'announcement' ? 'Download Details' :
+                        'Apply Now'
+                      }
                     </Button>
                   </div>
                 </div>
@@ -240,7 +270,13 @@ const JobDetail = () => {
                   onClick={handleApply}
                   disabled={applyMutation.isPending}
                 >
-                  {applyMutation.isPending ? 'Submitting...' : 'Apply Now'}
+                  {applyMutation.isPending ? 'Submitting...' : 
+                    postType === 'job' ? 'Apply Now' :
+                    postType === 'tender' ? 'Submit Proposal' :
+                    postType === 'auction' ? 'Place Bid' :
+                    postType === 'announcement' ? 'Download Details' :
+                    'Apply Now'
+                  }
                 </Button>
               </CardFooter>
             </Card>
