@@ -789,21 +789,23 @@ const AdminDashboard = () => {
                           Failed to load jobs. Please try again later.
                         </div>
                       ) : (
-                        <JobManagementTable 
-                          jobs={filteredJobs}
+                        <PostManagementTable 
+                          posts={filteredJobs}
                           isLoading={isLoadingJobs}
-                          onViewJob={(job) => {
+                          filterType={postTypeFilter}
+                          onFilterChange={setPostTypeFilter}
+                          onViewPost={(job) => {
                             setSelectedJob(job);
                             setIsJobDetailsModalOpen(true);
                           }}
-                          onEditJob={(job) => {
+                          onEditPost={(job) => {
                             // Future implementation for job editing
                             toast({
                               title: "Coming Soon",
                               description: "Job editing functionality will be available soon.",
                             });
                           }}
-                          onApproveJob={async (job) => {
+                          onApprovePost={async (job) => {
                             try {
                               await fetch(`/api/admin/jobs/${job.id}`, {
                                 method: "PATCH",
@@ -822,11 +824,11 @@ const AdminDashboard = () => {
                               
                               return Promise.resolve();
                             } catch (error) {
-                              console.error("Error approving job:", error);
+                              console.error("Error approving post:", error);
                               return Promise.reject(error);
                             }
                           }}
-                          onRejectJob={async (job) => {
+                          onRejectPost={async (job) => {
                             try {
                               await fetch(`/api/admin/jobs/${job.id}`, {
                                 method: "PATCH",
@@ -845,11 +847,11 @@ const AdminDashboard = () => {
                               
                               return Promise.resolve();
                             } catch (error) {
-                              console.error("Error rejecting job:", error);
+                              console.error("Error rejecting post:", error);
                               return Promise.reject(error);
                             }
                           }}
-                          onFeatureJob={async (job, featured) => {
+                          onFeaturePost={async (job, featured) => {
                             try {
                               await fetch(`/api/admin/jobs/${job.id}`, {
                                 method: "PATCH",
