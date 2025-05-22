@@ -16,7 +16,7 @@ const JobCategories = () => {
       iconComponent: <Briefcase className="w-12 h-12 text-blue-600" />,
       color: "bg-blue-50 border-blue-200",
       textColor: "text-blue-800",
-      href: "/find-jobs?type=job",
+      href: "/listings?type=job",
       description: "Browse open positions"
     },
     {
@@ -25,7 +25,7 @@ const JobCategories = () => {
       iconComponent: <Gavel className="w-12 h-12 text-purple-600" />,
       color: "bg-purple-50 border-purple-200",
       textColor: "text-purple-800",
-      href: "/find-jobs?type=auction",
+      href: "/listings?type=auction",
       description: "Properties and assets"
     },
     {
@@ -34,7 +34,7 @@ const JobCategories = () => {
       iconComponent: <FileText className="w-12 h-12 text-indigo-600" />,
       color: "bg-indigo-50 border-indigo-200",
       textColor: "text-indigo-800",
-      href: "/find-jobs?type=tender",
+      href: "/listings?type=tender",
       description: "Procurement opportunities"
     },
     {
@@ -43,7 +43,7 @@ const JobCategories = () => {
       iconComponent: <Megaphone className="w-12 h-12 text-amber-600" />,
       color: "bg-amber-50 border-amber-200",
       textColor: "text-amber-800",
-      href: "/find-jobs?type=announcement",
+      href: "/listings?type=announcement",
       description: "Public announcements"
     }
   ];
@@ -92,18 +92,18 @@ const JobCategories = () => {
                 name={category.name}
                 icon={category.icon}
                 count={category.count}
-                href={`/find-jobs?category=${category.name}`}
+                href={`/listings?category=${category.name}`}
               />
             ))}
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
             {/* Fallback categories if API doesn't return data */}
-            <CategoryCard name="Information Technology" icon="computer" count={156} href="/find-jobs?category=it" />
-            <CategoryCard name="Finance & Banking" icon="attach_money" count={89} href="/find-jobs?category=finance" />
-            <CategoryCard name="Management & Admin" icon="business" count={124} href="/find-jobs?category=management" />
-            <CategoryCard name="Healthcare" icon="health_and_safety" count={76} href="/find-jobs?category=healthcare" />
-            <CategoryCard name="Education & Training" icon="school" count={93} href="/find-jobs?category=education" />
+            <CategoryCard name="Information Technology" icon="computer" count={156} href="/listings?category=it" />
+            <CategoryCard name="Finance & Banking" icon="attach_money" count={89} href="/listings?category=finance" />
+            <CategoryCard name="Management & Admin" icon="business" count={124} href="/listings?category=management" />
+            <CategoryCard name="Healthcare" icon="health_and_safety" count={76} href="/listings?category=healthcare" />
+            <CategoryCard name="Education & Training" icon="school" count={93} href="/listings?category=education" />
             <CategoryCard name="Engineering" icon="engineering" count={67} href="/find-jobs?category=engineering" />
             <CategoryCard name="Marketing & Sales" icon="campaign" count={102} href="/find-jobs?category=marketing" />
             <CategoryCard name="Agriculture" icon="agriculture" count={45} href="/find-jobs?category=agriculture" />
