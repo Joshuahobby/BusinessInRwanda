@@ -196,4 +196,41 @@ export function setupAdminRoutes(app: Express) {
       res.status(500).json({ message: "Failed to fetch companies" });
     }
   });
+  
+  // Create new post (admin only)
+  app.post('/api/admin/jobs', async (req: Request, res: Response) => {
+    try {
+      const { postType, ...postData } = req.body;
+      
+      // Validate the incoming data
+      const validationResult = insertJobSchema.safeParse(postData);
+      if (!validationResult.success) {
+        return res.status(400).json({ 
+          message: "Invalid job data", 
+          errors: validationResult.error.errors 
+        });
+      }
+      
+      // Get company information to set companyName
+      const company = await storage.getCompany(postData.companyId);
+      if (!company) {
+        return res.status(400).json({ message: "Invalid company ID" });
+      }
+      
+      // Create the job with additional metadata
+      const jobData = {
+        ...postData,
+        companyName: company.name,
+        status: 'pending', // All posts start as pending and need approval
+        adminNotes: `Created by admin as ${postType || 'job'}`
+      };
+      
+      const newJob = await storage.createJob(jobData);
+      
+      res.status(201).json(newJob);
+    } catch (error) {
+      console.error("Error creating job:", error);
+      res.status(500).json({ message: "Failed to create job" });
+    }
+  });
 }

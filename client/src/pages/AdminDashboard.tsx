@@ -13,6 +13,7 @@ import UserEditModal from "@/components/UserEditModal";
 import JobManagementTable from "@/components/JobManagementTable";
 import JobApprovalModal from "@/components/JobApprovalModal";
 import JobDetailsModal from "@/components/JobDetailsModal";
+import CreatePostModal from "@/components/CreatePostModal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -75,6 +76,7 @@ const AdminDashboard = () => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState<JobModel | null>(null);
   const [isJobDetailsModalOpen, setIsJobDetailsModalOpen] = useState(false);
+  const [isCreatePostModalOpen, setIsCreatePostModalOpen] = useState(false);
 
   // Check if user is admin, redirect if not
   useEffect(() => {
