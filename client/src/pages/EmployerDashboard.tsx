@@ -70,6 +70,7 @@ type ApplicationWithDetails = Application & {
 
 const EmployerDashboard = () => {
   const { currentUser } = useFirebaseAuth();
+  const { isTourOpen, closeTour, startTour } = useOnboardingTour();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
   const [applicationFilter, setApplicationFilter] = useState("all");
