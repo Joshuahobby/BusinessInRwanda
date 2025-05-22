@@ -41,16 +41,16 @@ const Home = () => {
           <div className="max-w-4xl mx-auto">
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-bold text-[#0A3D62] mb-4 text-center">Find Your Perfect Opportunity</h2>
-              <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3">
                 <div className="flex-1">
                   <input 
                     type="text" 
                     placeholder="Search jobs, tenders, auctions..." 
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
                   />
                 </div>
-                <div className="md:w-48">
-                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                <div className="sm:w-48">
+                  <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-sm">
                     <option value="">All Locations</option>
                     <option value="kigali">Kigali</option>
                     <option value="northern">Northern Province</option>
@@ -60,8 +60,8 @@ const Home = () => {
                     <option value="remote">Remote</option>
                   </select>
                 </div>
-                <button className="bg-[#0A3D62] text-white px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-medium">
-                  Search
+                <button className="bg-[#0A3D62] text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-blue-800 transition-colors font-medium text-sm whitespace-nowrap">
+                  Search Now
                 </button>
               </div>
             </div>
@@ -72,22 +72,27 @@ const Home = () => {
       {/* Key Statistics Section */}
       <section className="bg-[#0A3D62] py-12">
         <div className="container mx-auto px-4">
+          <h2 className="text-2xl font-bold text-white text-center mb-8">Our Impact Across Rwanda</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
             <div className="text-white">
-              <div className="text-3xl font-bold mb-2">18+</div>
-              <div className="text-blue-200">Active Opportunities</div>
+              <div className="text-4xl font-bold mb-2 text-blue-300">18+</div>
+              <div className="text-blue-200 font-medium">Active Opportunities</div>
+              <div className="text-xs text-blue-300 mt-1">Updated Daily</div>
             </div>
             <div className="text-white">
-              <div className="text-3xl font-bold mb-2">16+</div>
-              <div className="text-blue-200">Registered Users</div>
+              <div className="text-4xl font-bold mb-2 text-blue-300">16+</div>
+              <div className="text-blue-200 font-medium">Registered Users</div>
+              <div className="text-xs text-blue-300 mt-1">Growing Community</div>
             </div>
             <div className="text-white">
-              <div className="text-3xl font-bold mb-2">8+</div>
-              <div className="text-blue-200">Partner Organizations</div>
+              <div className="text-4xl font-bold mb-2 text-blue-300">8+</div>
+              <div className="text-blue-200 font-medium">Partner Organizations</div>
+              <div className="text-xs text-blue-300 mt-1">Trusted Employers</div>
             </div>
             <div className="text-white">
-              <div className="text-3xl font-bold mb-2">5</div>
-              <div className="text-blue-200">Provinces Covered</div>
+              <div className="text-4xl font-bold mb-2 text-blue-300">5</div>
+              <div className="text-blue-200 font-medium">Provinces Covered</div>
+              <div className="text-xs text-blue-300 mt-1">Nationwide Reach</div>
             </div>
           </div>
         </div>
@@ -95,24 +100,26 @@ const Home = () => {
 
       {/* Quick Access Categories */}
       <section className="bg-white border-b border-gray-200">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+        <div className="container mx-auto px-4 py-6">
+          <h3 className="text-lg font-bold text-[#0A3D62] text-center mb-4">Browse by Category</h3>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             {[
-              { name: "All", icon: <Briefcase className="h-4 w-4" />, link: "/opportunities", color: "bg-blue-50 text-blue-700" },
-              { name: "Jobs", icon: <Briefcase className="h-4 w-4" />, link: "/opportunities?type=job", color: "bg-emerald-50 text-emerald-700" },
-              { name: "Tenders", icon: <Bell className="h-4 w-4" />, link: "/opportunities?type=tender", color: "bg-purple-50 text-purple-700" },
-              { name: "Auctions", icon: <Bell className="h-4 w-4" />, link: "/opportunities?type=auction", color: "bg-amber-50 text-amber-700" },
-              { name: "Announcements", icon: <Bell className="h-4 w-4" />, link: "/opportunities?type=announcement", color: "bg-red-50 text-red-700" },
+              { name: "All Opportunities", icon: <Briefcase className="h-5 w-5" />, link: "/opportunities", color: "bg-blue-50 text-blue-700 border-blue-200", count: "18+" },
+              { name: "Jobs", icon: <Briefcase className="h-5 w-5" />, link: "/opportunities?type=job", color: "bg-emerald-50 text-emerald-700 border-emerald-200", count: "12+" },
+              { name: "Tenders", icon: <Bell className="h-5 w-5" />, link: "/opportunities?type=tender", color: "bg-purple-50 text-purple-700 border-purple-200", count: "4+" },
+              { name: "Auctions", icon: <Tag className="h-5 w-5" />, link: "/opportunities?type=auction", color: "bg-amber-50 text-amber-700 border-amber-200", count: "2+" },
+              { name: "Announcements", icon: <Bell className="h-5 w-5" />, link: "/opportunities?type=announcement", color: "bg-red-50 text-red-700 border-red-200", count: "3+" },
             ].map((category, index) => (
               <a 
                 key={index} 
                 href={category.link}
-                className="flex items-center gap-2 px-3 py-2 rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all"
+                className={`${category.color} hover:shadow-md block p-4 rounded-lg border transition-all hover:scale-105 text-center group`}
               >
-                <div className={`${category.color} p-1 rounded-full`}>
+                <div className="flex flex-col items-center gap-2">
                   {category.icon}
+                  <span className="font-medium text-sm">{category.name}</span>
+                  <span className="text-xs opacity-75">{category.count}</span>
                 </div>
-                <span className="text-sm font-medium text-gray-800">{category.name}</span>
               </a>
             ))}
           </div>
@@ -600,6 +607,46 @@ const Home = () => {
         </div>
       </section>
       
+      {/* Ready to Get Started Section */}
+      <section className="bg-gradient-to-r from-[#0A3D62] to-blue-700 py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">Ready to Find Your Next Opportunity?</h2>
+          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+            Join thousands of professionals and businesses who trust Business In Rwanda for their career and business growth.
+          </p>
+          
+          <div className="flex flex-col sm:flex-row justify-center gap-4 mb-8">
+            <Button size="lg" variant="secondary" asChild className="bg-white text-[#0A3D62] hover:bg-gray-100">
+              <a href="/register" className="flex items-center gap-2">
+                <Briefcase className="h-5 w-5" />
+                Start Your Journey
+              </a>
+            </Button>
+            <Button size="lg" variant="outline" asChild className="border-white text-white hover:bg-white hover:text-[#0A3D62]">
+              <a href="/opportunities" className="flex items-center gap-2">
+                <ExternalLink className="h-5 w-5" />
+                Explore Opportunities
+              </a>
+            </Button>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-6 text-center">
+            <div className="text-white">
+              <h4 className="font-bold mb-2">For Job Seekers</h4>
+              <p className="text-blue-200 text-sm">Find your perfect role with personalized recommendations</p>
+            </div>
+            <div className="text-white">
+              <h4 className="font-bold mb-2">For Employers</h4>
+              <p className="text-blue-200 text-sm">Connect with qualified candidates across Rwanda</p>
+            </div>
+            <div className="text-white">
+              <h4 className="font-bold mb-2">For Businesses</h4>
+              <p className="text-blue-200 text-sm">Access tenders and auctions to grow your business</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Final CTA Section */}
       <CTASection />
       
