@@ -139,7 +139,15 @@ const FindJobs = () => {
   
   const handleSalaryRangeChange = (values: number[]) => {
     setSalaryRange([values[0], values[1]]);
-    // We would add salary range parameters to the API if we were implementing this fully
+    
+    // Update search params with the new salary range
+    handleFilterChange('minSalary', values[0].toString());
+    handleFilterChange('maxSalary', values[1].toString());
+  };
+  
+  const handleCurrencyChange = (currency: string) => {
+    setSelectedCurrency(currency);
+    handleFilterChange('currency', currency);
   };
   
   const handleSaveSearch = () => {
@@ -209,6 +217,7 @@ const FindJobs = () => {
     setExperienceLevel('');
     setDatePosted('');
     setSalaryRange([100000, 1000000]);
+    setSelectedCurrency('RWF');
     setCurrentPage(1);
     setLocation('/find-jobs');
   };
@@ -439,8 +448,23 @@ const FindJobs = () => {
                   {/* Salary Range */}
                   <div>
                     <div className="flex justify-between mb-2">
-                      <Label className="font-medium">Salary Range (RWF)</Label>
-                      <span className="text-sm text-neutral-500">{salaryRange[0].toLocaleString()} - {salaryRange[1].toLocaleString()}</span>
+                      <Label className="font-medium">Salary Range</Label>
+                      <span className="text-sm text-neutral-500">{selectedCurrency} {salaryRange[0].toLocaleString()} - {salaryRange[1].toLocaleString()}</span>
+                    </div>
+                    <div className="mb-3">
+                      <Select 
+                        value={selectedCurrency}
+                        onValueChange={handleCurrencyChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select Currency" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="RWF">Rwandan Franc (RWF)</SelectItem>
+                          <SelectItem value="USD">US Dollar (USD)</SelectItem>
+                          <SelectItem value="EUR">Euro (EUR)</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <Slider 
                       defaultValue={salaryRange} 

@@ -148,7 +148,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async searchJobs(params: JobSearchParams): Promise<Job[]> {
-    const { keyword, location, category, jobType, experienceLevel } = params;
+    const { keyword, location, category, jobType, experienceLevel, minSalary, maxSalary, currency } = params;
 
     let conditions = [];
 
@@ -176,6 +176,25 @@ export class DatabaseStorage implements IStorage {
 
     if (experienceLevel) {
       conditions.push(eq(jobs.experienceLevel, experienceLevel));
+    }
+    
+    // Filter by salary range if both min and max are provided
+    if (minSalary !== undefined && maxSalary !== undefined) {
+      // Only filter by salary if it's a number field in the database
+      // Note: In a real application, you might need to convert salary strings to numbers
+      const convertedMinSalary = Number(minSalary);
+      const convertedMaxSalary = Number(maxSalary);
+      
+      if (!isNaN(convertedMinSalary) && !isNaN(convertedMaxSalary)) {
+        // Assuming salary is stored as a string that can be converted to a number
+        conditions.push(sql`CAST(${jobs.salary} AS NUMERIC) >= ${convertedMinSalary}`);
+        conditions.push(sql`CAST(${jobs.salary} AS NUMERIC) <= ${convertedMaxSalary}`);
+      }
+    }
+    
+    // Filter by currency if provided
+    if (currency) {
+      conditions.push(eq(jobs.currency, currency));
     }
 
     // Active jobs only
