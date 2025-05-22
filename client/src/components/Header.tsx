@@ -35,7 +35,7 @@ const Header = () => {
           </div>
 
           {/* Navigation - Desktop */}
-          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6" data-tour="navigation">
             <Link href="/" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/' ? 'text-[#0A3D62]' : ''}`}>
               Home
             </Link>

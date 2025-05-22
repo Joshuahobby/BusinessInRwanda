@@ -15,6 +15,8 @@ import MobileAppPromo from '@/components/MobileAppPromo';
 import PersonalizedRecommendations from '@/components/PersonalizedRecommendations';
 
 import LiveActivityFeed from '@/components/LiveActivityFeed';
+import OnboardingTour from '@/components/OnboardingTour';
+import { useOnboardingTour } from '@/hooks/useOnboardingTour';
 import { Briefcase, MapPin, Tag, Clock, Bell, Star, Flame, CalendarDays, ArrowRight, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,6 +24,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Home = () => {
+  const { isTourOpen, closeTour } = useOnboardingTour();
+
   return (
     <>
       <Helmet>
@@ -33,7 +37,9 @@ const Home = () => {
       </Helmet>
 
       {/* Hero Section */}
-      <HeroSection />
+      <div data-tour="search-section">
+        <HeroSection />
+      </div>
       
 
       {/* Key Statistics Section */}
@@ -66,7 +72,7 @@ const Home = () => {
       </section>
 
       {/* Quick Access Categories */}
-      <section className="bg-white border-b border-gray-200">
+      <section className="bg-white border-b border-gray-200" data-tour="categories-section">
         <div className="container mx-auto px-4 py-6">
           <h3 className="text-lg font-bold text-[#0A3D62] text-center mb-4">Browse by Category</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -119,7 +125,7 @@ const Home = () => {
               </TabsTrigger>
             </TabsList>
             
-            <TabsContent value="featured" className="mt-0">
+            <TabsContent value="featured" className="mt-0" data-tour="featured-section">
               <div className="border rounded-lg overflow-hidden bg-white">
                 <div className="p-3 bg-blue-50 border-b border-blue-100 flex items-center">
                   <Star className="text-blue-600 h-4 w-4 mr-2" />
@@ -619,6 +625,9 @@ const Home = () => {
       
       {/* Live Activity Feed */}
       <LiveActivityFeed />
+      
+      {/* Onboarding Tour */}
+      <OnboardingTour isOpen={isTourOpen} onClose={closeTour} />
     </>
   );
 };
