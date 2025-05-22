@@ -4,11 +4,12 @@ import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
 import { 
-  User as UserModel, 
+  User, User as UserModel, 
   Job as JobModel, 
   Company as CompanyModel, 
   Application as ApplicationModel 
 } from "@shared/schema";
+import UserEditModal from "@/components/UserEditModal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -604,7 +605,14 @@ const AdminDashboard = () => {
                                         <Button variant="ghost" size="icon">
                                           <Eye className="h-4 w-4" />
                                         </Button>
-                                        <Button variant="ghost" size="icon">
+                                        <Button 
+                                          variant="ghost" 
+                                          size="icon"
+                                          onClick={() => {
+                                            setEditingUser(user);
+                                            setIsEditModalOpen(true);
+                                          }}
+                                        >
                                           <Edit className="h-4 w-4" />
                                         </Button>
                                         <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600">
@@ -987,6 +995,13 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+      
+      {/* User Edit Modal */}
+      <UserEditModal 
+        isOpen={isEditModalOpen} 
+        onClose={() => setIsEditModalOpen(false)} 
+        user={editingUser}
+      />
     </>
   );
 };
