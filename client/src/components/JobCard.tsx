@@ -153,7 +153,9 @@ const JobCard = (props: JobCardProps) => {
           <div className="flex-1">
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="font-medium text-lg text-neutral-800">{title}</h3>
+                <Link href={`/${postType}/${id}`}>
+                  <h3 className="font-medium text-lg text-neutral-800 hover:text-[#0A3D62] cursor-pointer transition-colors">{title}</h3>
+                </Link>
                 <p className="text-sm text-neutral-600">{companyName}</p>
               </div>
               {badgeText && (
