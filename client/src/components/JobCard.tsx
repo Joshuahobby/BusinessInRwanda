@@ -134,16 +134,35 @@ const JobCard = ({
           )}
           
           {postType === "auction" && (
-            <div className="flex items-center text-sm text-neutral-500 mb-1">
-              <Calendar className="h-4 w-4 mr-1" />
-              <span>Auction Date TBD</span>
-            </div>
+            <>
+              <div className="flex items-center text-sm text-neutral-500 mb-1">
+                <Calendar className="h-4 w-4 mr-1" />
+                <span>Auction Date: {new Date().toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center text-sm text-neutral-500 mb-1">
+                <DollarSign className="h-4 w-4 mr-1" />
+                <span>Starting Price: {currency || 'RWF'} {salary || 'Contact for details'}</span>
+              </div>
+            </>
           )}
           
           {postType === "tender" && (
+            <>
+              <div className="flex items-center text-sm text-neutral-500 mb-1">
+                <Calendar className="h-4 w-4 mr-1" />
+                <span>Deadline: {new Date(new Date().setDate(new Date().getDate() + 30)).toLocaleDateString()}</span>
+              </div>
+              <div className="flex items-center text-sm text-neutral-500 mb-1">
+                <DollarSign className="h-4 w-4 mr-1" />
+                <span>Budget: {currency || 'RWF'} {salary || 'Contact for details'}</span>
+              </div>
+            </>
+          )}
+          
+          {postType === "announcement" && (
             <div className="flex items-center text-sm text-neutral-500 mb-1">
               <Calendar className="h-4 w-4 mr-1" />
-              <span>Deadline TBD</span>
+              <span>Published on: {new Date(postedAt).toLocaleDateString()}</span>
             </div>
           )}
           
