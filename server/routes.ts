@@ -295,9 +295,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(403).json({ message: "You can only post jobs for your own company" });
       }
       
-      const newJob = await storage.createJob(jobData);
+      // Clean the job data to ensure date fields are properly handled
+      const cleanedJobData = {
+        ...jobData,
+        // Ensure date fields remain as strings since schema expects text
+        deadline: jobData.deadline || null,
+        auctionDate: jobData.auctionDate || null,
+        tenderDeadline: jobData.submissionDeadline || jobData.tenderDeadline || null,
+        eventDate: jobData.eventDate || null,
+      };
+      
+      const newJob = await storage.createJob(cleanedJobData);
       res.status(201).json(newJob);
     } catch (error: any) {
+      console.error("Job creation error:", error);
       res.status(500).json({ message: error.message });
     }
   });
