@@ -51,7 +51,9 @@ import {
   Mail,
   CheckCircle2,
   ThumbsUp,
-  Settings
+  Settings,
+  Gavel,
+  Megaphone
 } from "lucide-react";
 import AccountSettings from "@/components/AccountSettings";
 import { Job, Application } from "@shared/schema";
@@ -476,10 +478,35 @@ const EmployerDashboard = () => {
                           View, edit, and manage your job listings
                         </CardDescription>
                       </div>
-                      <Button onClick={() => navigate("/post-job")} className="bg-[#0A3D62] hover:bg-[#082C46]">
-                        <Plus className="h-4 w-4 mr-1.5" />
-                        Post New Job
-                      </Button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button className="bg-[#0A3D62] hover:bg-[#082C46]">
+                            <Plus className="h-4 w-4 mr-1.5" />
+                            Post New Opportunity
+                            <ChevronDown className="h-4 w-4 ml-1.5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                          <DropdownMenuLabel>Choose Opportunity Type</DropdownMenuLabel>
+                          <DropdownMenuSeparator />
+                          <DropdownMenuItem onClick={() => navigate("/post-opportunity")}>
+                            <Briefcase className="h-4 w-4 mr-2" />
+                            Job Posting
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate("/post-opportunity")}>
+                            <Gavel className="h-4 w-4 mr-2" />
+                            Cyamunara/Auction
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate("/post-opportunity")}>
+                            <FileText className="h-4 w-4 mr-2" />
+                            Tender/Procurement
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={() => navigate("/post-opportunity")}>
+                            <Megaphone className="h-4 w-4 mr-2" />
+                            Announcement
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </CardHeader>
                     <CardContent>
                       {isLoadingJobs ? (
@@ -566,9 +593,9 @@ const EmployerDashboard = () => {
                           <p className="text-sm text-neutral-500 mb-4">
                             Create your first job posting to start receiving applications
                           </p>
-                          <Button onClick={() => navigate("/post-job")} className="bg-[#0A3D62] hover:bg-[#082C46]">
+                          <Button onClick={() => navigate("/post-opportunity")} className="bg-[#0A3D62] hover:bg-[#082C46]">
                             <Plus className="h-4 w-4 mr-1.5" />
-                            Post a Job
+                            Post an Opportunity
                           </Button>
                         </div>
                       )}

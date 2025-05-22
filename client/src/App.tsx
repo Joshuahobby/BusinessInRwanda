@@ -14,6 +14,7 @@ import EmployerDashboard from "@/pages/EmployerDashboard";
 import JobSeekerDashboard from "@/pages/JobSeekerDashboard";
 import AdminDashboard from "@/pages/AdminDashboard";
 import PostJob from "@/pages/PostJob";
+import PostOpportunity from "@/pages/PostOpportunity";
 import Register from "@/pages/Register";
 import Login from "@/pages/Login";
 import CompanyProfile from "@/pages/CompanyProfile";
@@ -38,6 +39,7 @@ function AppRoutes() {
           <Route path="/jobseeker/dashboard" component={JobSeekerDashboard} />
           <Route path="/admin/dashboard" component={AdminDashboard} />
           <Route path="/post-job" component={PostJob} />
+          <Route path="/post-opportunity" component={PostOpportunity} />
           <Route path="/register" component={Register} />
           <Route path="/login" component={Login} />
           <Route path="/company/:id" component={CompanyProfile} />
