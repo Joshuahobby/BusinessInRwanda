@@ -83,6 +83,9 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
   const onSubmit = async (data: FormValues) => {
     setIsSubmitting(true);
     try {
+      // Log form data for debugging
+      console.log("Form data being submitted:", data);
+      
       // Prepare the payload based on post type
       const payload = {
         title: data.title,
@@ -99,6 +102,7 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
       };
 
       // Send the request to create the post
+      console.log("Sending payload to server:", payload);
       const response = await fetch("/api/admin/jobs", {
         method: "POST",
         headers: {
@@ -107,9 +111,16 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
         body: JSON.stringify(payload),
       });
 
+      console.log("Response status:", response.status);
+      
       if (!response.ok) {
-        throw new Error("Failed to create post");
+        const errorData = await response.json().catch(() => null);
+        console.error("Server error:", errorData);
+        throw new Error(`Failed to create post: ${errorData ? JSON.stringify(errorData) : "Unknown error"}`);
       }
+      
+      const responseData = await response.json();
+      console.log("Post created successfully:", responseData);
 
       // Show success toast and invalidate queries to refresh data
       toast({
