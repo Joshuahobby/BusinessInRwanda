@@ -241,9 +241,9 @@ const EmployerDashboard = () => {
                           </CardDescription>
                         </div>
                         <div className="flex items-center space-x-2">
-                          <select className="border rounded-md px-3 py-1 text-sm bg-white">
+                          <select className="border rounded-md px-3 py-1 text-sm bg-white" defaultValue="30">
                             <option value="7">Last 7 days</option>
-                            <option value="30" selected>Last 30 days</option>
+                            <option value="30">Last 30 days</option>
                             <option value="90">Last 90 days</option>
                             <option value="all">All time</option>
                           </select>
