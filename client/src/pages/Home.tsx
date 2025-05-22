@@ -106,10 +106,10 @@ const Home = () => {
                     <a href="/listings?type=tender" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-3">
                       Tenders
                     </a>
-                    <a href="/find-jobs?type=auction" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-4">
+                    <a href="/listings?type=auction" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-4">
                       Auctions/Cyamunara
                     </a>
-                    <a href="/find-jobs?type=announcement" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">
+                    <a href="/listings?type=announcement" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">
                       Announcements
                     </a>
                     <a href="/companies" className="block p-2 hover:bg-neutral-50 rounded text-[#0A3D62] transition-colors animate-slideInRight delay-5">
