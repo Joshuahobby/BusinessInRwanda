@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
 import { 
   User, User as UserModel, 
@@ -66,11 +66,14 @@ const AdminDashboard = () => {
   const [, navigate] = useLocation();
   const { currentUser, logout } = useFirebaseAuth();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState("");
   const [userRoleFilter, setUserRoleFilter] = useState("all");
   const [jobStatusFilter, setJobStatusFilter] = useState("all");
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<JobModel | null>(null);
+  const [isJobDetailsModalOpen, setIsJobDetailsModalOpen] = useState(false);
 
   // Check if user is admin, redirect if not
   useEffect(() => {
@@ -685,10 +688,11 @@ const AdminDashboard = () => {
                       </div>
 
                       {isLoadingJobs ? (
-                        <div className="space-y-3">
-                          {[1, 2, 3, 4, 5].map((i) => (
-                            <div key={i} className="h-24 bg-neutral-100 dark:bg-neutral-800 animate-pulse rounded-md"></div>
-                          ))}
+                        <div className="animate-pulse space-y-4">
+                          <div className="h-12 bg-neutral-100 dark:bg-neutral-800 rounded"></div>
+                          <div className="h-12 bg-neutral-100 dark:bg-neutral-800 rounded"></div>
+                          <div className="h-12 bg-neutral-100 dark:bg-neutral-800 rounded"></div>
+                          <div className="h-12 bg-neutral-100 dark:bg-neutral-800 rounded"></div>
                         </div>
                       ) : jobsError ? (
                         <div className="p-4 bg-red-50 text-red-700 rounded-md">
@@ -696,85 +700,87 @@ const AdminDashboard = () => {
                           Failed to load jobs. Please try again later.
                         </div>
                       ) : (
-                        <div className="space-y-4">
-                          {filteredJobs.length > 0 ? (
-                            filteredJobs.map((job: any) => (
-                              <Card key={job.id} className="overflow-hidden">
-                                <CardContent className="p-0">
-                                  <div className="flex flex-col md:flex-row">
-                                    <div className="p-4 md:p-6 flex-1">
-                                      <div className="flex justify-between items-start">
-                                        <div>
-                                          <h3 className="font-medium text-lg">{job.title}</h3>
-                                          <p className="text-sm text-neutral-500">
-                                            {job.companyName || 'Unknown Company'} • {job.location}
-                                          </p>
-                                          <div className="flex flex-wrap mt-2 gap-2">
-                                            <Badge variant="outline" className="capitalize">
-                                              {job.type.replace('_', ' ')}
-                                            </Badge>
-                                            <Badge variant="outline" className="capitalize">
-                                              {job.experienceLevel}
-                                            </Badge>
-                                            {job.isActive ? (
-                                              <Badge className="bg-green-100 text-green-800 hover:bg-green-100">
-                                                Active
-                                              </Badge>
-                                            ) : (
-                                              <Badge variant="secondary">Inactive</Badge>
-                                            )}
-                                          </div>
-                                        </div>
-                                        <div className="flex gap-1">
-                                          <Button variant="ghost" size="icon">
-                                            <Eye className="h-4 w-4" />
-                                          </Button>
-                                          <Button variant="ghost" size="icon">
-                                            <Edit className="h-4 w-4" />
-                                          </Button>
-                                        </div>
-                                      </div>
-                                      <div className="mt-4">
-                                        <p className="text-sm line-clamp-2">{job.description}</p>
-                                      </div>
-                                    </div>
-                                    <div className="bg-neutral-50 dark:bg-neutral-900 p-4 md:p-6 md:w-64 flex flex-row md:flex-col md:justify-between">
-                                      <div>
-                                        <div className="text-sm text-neutral-500 mb-1">Posted</div>
-                                        <div className="font-medium">
-                                          {format(new Date(job.createdAt), 'MMM d, yyyy')}
-                                        </div>
-                                      </div>
-                                      <div className="mt-4">
-                                        <Button 
-                                          variant={job.isActive ? "destructive" : "default"}
-                                          size="sm"
-                                          className="w-full"
-                                          onClick={() => {
-                                            toast({
-                                              title: job.isActive ? "Job deactivated" : "Job activated",
-                                              description: `${job.title} has been ${job.isActive ? 'deactivated' : 'activated'}.`,
-                                            });
-                                          }}
-                                        >
-                                          {job.isActive ? 'Deactivate' : 'Activate'}
-                                        </Button>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </CardContent>
-                              </Card>
-                            ))
-                          ) : (
-                            <div className="text-center py-12 text-neutral-500">
-                              {searchQuery || jobStatusFilter !== 'all' ? (
-                                <>No jobs match your search criteria</>
-                              ) : (
-                                <>No jobs found</>
-                              )}
-                            </div>
-                          )}
-                        </div>
+                        <JobManagementTable 
+                          jobs={filteredJobs}
+                          isLoading={isLoadingJobs}
+                          onViewJob={(job) => {
+                            setSelectedJob(job);
+                            setIsJobDetailsModalOpen(true);
+                          }}
+                          onEditJob={(job) => {
+                            // Future implementation for job editing
+                            toast({
+                              title: "Coming Soon",
+                              description: "Job editing functionality will be available soon.",
+                            });
+                          }}
+                          onApproveJob={async (job) => {
+                            try {
+                              await fetch(`/api/jobs/${job.id}`, {
+                                method: "PATCH",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ 
+                                  isActive: true
+                                }),
+                              });
+                              
+                              // Invalidate queries to refresh data
+                              queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+                              
+                              return Promise.resolve();
+                            } catch (error) {
+                              console.error("Error approving job:", error);
+                              return Promise.reject(error);
+                            }
+                          }}
+                          onRejectJob={async (job) => {
+                            try {
+                              await fetch(`/api/jobs/${job.id}`, {
+                                method: "PATCH",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ 
+                                  isActive: false
+                                }),
+                              });
+                              
+                              // Invalidate queries to refresh data
+                              queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+                              
+                              return Promise.resolve();
+                            } catch (error) {
+                              console.error("Error rejecting job:", error);
+                              return Promise.reject(error);
+                            }
+                          }}
+                          onFeatureJob={async (job, featured) => {
+                            // This is a simulation since we don't have the isFeatured field in the database yet
+                            toast({
+                              title: featured ? "Job Featured" : "Job Unfeatured",
+                              description: "This feature will be fully implemented once the database schema is updated.",
+                            });
+                            return Promise.resolve();
+                          }}
+                          onDeleteJob={async (job) => {
+                            try {
+                              await fetch(`/api/jobs/${job.id}`, {
+                                method: "DELETE",
+                              });
+                              
+                              // Invalidate and refetch jobs
+                              queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/admin/statistics"] });
+                              
+                              return Promise.resolve();
+                            } catch (error) {
+                              console.error("Error deleting job:", error);
+                              return Promise.reject(error);
+                            }
+                          }}
+                        />
                       )}
                     </CardContent>
                   </Card>
