@@ -33,6 +33,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 // Define form schema for post creation
 const createPostSchema = z.object({
@@ -47,8 +48,16 @@ const createPostSchema = z.object({
   currency: z.enum(["RWF", "USD", "EUR"]).default("RWF"),
   experienceLevel: z.enum(["entry", "intermediate", "senior", "executive"]),
   postType: z.enum(["job", "auction", "tender", "announcement"]),
+  
+  // Owner type selection (company or individual)
+  ownerType: z.enum(["company", "individual"]),
+  
   // Allow company ID to be either a number or a string (since select values are strings)
-  companyId: z.union([z.number(), z.string().transform(val => parseInt(val, 10))]),
+  companyId: z.union([z.number(), z.string().transform(val => parseInt(val, 10))]).optional(),
+  
+  // Individual owner information (only required if ownerType is individual)
+  individualName: z.string().optional(),
+  individualContact: z.string().optional(),
   
   // Auction-specific fields
   auctionDate: z.string().optional(),
@@ -61,6 +70,20 @@ const createPostSchema = z.object({
   tenderDeadline: z.string().optional(),
   tenderRequirements: z.string().optional(),
   tenderDocuments: z.string().optional(),
+})
+.refine(data => {
+  // Require individualName if ownerType is individual
+  if (data.ownerType === 'individual' && !data.individualName) {
+    return false;
+  }
+  // Require companyId if ownerType is company
+  if (data.ownerType === 'company' && !data.companyId) {
+    return false;
+  }
+  return true;
+}, {
+  message: "Please provide required owner information",
+  path: ["ownerType"],
 });
 
 type FormValues = z.infer<typeof createPostSchema>;
@@ -75,6 +98,8 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showNewCompanyForm, setShowNewCompanyForm] = useState(false);
+  const [newCompany, setNewCompany] = useState({ name: '', industry: '', location: '', website: '', logo: '' });
 
   const form = useForm<FormValues>({
     resolver: zodResolver(createPostSchema),
@@ -90,7 +115,10 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
       currency: "RWF",
       experienceLevel: "entry",
       postType: "job",
+      ownerType: "company",
       companyId: companies.length > 0 ? companies[0].id : undefined,
+      individualName: "",
+      individualContact: "",
     },
   });
 
@@ -243,38 +271,174 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
               )}
             />
 
-            {companies.length > 0 && (
-              <FormField
-                control={form.control}
-                name="companyId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Company</FormLabel>
-                    <FormControl>
-                      <Select
-                        value={field.value ? field.value.toString() : ''}
-                        onValueChange={(value) => field.onChange(parseInt(value, 10))}
-                        disabled={isSubmitting}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select company" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {companies.map((company) => (
-                            <SelectItem key={company.id} value={company.id.toString()}>
-                              {company.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    <FormDescription>
-                      Select the company associated with this {form.watch("postType")}
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
+            {/* Owner Type Selection (Company vs Individual) */}
+            <FormField
+              control={form.control}
+              name="ownerType"
+              render={({ field }) => (
+                <FormItem className="space-y-3">
+                  <FormLabel>Post Owner Type</FormLabel>
+                  <FormControl>
+                    <RadioGroup 
+                      onValueChange={field.onChange} 
+                      value={field.value}
+                      className="flex flex-col space-y-1"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="company" id="ownerCompany" />
+                        <label htmlFor="ownerCompany" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          Company / Organization
+                        </label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="individual" id="ownerIndividual" />
+                        <label htmlFor="ownerIndividual" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          Individual
+                        </label>
+                      </div>
+                    </RadioGroup>
+                  </FormControl>
+                  <FormDescription>
+                    Select who is posting this {form.watch("postType")}
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            {/* Company Selector (only shown if ownerType is 'company') */}
+            {form.watch("ownerType") === "company" && (
+              <div className="space-y-4">
+                {companies.length > 0 ? (
+                  <FormField
+                    control={form.control}
+                    name="companyId"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Select Company</FormLabel>
+                        <FormControl>
+                          <div className="flex gap-2">
+                            <Select
+                              value={field.value ? field.value.toString() : ''}
+                              onValueChange={(value) => {
+                                if (value === "new") {
+                                  // Open the new company form
+                                  setShowNewCompanyForm(true);
+                                  // Reset the company ID field
+                                  field.onChange("");
+                                } else {
+                                  setShowNewCompanyForm(false);
+                                  field.onChange(parseInt(value, 10));
+                                }
+                              }}
+                              disabled={isSubmitting}
+                            >
+                              <SelectTrigger className="flex-1">
+                                <SelectValue placeholder="Select existing company" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {companies.map((company) => (
+                                  <SelectItem key={company.id} value={company.id.toString()}>
+                                    {company.name}
+                                  </SelectItem>
+                                ))}
+                                <SelectItem value="new" className="font-medium text-primary">
+                                  + Add New Company
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => {
+                                window.open('/admin/companies', '_blank');
+                              }}
+                            >
+                              Manage
+                            </Button>
+                          </div>
+                        </FormControl>
+                        <FormDescription>
+                          Choose an existing company or add a new one
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <div className="rounded-md bg-yellow-50 p-4">
+                    <div className="flex">
+                      <div className="ml-3">
+                        <h3 className="text-sm font-medium text-yellow-800">No companies available</h3>
+                        <div className="mt-2 text-sm text-yellow-700">
+                          <p>
+                            There are no companies in the system yet. You can add a new company from the Company Management section.
+                          </p>
+                          <div className="mt-4">
+                            <Button
+                              type="button"
+                              variant="outline"
+                              onClick={() => {
+                                window.open('/admin/companies', '_blank');
+                              }}
+                              className="bg-yellow-50 border-yellow-300 text-yellow-800 hover:bg-yellow-100"
+                            >
+                              Go to Company Management
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 )}
-              />
+              </div>
+            )}
+
+            {/* Individual Owner Information (only shown if ownerType is 'individual') */}
+            {form.watch("ownerType") === "individual" && (
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="individualName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Individual Name</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          disabled={isSubmitting}
+                          placeholder="Full name of individual posting this ad" 
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Name of the person posting this {form.watch("postType")}
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                
+                <FormField
+                  control={form.control}
+                  name="individualContact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Contact Information</FormLabel>
+                      <FormControl>
+                        <Input 
+                          {...field} 
+                          disabled={isSubmitting}
+                          placeholder="Phone number or email" 
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        How interested parties can reach this individual
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             )}
 
             <FormField
