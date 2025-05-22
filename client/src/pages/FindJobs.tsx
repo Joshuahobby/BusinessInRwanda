@@ -556,36 +556,44 @@ const FindJobs = () => {
                     </div>
                   )}
                   
-                  {/* Salary Range */}
-                  <div>
-                    <div className="flex justify-between mb-2">
-                      <Label className="font-medium">Salary Range</Label>
-                      <span className="text-sm text-neutral-500">{selectedCurrency} {salaryRange[0].toLocaleString()} - {salaryRange[1].toLocaleString()}</span>
+                  {/* Value Range - Context-based on post type */}
+                  {postType !== "announcement" && (
+                    <div>
+                      <div className="flex justify-between mb-2">
+                        <Label className="font-medium">
+                          {postType === "job" && "Salary Range"}
+                          {postType === "tender" && "Budget Range"}
+                          {postType === "auction" && "Estimated Value"}
+                          {postType === "all" && "Value Range"} 
+                        </Label>
+                        <span className="text-sm text-neutral-500">{selectedCurrency} {salaryRange[0].toLocaleString()} - {salaryRange[1].toLocaleString()}</span>
+                      </div>
+                      <div className="mb-3">
+                        <Select 
+                          value={selectedCurrency}
+                          onValueChange={handleCurrencyChange}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Select Currency" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="RWF">Rwandan Franc (RWF)</SelectItem>
+                            <SelectItem value="USD">US Dollar (USD)</SelectItem>
+                            <SelectItem value="EUR">Euro (EUR)</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <Slider 
+                        defaultValue={salaryRange} 
+                        value={salaryRange}
+                        onValueChange={handleSalaryRangeChange}
+                        min={100000} 
+                        max={2000000} 
+                        step={50000} 
+                        className="my-6"
+                      />
                     </div>
-                    <div className="mb-3">
-                      <Select 
-                        value={selectedCurrency}
-                        onValueChange={handleCurrencyChange}
-                      >
-                        <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select Currency" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="RWF">Rwandan Franc (RWF)</SelectItem>
-                          <SelectItem value="USD">US Dollar (USD)</SelectItem>
-                          <SelectItem value="EUR">Euro (EUR)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <Slider 
-                      defaultValue={salaryRange} 
-                      value={salaryRange}
-                      onValueChange={handleSalaryRangeChange}
-                      min={100000} 
-                      max={2000000} 
-                      step={50000} 
-                    />
-                  </div>
+                  )}
                   
                   {/* Date Posted */}
                   <div>
