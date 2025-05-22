@@ -174,14 +174,37 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getFeaturedJobs(): Promise<Job[]> {
-    // In a real app, you would have a "featured" flag in the database
-    // Here we'll just return the most recently created jobs
-    return await db
+    // Get featured jobs
+    const featuredJobs = await db
       .select()
       .from(jobs)
-      .where(eq(jobs.isActive, true))
+      .where(eq(jobs.isFeatured, true))
       .orderBy(desc(jobs.createdAt))
       .limit(6);
+      
+    // Make sure company names are available
+    const enhancedJobs = await Promise.all(featuredJobs.map(async (job) => {
+      // If company name is already set, use it
+      if (job.companyName) {
+        return job;
+      }
+      
+      // Otherwise, fetch the company name
+      try {
+        const company = await this.getCompany(job.companyId);
+        return {
+          ...job,
+          companyName: company?.name || "Unknown Company"
+        };
+      } catch (error) {
+        return {
+          ...job,
+          companyName: "Unknown Company"
+        };
+      }
+    }));
+    
+    return enhancedJobs;
   }
 
   async getRecommendedJobs(userId: number): Promise<Job[]> {
