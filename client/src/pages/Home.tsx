@@ -15,8 +15,7 @@ import MobileAppPromo from '@/components/MobileAppPromo';
 import PersonalizedRecommendations from '@/components/PersonalizedRecommendations';
 
 import LiveActivityFeed from '@/components/LiveActivityFeed';
-import OnboardingTour from '@/components/OnboardingTour';
-import { useOnboardingTour } from '@/hooks/useOnboardingTour';
+
 import { Briefcase, MapPin, Tag, Clock, Bell, Star, Flame, CalendarDays, ArrowRight, ExternalLink } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -24,7 +23,6 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const Home = () => {
-  const { isTourOpen, closeTour, startTour } = useOnboardingTour();
 
   return (
     <>
@@ -42,16 +40,7 @@ const Home = () => {
       </div>
       
 
-      {/* Tour Demo Button - Temporary for Testing */}
-      <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 text-center">
-        <p className="text-yellow-800 mb-2">New to the platform? Take a quick tour!</p>
-        <Button 
-          onClick={startTour}
-          className="bg-blue-600 hover:bg-blue-700 text-white"
-        >
-          🎯 Start Platform Tour
-        </Button>
-      </div>
+
 
       {/* Key Statistics Section */}
       <section className="bg-[#0A3D62] py-12">
@@ -637,8 +626,7 @@ const Home = () => {
       {/* Live Activity Feed */}
       <LiveActivityFeed />
       
-      {/* Onboarding Tour */}
-      <OnboardingTour isOpen={isTourOpen} onClose={closeTour} />
+
     </>
   );
 };

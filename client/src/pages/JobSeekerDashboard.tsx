@@ -3,6 +3,8 @@ import { Link, useLocation } from "wouter";
 import { Helmet } from "react-helmet-async";
 import { useQuery } from "@tanstack/react-query";
 import { useFirebaseAuth } from "@/context/FirebaseAuthContext";
+import { useOnboardingTour } from "@/hooks/useOnboardingTour";
+import OnboardingTour from "@/components/OnboardingTour";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -42,6 +44,7 @@ type ApplicationWithJob = Application & {
 
 const JobSeekerDashboard = () => {
   const { currentUser } = useFirebaseAuth();
+  const { isTourOpen, closeTour, startTour } = useOnboardingTour();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
   const [applicationFilter, setApplicationFilter] = useState<string>('all');
