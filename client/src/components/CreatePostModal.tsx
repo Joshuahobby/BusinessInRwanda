@@ -140,8 +140,29 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
         salary: data.salary || "",
         currency: data.currency,
         experienceLevel: data.experienceLevel,
-        companyId: data.companyId,
         postType: data.postType, // Include postType in the payload
+        
+        // Add owner information based on owner type
+        ownerType: data.ownerType,
+        ...(data.ownerType === 'company' ? {
+          companyId: data.companyId,
+          // Reset individual info when company is selected
+          individualName: null,
+          individualContact: null
+        } : {
+          // Add individual owner info and set companyId to null
+          companyId: null,
+          individualName: data.individualName,
+          individualContact: data.individualContact,
+          // Store additional owner metadata
+          additionalData: {
+            ...(payload?.additionalData || {}),
+            ownerInfo: {
+              name: data.individualName,
+              contact: data.individualContact
+            }
+          }
+        }),
         
         // Add auction specific fields if post type is auction
         ...(data.postType === 'auction' && {
@@ -152,6 +173,7 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
           auctionRequirements: data.auctionRequirements,
           // Store auction items as an array in additionalData
           additionalData: {
+            ...(payload?.additionalData || {}),
             auctionItems: data.auctionItems?.split('\n').filter(item => item.trim())
           }
         }),
@@ -310,61 +332,204 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
             {form.watch("ownerType") === "company" && (
               <div className="space-y-4">
                 {companies.length > 0 ? (
-                  <FormField
-                    control={form.control}
-                    name="companyId"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Select Company</FormLabel>
-                        <FormControl>
-                          <div className="flex gap-2">
-                            <Select
-                              value={field.value ? field.value.toString() : ''}
-                              onValueChange={(value) => {
-                                if (value === "new") {
-                                  // Open the new company form
-                                  setShowNewCompanyForm(true);
-                                  // Reset the company ID field
-                                  field.onChange("");
-                                } else {
-                                  setShowNewCompanyForm(false);
-                                  field.onChange(parseInt(value, 10));
-                                }
-                              }}
-                              disabled={isSubmitting}
-                            >
-                              <SelectTrigger className="flex-1">
-                                <SelectValue placeholder="Select existing company" />
-                              </SelectTrigger>
-                              <SelectContent>
-                                {companies.map((company) => (
-                                  <SelectItem key={company.id} value={company.id.toString()}>
-                                    {company.name}
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="companyId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Select Company</FormLabel>
+                          <FormControl>
+                            <div className="flex gap-2">
+                              <Select
+                                value={field.value ? field.value.toString() : ''}
+                                onValueChange={(value) => {
+                                  if (value === "new") {
+                                    // Open the new company form
+                                    setShowNewCompanyForm(true);
+                                    // Reset the company ID field
+                                    field.onChange("");
+                                  } else {
+                                    setShowNewCompanyForm(false);
+                                    field.onChange(parseInt(value, 10));
+                                  }
+                                }}
+                                disabled={isSubmitting}
+                              >
+                                <SelectTrigger className="flex-1">
+                                  <SelectValue placeholder="Select existing company" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                  {companies.map((company) => (
+                                    <SelectItem key={company.id} value={company.id.toString()}>
+                                      {company.name}
+                                    </SelectItem>
+                                  ))}
+                                  <SelectItem value="new" className="font-medium text-primary">
+                                    + Add New Company
                                   </SelectItem>
-                                ))}
-                                <SelectItem value="new" className="font-medium text-primary">
-                                  + Add New Company
-                                </SelectItem>
-                              </SelectContent>
-                            </Select>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              onClick={() => {
-                                window.open('/admin/companies', '_blank');
-                              }}
-                            >
-                              Manage
-                            </Button>
+                                </SelectContent>
+                              </Select>
+                              <Button
+                                type="button"
+                                variant="outline"
+                                onClick={() => {
+                                  window.open('/admin/companies', '_blank');
+                                }}
+                              >
+                                Manage
+                              </Button>
+                            </div>
+                          </FormControl>
+                          <FormDescription>
+                            Choose an existing company or add a new one
+                          </FormDescription>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    
+                    {/* New Company Form */}
+                    {showNewCompanyForm && (
+                      <div className="border rounded-lg p-4 bg-slate-50 dark:bg-slate-900 space-y-4">
+                        <h4 className="text-sm font-medium">Add New Company</h4>
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label htmlFor="companyName" className="text-sm font-medium">
+                              Company Name *
+                            </label>
+                            <Input
+                              id="companyName"
+                              value={newCompany.name}
+                              onChange={(e) => setNewCompany({ ...newCompany, name: e.target.value })}
+                              placeholder="Enter company name"
+                              className="w-full"
+                              disabled={isSubmitting}
+                            />
                           </div>
-                        </FormControl>
-                        <FormDescription>
-                          Choose an existing company or add a new one
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
+                          <div className="space-y-2">
+                            <label htmlFor="companyIndustry" className="text-sm font-medium">
+                              Industry
+                            </label>
+                            <Input
+                              id="companyIndustry"
+                              value={newCompany.industry}
+                              onChange={(e) => setNewCompany({ ...newCompany, industry: e.target.value })}
+                              placeholder="e.g., Technology, Healthcare"
+                              className="w-full"
+                              disabled={isSubmitting}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="companyLocation" className="text-sm font-medium">
+                            Location
+                          </label>
+                          <Input
+                            id="companyLocation"
+                            value={newCompany.location}
+                            onChange={(e) => setNewCompany({ ...newCompany, location: e.target.value })}
+                            placeholder="e.g., Kigali, Rwanda"
+                            className="w-full"
+                            disabled={isSubmitting}
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <label htmlFor="companyWebsite" className="text-sm font-medium">
+                            Website (Optional)
+                          </label>
+                          <Input
+                            id="companyWebsite"
+                            value={newCompany.website}
+                            onChange={(e) => setNewCompany({ ...newCompany, website: e.target.value })}
+                            placeholder="e.g., https://example.com"
+                            className="w-full"
+                            disabled={isSubmitting}
+                          />
+                        </div>
+                        <div className="flex justify-end gap-2 pt-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setShowNewCompanyForm(false);
+                              setNewCompany({ name: '', industry: '', location: '', website: '', logo: '' });
+                            }}
+                            disabled={isSubmitting}
+                          >
+                            Cancel
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={async () => {
+                              if (!newCompany.name) {
+                                toast({
+                                  title: "Company name required",
+                                  description: "Please enter a name for the company",
+                                  variant: "destructive",
+                                });
+                                return;
+                              }
+                              
+                              try {
+                                setIsSubmitting(true);
+                                
+                                // Create the new company
+                                const response = await fetch("/api/admin/companies", {
+                                  method: "POST",
+                                  headers: {
+                                    "Content-Type": "application/json",
+                                  },
+                                  body: JSON.stringify(newCompany),
+                                });
+                                
+                                if (!response.ok) {
+                                  throw new Error("Failed to create company");
+                                }
+                                
+                                const createdCompany = await response.json();
+                                
+                                // Update form with the new company
+                                form.setValue("companyId", createdCompany.id);
+                                
+                                // Invalidate companies query and close the form
+                                queryClient.invalidateQueries({ queryKey: ["/api/admin/companies"] });
+                                
+                                toast({
+                                  title: "Company created",
+                                  description: `${newCompany.name} has been added successfully`,
+                                });
+                                
+                                setShowNewCompanyForm(false);
+                                setNewCompany({ name: '', industry: '', location: '', website: '', logo: '' });
+                              } catch (error) {
+                                console.error("Error creating company:", error);
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to create the company. Please try again.",
+                                  variant: "destructive",
+                                });
+                              } finally {
+                                setIsSubmitting(false);
+                              }
+                            }}
+                            disabled={isSubmitting}
+                          >
+                            {isSubmitting ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Creating...
+                              </>
+                            ) : (
+                              "Create Company"
+                            )}
+                          </Button>
+                        </div>
+                      </div>
                     )}
-                  />
+                  </>
                 ) : (
                   <div className="rounded-md bg-yellow-50 p-4">
                     <div className="flex">
