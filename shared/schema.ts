@@ -10,6 +10,8 @@ export const applicationStatusEnum = pgEnum('application_status', ['applied', 'r
 export const jobStatusEnum = pgEnum('job_status', ['pending', 'approved', 'rejected']);
 export const currencyEnum = pgEnum('currency_type', ['RWF', 'USD', 'EUR']);
 export const postTypeEnum = pgEnum('post_type', ['job', 'auction', 'tender', 'announcement']);
+export const claimTypeEnum = pgEnum('claim_type', ['application', 'bid', 'proposal', 'interest']);
+export const bidStatusEnum = pgEnum('bid_status', ['active', 'outbid', 'winning', 'won', 'lost']);
 
 // Users table
 export const users = pgTable("users", {
@@ -111,6 +113,47 @@ export const categories = pgTable("categories", {
   icon: text("icon").notNull(),
 });
 
+// Bids table for auction opportunities
+export const bids = pgTable("bids", {
+  id: serial("id").primaryKey(),
+  jobId: integer("job_id").references(() => jobs.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  bidAmount: integer("bid_amount").notNull(),
+  currency: currencyEnum("currency").default('RWF').notNull(),
+  message: text("message"),
+  documentsUrl: text("documents_url"),
+  status: bidStatusEnum("status").default('active').notNull(),
+  bidAt: timestamp("bid_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Proposals table for tender opportunities
+export const proposals = pgTable("proposals", {
+  id: serial("id").primaryKey(),
+  jobId: integer("job_id").references(() => jobs.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  proposalTitle: text("proposal_title").notNull(),
+  proposalDescription: text("proposal_description").notNull(),
+  proposedAmount: integer("proposed_amount"),
+  currency: currencyEnum("currency").default('RWF'),
+  documentsUrl: text("documents_url"),
+  coverLetter: text("cover_letter"),
+  status: applicationStatusEnum("status").default('applied').notNull(),
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Interest registrations for announcements
+export const interests = pgTable("interests", {
+  id: serial("id").primaryKey(),
+  jobId: integer("job_id").references(() => jobs.id).notNull(),
+  userId: integer("user_id").references(() => users.id).notNull(),
+  message: text("message"),
+  contactPreference: text("contact_preference").default('email'),
+  notifyUpdates: boolean("notify_updates").default(true).notNull(),
+  registeredAt: timestamp("registered_at").defaultNow().notNull(),
+});
+
 // Session table for auth - required for persistent sessions
 export const sessions = pgTable(
   "sessions",
@@ -128,6 +171,9 @@ export const insertCompanySchema = createInsertSchema(companies).omit({ id: true
 export const insertJobSeekerProfileSchema = createInsertSchema(jobSeekerProfiles).omit({ id: true });
 export const insertJobSchema = createInsertSchema(jobs).omit({ id: true, createdAt: true });
 export const insertApplicationSchema = createInsertSchema(applications).omit({ id: true, appliedAt: true, updatedAt: true });
+export const insertBidSchema = createInsertSchema(bids).omit({ id: true, bidAt: true, updatedAt: true });
+export const insertProposalSchema = createInsertSchema(proposals).omit({ id: true, submittedAt: true, updatedAt: true });
+export const insertInterestSchema = createInsertSchema(interests).omit({ id: true, registeredAt: true });
 export const insertCategorySchema = createInsertSchema(categories).omit({ id: true });
 
 // Define types
@@ -145,6 +191,15 @@ export type InsertJob = z.infer<typeof insertJobSchema>;
 
 export type Application = typeof applications.$inferSelect;
 export type InsertApplication = z.infer<typeof insertApplicationSchema>;
+
+export type Bid = typeof bids.$inferSelect;
+export type InsertBid = z.infer<typeof insertBidSchema>;
+
+export type Proposal = typeof proposals.$inferSelect;
+export type InsertProposal = z.infer<typeof insertProposalSchema>;
+
+export type Interest = typeof interests.$inferSelect;
+export type InsertInterest = z.infer<typeof insertInterestSchema>;
 
 export type Category = typeof categories.$inferSelect;
 export type InsertCategory = z.infer<typeof insertCategorySchema>;
