@@ -69,17 +69,11 @@ const LocationBrowser = () => {
   };
 
   return (
-    <section className="py-12 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-10">
-          <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 font-heading">Browse by Location</h2>
-          <p className="text-neutral-600 mt-2 max-w-2xl mx-auto">Find opportunities across Rwanda's provinces or work remotely</p>
-        </div>
-        
-        {isLoading ? (
-          <div className="h-[400px] bg-neutral-100 animate-pulse rounded-lg"></div>
-        ) : (
-          <div className="relative h-[500px] md:h-[600px] bg-neutral-100 rounded-lg overflow-hidden">
+    <div className="w-full">
+      {isLoading ? (
+        <div className="h-[300px] bg-neutral-100 animate-pulse rounded-lg"></div>
+      ) : (
+        <div className="relative h-[300px] bg-neutral-100 rounded-lg overflow-hidden">
             {/* Map background image */}
             <div 
               className="absolute inset-0 bg-cover bg-center opacity-30"
@@ -119,58 +113,33 @@ const LocationBrowser = () => {
                 </a>
               </div>
             ))}
-            
-            {/* Location cards - visible on hover or mobile */}
-            <div className="hidden md:grid grid-cols-3 gap-4 absolute bottom-4 left-4 right-4">
-              {regions.slice(0, 3).map((region) => (
-                <a 
-                  key={region.slug}
-                  href={`/opportunities?location=${region.slug}`}
-                  className="bg-white/90 backdrop-blur-sm p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-neutral-100 overflow-hidden">
-                      <img 
-                        src={region.image} 
-                        alt={region.name} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="font-medium text-neutral-800 group-hover:text-[#0A3D62]">{region.name}</h3>
-                      <p className="text-xs text-neutral-600">{getLocationCount(region.slug)} opportunities</p>
-                    </div>
-                  </div>
-                </a>
-              ))}
-            </div>
           </div>
-        )}
-        
-        {/* Mobile-friendly region selection */}
-        <div className="mt-8 md:hidden">
-          <div className="grid grid-cols-2 gap-4">
-            {regions.map((region) => (
-              <a 
-                key={region.slug}
-                href={`/opportunities?location=${region.slug}`}
-                className="bg-white p-4 rounded-lg border border-neutral-200 hover:border-[#0A3D62] transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-[#0A3D62]/10 flex items-center justify-center">
-                    <MapPin className="h-5 w-5 text-[#0A3D62]" />
-                  </div>
-                  <div>
-                    <h3 className="font-medium text-neutral-800">{region.name}</h3>
-                    <p className="text-xs text-neutral-600">{getLocationCount(region.slug)} listings</p>
-                  </div>
+        )
+      }
+      
+      {/* Compact region selection for card layout */}
+      <div className="mt-4">
+        <div className="grid grid-cols-2 gap-3">
+          {regions.map((region) => (
+            <a 
+              key={region.slug}
+              href={`/opportunities?location=${region.slug}`}
+              className="bg-gray-50 p-3 rounded-lg border border-gray-200 hover:border-[#0A3D62] hover:bg-blue-50 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-[#0A3D62]/10 flex items-center justify-center">
+                  <MapPin className="h-4 w-4 text-[#0A3D62]" />
                 </div>
-              </a>
-            ))}
-          </div>
+                <div>
+                  <h3 className="font-medium text-sm text-neutral-800">{region.name}</h3>
+                  <p className="text-xs text-neutral-600">{getLocationCount(region.slug)} jobs</p>
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 };
 
