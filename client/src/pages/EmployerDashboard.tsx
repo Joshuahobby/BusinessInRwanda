@@ -12,6 +12,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -645,28 +652,34 @@ const EmployerDashboard = () => {
                                           </div>
                                         </div>
                                         <div className="flex mb-2">
-                                          <select 
-                                            className={`text-xs py-1 px-2 rounded border ${
-                                              application.status === 'applied' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
-                                              application.status === 'reviewed' ? 'bg-purple-50 border-purple-200 text-purple-700' : 
-                                              application.status === 'interview_scheduled' ? 'bg-amber-50 border-amber-200 text-amber-700' : 
-                                              application.status === 'hired' ? 'bg-green-50 border-green-200 text-green-700' : 
-                                              'bg-red-50 border-red-200 text-red-700'
-                                            }`}
+                                          <Select 
                                             defaultValue={application.status}
-                                            onChange={(e) => {
+                                            onValueChange={(value) => {
                                               toast({
                                                 title: "Status Updated",
-                                                description: `${application.applicant.fullName}'s application status updated to ${e.target.value.replace('_', ' ')}`,
+                                                description: `${application.applicant.fullName}'s application status updated to ${value.replace('_', ' ')}`,
                                               });
                                             }}
                                           >
-                                            <option value="applied">Applied</option>
-                                            <option value="reviewed">Reviewed</option>
-                                            <option value="interview_scheduled">Interview</option>
-                                            <option value="hired">Hired</option>
-                                            <option value="rejected">Rejected</option>
-                                          </select>
+                                            <SelectTrigger 
+                                              className={`text-xs h-8 py-1 px-2 w-40 ${
+                                                application.status === 'applied' ? 'bg-blue-50 border-blue-200 text-blue-700' : 
+                                                application.status === 'reviewed' ? 'bg-purple-50 border-purple-200 text-purple-700' : 
+                                                application.status === 'interview_scheduled' ? 'bg-amber-50 border-amber-200 text-amber-700' : 
+                                                application.status === 'hired' ? 'bg-green-50 border-green-200 text-green-700' : 
+                                                'bg-red-50 border-red-200 text-red-700'
+                                              }`}
+                                            >
+                                              <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                              <SelectItem value="applied">Applied</SelectItem>
+                                              <SelectItem value="reviewed">Reviewed</SelectItem>
+                                              <SelectItem value="interview_scheduled">Interview</SelectItem>
+                                              <SelectItem value="hired">Hired</SelectItem>
+                                              <SelectItem value="rejected">Rejected</SelectItem>
+                                            </SelectContent>
+                                          </Select>
                                         </div>
                                       </div>
                                       <div className="sm:w-3/4">
