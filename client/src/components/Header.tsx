@@ -19,39 +19,41 @@ const Header = () => {
   const { currentUser, isAuthenticated, logout, isEmployer, isJobSeeker } = useFirebaseAuth();
 
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
+    <header className="bg-white shadow-sm sticky top-0 z-40">
+      <div className="container mx-auto px-3 sm:px-4 py-3">
+        <div className="flex items-center justify-between gap-2">
           {/* Logo and site name */}
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center min-w-0 flex-shrink-0">
             <div className="flex items-center cursor-pointer" onClick={() => window.location.href = "/"}>
               <div className="bg-[#0A3D62] p-2 rounded">
-                <span className="material-icons text-white">work</span>
+                <span className="material-icons text-white text-base sm:text-lg">work</span>
               </div>
-              <span className="ml-2 text-xl font-bold text-[#0A3D62] font-heading">Business In Rwanda</span>
+              <span className="ml-2 text-sm sm:text-lg lg:text-xl font-bold text-[#0A3D62] font-heading truncate max-w-[140px] sm:max-w-none">
+                Business In Rwanda
+              </span>
             </div>
           </div>
 
           {/* Navigation - Desktop */}
-          <nav className="hidden md:flex items-center space-x-6">
-            <Link href="/" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/' ? 'text-[#0A3D62]' : ''}`}>
+          <nav className="hidden lg:flex items-center space-x-4 xl:space-x-6">
+            <Link href="/" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/' ? 'text-[#0A3D62]' : ''}`}>
               Home
             </Link>
-            <Link href="/opportunities" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/opportunities' ? 'text-[#0A3D62]' : ''}`}>
-              Find Opportunities
+            <Link href="/opportunities" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/opportunities' ? 'text-[#0A3D62]' : ''}`}>
+              Opportunities
             </Link>
-            <Link href="/employers" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/employers' ? 'text-[#0A3D62]' : ''}`}>
+            <Link href="/employers" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/employers' ? 'text-[#0A3D62]' : ''}`}>
               Employers
             </Link>
-            <Link href="/resources" className={`text-neutral-700 hover:text-[#0A3D62] font-medium ${location === '/resources' ? 'text-[#0A3D62]' : ''}`}>
+            <Link href="/resources" className={`text-neutral-700 hover:text-[#0A3D62] font-medium text-sm xl:text-base transition-colors ${location === '/resources' ? 'text-[#0A3D62]' : ''}`}>
               Resources
             </Link>
             
             {/* Language Selector */}
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center space-x-1 text-neutral-700 hover:text-[#0A3D62] font-medium">
+              <DropdownMenuTrigger className="flex items-center space-x-1 text-neutral-700 hover:text-[#0A3D62] font-medium text-sm">
                 <span>EN</span>
-                <ChevronDown className="h-4 w-4" />
+                <ChevronDown className="h-3 w-3" />
               </DropdownMenuTrigger>
               <DropdownMenuContent>
                 <DropdownMenuItem>English</DropdownMenuItem>
@@ -61,13 +63,15 @@ const Header = () => {
           </nav>
           
           {/* Auth buttons */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="flex items-center gap-2">
+                  <Button variant="ghost" className="flex items-center gap-1 sm:gap-2 px-2 sm:px-3">
                     <User className="h-4 w-4" />
-                    <span className="hidden md:inline">{currentUser?.fullName}</span>
+                    <span className="hidden sm:inline text-sm max-w-[100px] lg:max-w-none truncate">
+                      {currentUser?.fullName}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -94,13 +98,13 @@ const Header = () => {
               <>
                 <Button 
                   variant="ghost" 
-                  className="hidden md:block text-[#0A3D62] hover:text-[#082C46]"
+                  className="hidden sm:flex text-[#0A3D62] hover:text-[#082C46] text-sm px-3"
                   onClick={() => setIsLoginModalOpen(true)}
                 >
                   Sign In
                 </Button>
                 <Link href="/register">
-                  <Button className="bg-[#0A3D62] hover:bg-[#082C46] text-white">
+                  <Button className="bg-[#0A3D62] hover:bg-[#082C46] text-white text-sm px-3 sm:px-4">
                     Register
                   </Button>
                 </Link>
@@ -110,8 +114,8 @@ const Header = () => {
             {/* Mobile menu button */}
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon" className="md:hidden">
-                  <Menu className="h-6 w-6" />
+                <Button variant="ghost" size="icon" className="lg:hidden flex-shrink-0">
+                  <Menu className="h-5 w-5" />
                   <span className="sr-only">Toggle menu</span>
                 </Button>
               </SheetTrigger>
