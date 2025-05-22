@@ -723,13 +723,14 @@ const AdminDashboard = () => {
                                   "Content-Type": "application/json",
                                 },
                                 body: JSON.stringify({ 
-                                  isActive: true
+                                  status: 'approved'
                                 }),
                               });
                               
                               // Invalidate queries to refresh data
                               queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
                               queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/admin/statistics"] });
                               
                               return Promise.resolve();
                             } catch (error) {
@@ -745,7 +746,30 @@ const AdminDashboard = () => {
                                   "Content-Type": "application/json",
                                 },
                                 body: JSON.stringify({ 
-                                  isActive: false
+                                  status: 'rejected'
+                                }),
+                              });
+                              
+                              // Invalidate queries to refresh data
+                              queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/admin/statistics"] });
+                              
+                              return Promise.resolve();
+                            } catch (error) {
+                              console.error("Error rejecting job:", error);
+                              return Promise.reject(error);
+                            }
+                          }}
+                          onFeatureJob={async (job, featured) => {
+                            try {
+                              await fetch(`/api/admin/jobs/${job.id}`, {
+                                method: "PATCH",
+                                headers: {
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ 
+                                  featured: featured
                                 }),
                               });
                               
@@ -755,26 +779,19 @@ const AdminDashboard = () => {
                               
                               return Promise.resolve();
                             } catch (error) {
-                              console.error("Error rejecting job:", error);
+                              console.error("Error featuring job:", error);
                               return Promise.reject(error);
                             }
                           }}
-                          onFeatureJob={async (job, featured) => {
-                            // This is a simulation since we don't have the isFeatured field in the database yet
-                            toast({
-                              title: featured ? "Job Featured" : "Job Unfeatured",
-                              description: "This feature will be fully implemented once the database schema is updated.",
-                            });
-                            return Promise.resolve();
-                          }}
                           onDeleteJob={async (job) => {
                             try {
-                              await fetch(`/api/jobs/${job.id}`, {
+                              await fetch(`/api/admin/jobs/${job.id}`, {
                                 method: "DELETE",
                               });
                               
                               // Invalidate and refetch jobs
                               queryClient.invalidateQueries({ queryKey: ["/api/jobs"] });
+                              queryClient.invalidateQueries({ queryKey: ["/api/admin/jobs"] });
                               queryClient.invalidateQueries({ queryKey: ["/api/admin/statistics"] });
                               
                               return Promise.resolve();

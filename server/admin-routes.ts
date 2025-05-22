@@ -127,9 +127,29 @@ export function setupAdminRoutes(app: Express) {
         return res.status(404).json({ message: "Job not found" });
       }
       
+      // Process the update payload
+      const updateData: any = { ...req.body };
+      
+      // Handle isActive field for backward compatibility with our UI
+      if (typeof updateData.isActive !== 'undefined') {
+        updateData.status = updateData.isActive ? 'approved' : 'rejected';
+        delete updateData.isActive;
+      }
+      
+      // Handle isFeatured field for featured jobs
+      if (typeof updateData.isFeatured !== 'undefined') {
+        updateData.featured = updateData.isFeatured;
+        delete updateData.isFeatured;
+      }
+      
+      // Apply admin notes if provided
+      if (updateData.adminNotes) {
+        updateData.adminNotes = updateData.adminNotes;
+      }
+      
       const updatedJob = await storage.updateJob(jobId, {
         ...job,
-        ...req.body
+        ...updateData
       });
       
       res.json(updatedJob);
@@ -144,7 +164,7 @@ export function setupAdminRoutes(app: Express) {
     try {
       const jobId = parseInt(req.params.id, 10);
       
-      // For now, we'll just deactivate the job since we don't have a delete method
+      // For now, we'll just mark the job as rejected since we don't have a delete method
       const job = await storage.getJob(jobId);
       
       if (!job) {
@@ -153,7 +173,8 @@ export function setupAdminRoutes(app: Express) {
       
       await storage.updateJob(jobId, {
         ...job,
-        isActive: false
+        status: 'rejected',
+        adminNotes: job.adminNotes ? `${job.adminNotes} | Marked as deleted by admin` : 'Marked as deleted by admin'
       });
       
       res.status(200).json({ message: "Job successfully deleted" });
