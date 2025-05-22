@@ -1,6 +1,8 @@
 import { Request, Response, Express, NextFunction } from "express";
 import { storage } from "./storage";
-import { Job, insertJobSchema } from "@shared/schema";
+import { Job, jobs, insertJobSchema } from "@shared/schema";
+import { desc } from "drizzle-orm";
+import { db } from "./db";
 
 // Define a type for user with the properties we need
 interface AuthUser {
@@ -91,11 +93,11 @@ export function setupAdminRoutes(app: Express) {
   // Get all jobs for admin management
   app.get('/api/admin/jobs', async (req: Request, res: Response) => {
     try {
-      // For now just get all jobs, could add filtering later
-      const jobs = await storage.searchJobs({});
+      // Get all jobs from database
+      const allJobs = await db.select().from(jobs).orderBy(desc(jobs.createdAt));
       
       // Enhance jobs with company information
-      const enhancedJobs = await Promise.all(jobs.map(async (job) => {
+      const enhancedJobs = await Promise.all(allJobs.map(async (job) => {
         try {
           const company = await storage.getCompany(job.companyId);
           return {

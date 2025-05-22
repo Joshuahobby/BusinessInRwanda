@@ -344,10 +344,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRecentJobs(limit: number): Promise<Job[]> {
-    return await db.select()
+    const recentJobs = await db.select()
       .from(jobs)
       .orderBy(desc(jobs.createdAt))
       .limit(limit);
+    
+    // Enhance with company information
+    const enhancedJobs = await Promise.all(recentJobs.map(async (job) => {
+      try {
+        const company = await this.getCompany(job.companyId);
+        return {
+          ...job,
+          companyName: company?.name || "Unknown Company"
+        };
+      } catch (error) {
+        return {
+          ...job,
+          companyName: "Unknown Company"
+        };
+      }
+    }));
+    
+    return enhancedJobs;
   }
 
   async getRecentApplications(limit: number): Promise<Application[]> {
