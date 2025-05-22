@@ -10,6 +10,8 @@ import {
   Application as ApplicationModel 
 } from "@shared/schema";
 import UserEditModal from "@/components/UserEditModal";
+import JobManagementTable from "@/components/JobManagementTable";
+import JobApprovalModal from "@/components/JobApprovalModal";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

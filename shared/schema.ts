@@ -7,6 +7,7 @@ export const userRoleEnum = pgEnum('user_role', ['job_seeker', 'employer', 'admi
 export const jobTypeEnum = pgEnum('job_type', ['full_time', 'part_time', 'contract', 'internship', 'remote', 'temporary']);
 export const experienceLevelEnum = pgEnum('experience_level', ['entry', 'intermediate', 'senior', 'executive']);
 export const applicationStatusEnum = pgEnum('application_status', ['applied', 'reviewed', 'interview_scheduled', 'rejected', 'hired']);
+export const jobStatusEnum = pgEnum('job_status', ['pending', 'approved', 'rejected']);
 
 // Users table
 export const users = pgTable("users", {
@@ -54,6 +55,7 @@ export const jobs = pgTable("jobs", {
   id: serial("id").primaryKey(),
   title: text("title").notNull(),
   companyId: integer("company_id").notNull().references(() => companies.id),
+  companyName: text("company_name"),
   location: text("location").notNull(),
   type: jobTypeEnum("type").notNull(),
   description: text("description").notNull(),
@@ -65,6 +67,9 @@ export const jobs = pgTable("jobs", {
   isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   category: text("category").notNull(),
+  status: jobStatusEnum("status").default('pending').notNull(),
+  isFeatured: boolean("is_featured").default(false).notNull(),
+  adminNotes: text("admin_notes"),
 });
 
 // Applications table
