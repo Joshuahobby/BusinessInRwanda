@@ -27,7 +27,7 @@ import {
 import { useFirebaseAuth } from '@/context/FirebaseAuthContext';
 import Icon from '@/components/ui/icon';
 
-const FindJobs = () => {
+const Listings = () => {
   const [loc, setLocation] = useLocation();
   const [searchParams, setSearchParams] = useState<JobSearchParams>({});
   const [currentPage, setCurrentPage] = useState(1);
@@ -858,4 +858,4 @@ const FindJobs = () => {
   );
 };
 
-export default FindJobs;
+export default Listings;
