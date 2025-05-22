@@ -220,14 +220,41 @@ export function setupAdminRoutes(app: Express) {
   // Create new post (admin only)
   app.post('/api/admin/jobs', async (req: Request, res: Response) => {
     try {
+      // Extract postType from the request body, but keep a copy of the full body for logging
       const { postType, ...postData } = req.body;
       
-      // Validate the incoming data
-      const validationResult = insertJobSchema.safeParse(postData);
-      if (!validationResult.success) {
+      console.log("Received job creation request with data:", { 
+        postType, 
+        hasCompanyId: !!postData.companyId,
+      });
+      
+      // Make sure companyId is a number
+      if (typeof postData.companyId === 'string') {
+        postData.companyId = parseInt(postData.companyId, 10);
+      }
+      
+      // Handle optional fields that might be empty strings
+      if (postData.salary === '') postData.salary = null;
+      if (postData.responsibilities === '') postData.responsibilities = null;
+      
+      // Add default status
+      postData.status = 'pending';
+      
+      // Validate the incoming data with custom error handling
+      try {
+        const validationResult = insertJobSchema.safeParse(postData);
+        if (!validationResult.success) {
+          console.error("Validation failed:", validationResult.error.errors);
+          return res.status(400).json({ 
+            message: "Invalid job data", 
+            errors: validationResult.error.errors 
+          });
+        }
+      } catch (validationError) {
+        console.error("Exception during validation:", validationError);
         return res.status(400).json({ 
-          message: "Invalid job data", 
-          errors: validationResult.error.errors 
+          message: "Error validating job data", 
+          error: validationError.toString()
         });
       }
       
@@ -245,6 +272,7 @@ export function setupAdminRoutes(app: Express) {
         adminNotes: `Created by admin as ${postType || 'job'}`
       };
       
+      console.log("Creating job with data:", JSON.stringify(jobData));
       const newJob = await storage.createJob(jobData);
       
       res.status(201).json(newJob);

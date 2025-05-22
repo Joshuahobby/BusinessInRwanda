@@ -46,7 +46,8 @@ const createPostSchema = z.object({
   salary: z.string().optional(),
   experienceLevel: z.enum(["entry", "intermediate", "senior", "executive"]),
   postType: z.enum(["job", "tender", "announcement"]),
-  companyId: z.number().optional(),
+  // Allow company ID to be either a number or a string (since select values are strings)
+  companyId: z.union([z.number(), z.string().transform(val => parseInt(val, 10))]),
 });
 
 type FormValues = z.infer<typeof createPostSchema>;
@@ -94,7 +95,7 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
         salary: data.salary || "",
         experienceLevel: data.experienceLevel,
         companyId: data.companyId,
-        status: "pending", // Admin created posts still go through approval process
+        postType: data.postType // Include postType in the payload
       };
 
       // Send the request to create the post
@@ -204,7 +205,7 @@ const CreatePostModal = ({ isOpen, onClose, companies }: CreatePostModalProps) =
                     <FormLabel>Company</FormLabel>
                     <FormControl>
                       <Select
-                        value={field.value?.toString()}
+                        value={field.value ? field.value.toString() : ''}
                         onValueChange={(value) => field.onChange(parseInt(value, 10))}
                         disabled={isSubmitting}
                       >
