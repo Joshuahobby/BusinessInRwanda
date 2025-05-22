@@ -797,8 +797,8 @@ const EmployerDashboard = () => {
                           <div className="flex flex-col sm:flex-row gap-6">
                             <div className="sm:w-1/4">
                               <div className="aspect-square w-full max-w-[150px] bg-neutral-100 rounded-md flex items-center justify-center overflow-hidden">
-                                {company.logo ? (
-                                  <img src={company.logo} alt={company.name} className="w-full h-full object-cover" />
+                                {company && company.logo ? (
+                                  <img src={company.logo} alt={company.name || 'Company'} className="w-full h-full object-cover" />
                                 ) : (
                                   <Building className="h-12 w-12 text-neutral-300" />
                                 )}
@@ -806,19 +806,19 @@ const EmployerDashboard = () => {
                             </div>
                             <div className="sm:w-3/4 space-y-4">
                               <div>
-                                <h2 className="text-2xl font-bold">{company.name}</h2>
-                                {company.industry && (
+                                <h2 className="text-2xl font-bold">{company && company.name ? company.name : 'Your Company'}</h2>
+                                {company && company.industry && (
                                   <p className="text-neutral-600">{company.industry}</p>
                                 )}
                               </div>
                               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                   <p className="text-sm text-neutral-500">Location</p>
-                                  <p>{company.location || 'Not specified'}</p>
+                                  <p>{company && company.location ? company.location : 'Not specified'}</p>
                                 </div>
                                 <div>
                                   <p className="text-sm text-neutral-500">Website</p>
-                                  {company.website ? (
+                                  {company && company.website ? (
                                     <a 
                                       href={company.website} 
                                       target="_blank" 
@@ -833,13 +833,13 @@ const EmployerDashboard = () => {
                                 </div>
                                 <div>
                                   <p className="text-sm text-neutral-500">Company Size</p>
-                                  <p>{company.employeeCount ? 
+                                  <p>{company && company.employeeCount ? 
                                     `${company.employeeCount} employees` : 
                                     'Not specified'}</p>
                                 </div>
                                 <div>
                                   <p className="text-sm text-neutral-500">Founded</p>
-                                  <p>{company.founded || 'Not specified'}</p>
+                                  <p>{company && company.founded ? company.founded : 'Not specified'}</p>
                                 </div>
                               </div>
                             </div>
@@ -848,7 +848,7 @@ const EmployerDashboard = () => {
                           <div>
                             <h3 className="font-medium mb-2">About</h3>
                             <p className="text-neutral-700">
-                              {company.description || 'No company description provided.'}
+                              {company && company.description ? company.description : 'No company description provided.'}
                             </p>
                           </div>
                         </div>
