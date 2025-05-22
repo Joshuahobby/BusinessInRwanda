@@ -745,7 +745,7 @@ const AdminDashboard = () => {
                                   ))
                                 ) : (
                                   <div className="flex items-center justify-center h-[150px] bg-neutral-50 dark:bg-neutral-800/50 rounded-md">
-                                    <p className="text-muted-foreground text-sm">No recent posts found</p>
+                                    <p className="text-muted-foreground text-sm">No recent advertisements found</p>
                                   </div>
                                 )}
                               </div>
@@ -962,7 +962,7 @@ const AdminDashboard = () => {
                           <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                           <Input
                             type="search"
-                            placeholder="Search posts..."
+                            placeholder="Search all advertisements..."
                             className="pl-9 w-full bg-background"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -1050,7 +1050,7 @@ const AdminDashboard = () => {
                       ) : jobsError ? (
                         <div className="p-4 bg-red-50 text-red-700 rounded-md">
                           <AlertTriangle className="h-5 w-5 inline mr-2" />
-                          Failed to load jobs. Please try again later.
+                          Failed to load advertisements. Please try again later.
                         </div>
                       ) : (
                         <PostManagementTable 
@@ -1173,7 +1173,7 @@ const AdminDashboard = () => {
                           onClick={() => setIsCreateCompanyModalOpen(true)}
                         >
                           <PlusCircle className="h-4 w-4 mr-1.5" />
-                          Add Company
+                          Add Organization
                         </Button>
                       </div>
                     </CardHeader>
@@ -1243,7 +1243,7 @@ const AdminDashboard = () => {
                                       <div className="mt-3 flex items-center gap-4">
                                         <div className="flex items-center gap-1 text-sm text-neutral-600">
                                           <Briefcase className="h-3.5 w-3.5" />
-                                          <span>{company.jobCount || 0} jobs</span>
+                                          <span>{company.jobCount || 0} advertisements</span>
                                         </div>
                                         <div className="flex items-center gap-1 text-sm text-neutral-600">
                                           <Users className="h-3.5 w-3.5" />
