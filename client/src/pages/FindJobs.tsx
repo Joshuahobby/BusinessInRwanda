@@ -62,7 +62,10 @@ const FindJobs = () => {
     
     // Extract post type if present
     if (params.has('type')) {
-      setPostType(params.get('type') || 'all');
+      const type = params.get('type') || 'all';
+      setPostType(type);
+      // Update search params with post type
+      initialParams.postType = type;
     }
     
     // Extract job type if present
@@ -77,8 +80,17 @@ const FindJobs = () => {
   }, [loc]);
 
   // Fetch jobs based on search params
-  const { data: jobs = [], isLoading } = useQuery<Job[]>({
+  const { data: allJobs = [], isLoading } = useQuery<Job[]>({
     queryKey: ['/api/jobs', searchParams, currentPage, sortOrder],
+  });
+  
+  // Filter jobs based on post type
+  const jobs = allJobs.filter(job => {
+    // If no specific post type is selected, show all jobs
+    if (postType === "all") return true;
+    
+    // Otherwise, filter by the selected post type
+    return job.postType === postType;
   });
   
   // Fetch job categories for filter
@@ -318,6 +330,7 @@ const FindJobs = () => {
                 onClick={() => {
                   setPostType("all");
                   handleFilterChange('postType', '');
+                  handleApplyFilters(); // Apply filters immediately
                 }}
                 className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
                   postType === "all" 
@@ -333,6 +346,8 @@ const FindJobs = () => {
                 onClick={() => {
                   setPostType("job");
                   handleFilterChange('postType', 'job');
+                  setSearchParams(prev => ({...prev, postType: 'job'}));
+                  handleApplyFilters(); // Apply filters immediately
                 }}
                 className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
                   postType === "job" 
@@ -348,6 +363,8 @@ const FindJobs = () => {
                 onClick={() => {
                   setPostType("tender");
                   handleFilterChange('postType', 'tender');
+                  setSearchParams(prev => ({...prev, postType: 'tender'}));
+                  handleApplyFilters(); // Apply filters immediately
                 }}
                 className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
                   postType === "tender" 
@@ -363,6 +380,8 @@ const FindJobs = () => {
                 onClick={() => {
                   setPostType("auction");
                   handleFilterChange('postType', 'auction');
+                  setSearchParams(prev => ({...prev, postType: 'auction'}));
+                  handleApplyFilters(); // Apply filters immediately
                 }}
                 className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
                   postType === "auction" 
@@ -378,6 +397,8 @@ const FindJobs = () => {
                 onClick={() => {
                   setPostType("announcement");
                   handleFilterChange('postType', 'announcement');
+                  setSearchParams(prev => ({...prev, postType: 'announcement'}));
+                  handleApplyFilters(); // Apply filters immediately
                 }}
                 className={`px-4 py-2 rounded-md flex items-center gap-2 whitespace-nowrap transition-colors ${
                   postType === "announcement" 
