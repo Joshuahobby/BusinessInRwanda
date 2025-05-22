@@ -230,7 +230,7 @@ const AdminDashboard = () => {
     return matchesSearch && matchesRole;
   });
 
-  // Filter jobs based on search query and status filter
+  // Filter jobs based on search query, status filter, and post type
   const filteredJobs = jobs.filter((job) => {
     const matchesSearch = 
       job.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -240,7 +240,12 @@ const AdminDashboard = () => {
       (jobStatusFilter === "active" && job.isActive) ||
       (jobStatusFilter === "inactive" && !job.isActive);
     
-    return matchesSearch && matchesStatus;
+    const matchesPostType = postTypeFilter === "all" || 
+      job.postType === postTypeFilter || 
+      // If no post type is specified, assume it's a job (for backward compatibility)
+      (postTypeFilter === "job" && !job.postType);
+    
+    return matchesSearch && matchesStatus && matchesPostType;
   });
 
   // Filter companies based on search query
@@ -873,7 +878,7 @@ const AdminDashboard = () => {
                               return Promise.reject(error);
                             }
                           }}
-                          onDeleteJob={async (job) => {
+                          onDeletePost={async (job) => {
                             try {
                               await fetch(`/api/admin/jobs/${job.id}`, {
                                 method: "DELETE",
@@ -886,7 +891,7 @@ const AdminDashboard = () => {
                               
                               return Promise.resolve();
                             } catch (error) {
-                              console.error("Error deleting job:", error);
+                              console.error("Error deleting post:", error);
                               return Promise.reject(error);
                             }
                           }}
