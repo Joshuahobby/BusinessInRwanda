@@ -184,13 +184,13 @@ const Home = () => {
                     <CardTitle className="text-base">Browse by Category</CardTitle>
                   </div>
                 </CardHeader>
-                <CardContent className="p-4">
+                <CardContent className="p-6">
                   <CategoryFeaturedAds />
                 </CardContent>
-                <CardFooter className="bg-gray-50 px-4 py-2 border-t flex justify-between">
-                  <span className="text-xs text-gray-500">Find opportunities by industry</span>
-                  <a href="/categories" className="text-blue-600 text-xs flex items-center hover:text-blue-800">
-                    View all categories <ArrowRight className="ml-1 h-3 w-3" />
+                <CardFooter className="bg-gray-50 px-6 py-3 border-t flex justify-between">
+                  <span className="text-sm text-gray-500">Find opportunities by industry</span>
+                  <a href="/categories" className="text-blue-600 text-sm flex items-center hover:text-blue-800">
+                    View all categories <ArrowRight className="ml-1 h-4 w-4" />
                   </a>
                 </CardFooter>
               </Card>
