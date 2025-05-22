@@ -343,14 +343,20 @@ const EmployerDashboard = () => {
                                   <div key={application.id} className="flex items-center justify-between border-b pb-3 last:border-0 last:pb-0">
                                     <div className="flex items-center space-x-3">
                                       <Avatar className="h-8 w-8">
-                                        <AvatarImage src={application.applicant.profilePicture} alt={application.applicant.fullName} />
+                                        <AvatarImage 
+                                          src={application && application.applicant ? application.applicant.profilePicture : undefined} 
+                                          alt={application && application.applicant ? application.applicant.fullName : 'Applicant'} 
+                                        />
                                         <AvatarFallback className="bg-neutral-200 text-neutral-700 text-xs">
-                                          {application.applicant.fullName.split(' ').map(n => n[0]).join('')}
+                                          {application && application.applicant && application.applicant.fullName 
+                                            ? application.applicant.fullName.split(' ').map(n => n[0]).join('') 
+                                            : 'U'
+                                          }
                                         </AvatarFallback>
                                       </Avatar>
                                       <div>
-                                        <p className="text-sm font-medium">{application.applicant.fullName}</p>
-                                        <p className="text-xs text-neutral-500">{application.job.title}</p>
+                                        <p className="text-sm font-medium">{application && application.applicant ? application.applicant.fullName : 'Unknown Applicant'}</p>
+                                        <p className="text-xs text-neutral-500">{application && application.job ? application.job.title : 'Unknown Position'}</p>
                                       </div>
                                     </div>
                                     <Badge variant={
