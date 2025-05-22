@@ -1,6 +1,7 @@
 import { Request, Response, Express, NextFunction } from "express";
 import { storage } from "./storage";
 import { Job, jobs, insertJobSchema } from "@shared/schema";
+import { upload } from "./upload-utils";
 import { desc } from "drizzle-orm";
 import { db } from "./db";
 
@@ -289,6 +290,26 @@ export function setupAdminRoutes(app: Express) {
     } catch (error) {
       console.error("Error creating company:", error);
       res.status(500).json({ message: "Failed to create company" });
+    }
+  });
+  
+  // Upload company logo (file upload version)
+  app.post('/api/admin/companies/upload-logo', upload.single('logo'), async (req: Request, res: Response) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ message: 'No file uploaded' });
+      }
+      
+      // Generate the URL for the uploaded file
+      const logoUrl = `/uploads/${req.file.filename}`;
+      
+      res.status(200).json({ 
+        logoUrl,
+        message: 'Logo uploaded successfully' 
+      });
+    } catch (error) {
+      console.error('Error uploading logo:', error);
+      res.status(500).json({ message: 'Failed to upload logo' });
     }
   });
   

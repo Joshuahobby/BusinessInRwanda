@@ -105,22 +105,7 @@ const CreateCompanyModal = ({ isOpen, onClose }: CreateCompanyModalProps) => {
   const onSubmit = async (data: CompanyFormValues) => {
     setIsSubmitting(true);
     try {
-      // Create FormData for file upload
-      const formData = new FormData();
-      
-      // Add all form data
-      Object.entries(data).forEach(([key, value]) => {
-        if (value) {
-          formData.append(key, value);
-        }
-      });
-      
-      // Add logo file if present
-      if (logoFile) {
-        formData.append('logo', logoFile);
-      }
-      
-      // Create a new user with employer role first
+      // First create a new user with employer role
       const userResponse = await fetch("/api/admin/users", {
         method: "POST",
         headers: {
@@ -140,12 +125,34 @@ const CreateCompanyModal = ({ isOpen, onClose }: CreateCompanyModalProps) => {
       }
 
       const user = await userResponse.json();
+      
+      // Upload the logo file if available
+      let logoUrl = null;
+      if (logoFile) {
+        const logoFormData = new FormData();
+        logoFormData.append('logo', logoFile);
+        
+        const logoResponse = await fetch("/api/admin/companies/upload-logo", {
+          method: "POST",
+          body: logoFormData,
+        });
+        
+        if (logoResponse.ok) {
+          const logoData = await logoResponse.json();
+          logoUrl = logoData.logoUrl;
+        } else {
+          console.error("Logo upload failed, continuing without logo");
+        }
+      } else if (logoPreview && logoPreview.startsWith('data:image')) {
+        // If there's a data URL preview but no file (legacy support)
+        logoUrl = logoPreview;
+      }
 
       // Now prepare data for company creation
       const companyData = {
         ...data,
         userId: user.id,
-        logo: logoPreview, // Temporarily use the data URL until proper file upload is implemented
+        logo: logoUrl,
       };
 
       // Create the company associated with this user
