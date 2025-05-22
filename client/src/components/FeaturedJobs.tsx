@@ -15,19 +15,25 @@ interface FeaturedJobsProps {
   showTitle?: boolean;
   showPagination?: boolean;
   className?: string;
+  title?: string;
+  viewAllLink?: string;
+  queryKey?: string;
 }
 
 const FeaturedJobs = ({ 
   limit = 6, 
   showTitle = true, 
   showPagination = true,
-  className = ""
+  className = "",
+  title = "Featured Opportunities",
+  viewAllLink = "/listings",
+  queryKey = '/api/jobs/featured'
 }: FeaturedJobsProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = limit;
 
   const { data: featuredJobs = [], isLoading } = useQuery<JobWithCompany[]>({
-    queryKey: ['/api/jobs/featured'],
+    queryKey: [queryKey],
   });
 
   // Get relevant companies data for the featured jobs
@@ -60,108 +66,106 @@ const FeaturedJobs = ({
   };
 
   return (
-    <section className={`py-8 bg-white ${className}`}>
-      <div className="container mx-auto px-4">
-        {showTitle && (
-          <div className="flex justify-between items-center mb-8">
-            <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 font-heading">Featured Advertisements</h2>
-            <Link href="/listings" className="text-[#0A3D62] hover:text-[#082C46] font-medium flex items-center">
-              View All Listings
-              <ArrowRight className="h-4 w-4 ml-1" />
-            </Link>
-          </div>
-        )}
+    <div className={className}>
+      {showTitle && (
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl md:text-3xl font-bold text-neutral-800 font-heading">{title}</h2>
+          <Link href={viewAllLink} className="text-[#0A3D62] hover:text-[#082C46] font-medium flex items-center">
+            View All
+            <ArrowRight className="h-4 w-4 ml-1" />
+          </Link>
+        </div>
+      )}
         
-        {isLoading ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="h-[280px] bg-neutral-100 animate-pulse rounded-lg"></div>
+          ))}
+        </div>
+      ) : featuredJobs.length > 0 ? (
+        <>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="h-[280px] bg-neutral-100 animate-pulse rounded-lg"></div>
-            ))}
+            {currentItems.map((job) => {
+              const company = getCompanyInfo(job.companyId);
+              // Get company logo or use a placeholder
+              const companyLogo = company?.logo || null;
+              
+              // For job posts with individual owners (no company)
+              const companyName = company?.name || 
+                (job.additionalData && typeof job.additionalData === 'object' && 
+                'individualName' in job.additionalData ? String(job.additionalData.individualName) : "Individual Employer");
+              
+              // Handle additional post type attributes
+              // Default to job if postType is not specified
+              const postType = job.postType || "job";
+              
+              return (
+                <JobCard
+                  key={job.id}
+                  id={job.id}
+                  title={job.title}
+                  companyName={companyName}
+                  companyLogo={companyLogo}
+                  location={job.location}
+                  jobType={job.type}
+                  salary={job.salary ? `${job.salary} ${job.currency || 'RWF'}` : "Competitive salary"}
+                  description={job.description}
+                  postedAt={new Date(job.createdAt)}
+                  isNew={new Date(job.createdAt).getTime() > Date.now() - 3 * 24 * 60 * 60 * 1000}
+                  isFeatured={true}
+                  isRemote={job.location.toLowerCase().includes('remote')}
+                  postType={postType}
+                />
+              );
+            })}
           </div>
-        ) : featuredJobs.length > 0 ? (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {currentItems.map((job) => {
-                const company = getCompanyInfo(job.companyId);
-                // Get company logo or use a placeholder
-                const companyLogo = company?.logo || null;
-                
-                // For job posts with individual owners (no company)
-                const companyName = company?.name || 
-                  (job.additionalData && typeof job.additionalData === 'object' && 
-                  'individualName' in job.additionalData ? String(job.additionalData.individualName) : "Individual Employer");
-                
-                // Handle additional post type attributes
-                // Default to job if postType is not specified
-                const postType = job.postType || "job";
-                
-                return (
-                  <JobCard
-                    key={job.id}
-                    id={job.id}
-                    title={job.title}
-                    companyName={companyName}
-                    companyLogo={companyLogo}
-                    location={job.location}
-                    jobType={job.type}
-                    salary={job.salary ? `${job.salary} ${job.currency || 'RWF'}` : "Competitive salary"}
-                    description={job.description}
-                    postedAt={new Date(job.createdAt)}
-                    isNew={new Date(job.createdAt).getTime() > Date.now() - 3 * 24 * 60 * 60 * 1000}
-                    isFeatured={true}
-                    isRemote={job.location.toLowerCase().includes('remote')}
-                    postType={postType}
-                  />
-                );
-              })}
-            </div>
-            
-            {/* Pagination Controls */}
-            {showPagination && totalPages > 1 && (
-              <div className="flex justify-center items-center mt-8 space-x-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handlePrevPage} 
-                  disabled={currentPage === 1}
-                  className="flex items-center"
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" /> Prev
-                </Button>
-                
-                <div className="flex items-center space-x-1">
-                  {[...Array(totalPages)].map((_, i) => (
-                    <Button 
-                      key={i} 
-                      variant={currentPage === i + 1 ? "default" : "outline"} 
-                      size="sm"
-                      onClick={() => setCurrentPage(i + 1)}
-                      className={`w-8 h-8 p-0 ${currentPage === i + 1 ? 'bg-[#0A3D62]' : ''}`}
-                    >
-                      {i + 1}
-                    </Button>
-                  ))}
-                </div>
-                
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={handleNextPage} 
-                  disabled={currentPage === totalPages}
-                  className="flex items-center"
-                >
-                  Next <ChevronRight className="h-4 w-4 ml-1" />
-                </Button>
+          
+          {/* Pagination Controls */}
+          {showPagination && totalPages > 1 && (
+            <div className="flex justify-center items-center mt-8 space-x-2">
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handlePrevPage} 
+                disabled={currentPage === 1}
+                className="flex items-center"
+              >
+                <ChevronLeft className="h-4 w-4 mr-1" /> Prev
+              </Button>
+              
+              <div className="flex items-center space-x-1">
+                {[...Array(totalPages)].map((_, i) => (
+                  <Button 
+                    key={i} 
+                    variant={currentPage === i + 1 ? "default" : "outline"} 
+                    size="sm"
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`w-8 h-8 p-0 ${currentPage === i + 1 ? 'bg-[#0A3D62]' : ''}`}
+                  >
+                    {i + 1}
+                  </Button>
+                ))}
               </div>
-            )}
-          </>
-        ) : (
-          <div className="text-center py-8">
-            <p className="text-neutral-500">No featured advertisements available at this time. Check back soon!</p>
-          </div>
-        )}
-      </div>
-    </section>
+              
+              <Button 
+                variant="outline" 
+                size="sm" 
+                onClick={handleNextPage} 
+                disabled={currentPage === totalPages}
+                className="flex items-center"
+              >
+                Next <ChevronRight className="h-4 w-4 ml-1" />
+              </Button>
+            </div>
+          )}
+        </>
+      ) : (
+        <div className="text-center py-8">
+          <p className="text-neutral-500">No opportunities available at this time. Check back soon!</p>
+        </div>
+      )}
+    </div>
   );
 };
 
