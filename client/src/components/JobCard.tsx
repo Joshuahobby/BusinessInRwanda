@@ -8,17 +8,19 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 
-interface JobCardProps {
-  id: number;
-  title: string;
-  companyName: string;
-  companyLogo: string;
-  location: string;
-  jobType: string;
-  salary?: string;
+export interface JobCardProps {
+  id?: number;
+  title?: string;
+  companyName?: string | null;
+  companyLogo?: string;
+  location?: string;
+  jobType?: string;
+  type?: string; 
+  salary?: string | null;
   currency?: string;
-  description: string;
-  postedAt: Date;
+  description?: string;
+  postedAt?: Date;
+  createdAt?: Date;
   isNew?: boolean;
   isFeatured?: boolean;
   isRemote?: boolean;
@@ -27,28 +29,35 @@ interface JobCardProps {
   isTender?: boolean; 
   isAnnouncement?: boolean;
   className?: string;
+  job?: any; // For compatibility with existing code
 }
 
-const JobCard = ({
-  id,
-  title,
-  companyName,
-  companyLogo,
-  location,
-  jobType,
-  salary,
-  currency,
-  description,
-  postedAt,
-  isNew,
-  isFeatured,
-  isRemote,
-  postType = "job",
-  isAuction,
-  isTender,
-  isAnnouncement,
-  className
-}: JobCardProps) => {
+const JobCard = (props: JobCardProps) => {
+  // If job is passed as a single object, extract properties
+  const job = props.job || props;
+  
+  const {
+    id,
+    title,
+    companyName,
+    companyLogo,
+    location,
+    jobType,
+    type, // Support both jobType and type
+    salary,
+    currency,
+    description,
+    postedAt,
+    createdAt, // Support both postedAt and createdAt
+    isNew,
+    isFeatured,
+    isRemote,
+    postType = "job",
+    isAuction,
+    isTender,
+    isAnnouncement,
+    className
+  } = job;
   // Get post type specific colors and labels
   const getPostTypeData = () => {
     switch(postType) {
@@ -187,7 +196,11 @@ const JobCard = ({
             {postType === "tender" && "Deadline: "}
             {postType === "announcement" && "Published: "}
             {(postType === "job" || postType === "all") && "Posted: "}
-            {postedAt instanceof Date && !isNaN(postedAt.getTime()) ? formatDistanceToNow(postedAt, { addSuffix: true }) : 'Recently'}
+            {postedAt instanceof Date && !isNaN(postedAt.getTime()) 
+              ? formatDistanceToNow(postedAt, { addSuffix: true })
+              : createdAt instanceof Date && !isNaN(createdAt.getTime())
+                ? formatDistanceToNow(createdAt, { addSuffix: true })
+                : 'Recently'}
           </span>
           <Link 
             href={`/${postType}/${id}`} 
