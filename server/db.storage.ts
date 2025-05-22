@@ -301,4 +301,59 @@ export class DatabaseStorage implements IStorage {
     
     return categoriesWithCount;
   }
+
+  // Admin operations
+  async getAllUsers(): Promise<User[]> {
+    return await db.select().from(users).orderBy(desc(users.createdAt));
+  }
+
+  async getAllCompanies(): Promise<Company[]> {
+    return await db.select().from(companies).orderBy(companies.name);
+  }
+
+  async getUserCount(): Promise<number> {
+    const result = await db.select({ count: count() }).from(users);
+    return result[0].count;
+  }
+
+  async getJobCount(): Promise<number> {
+    const result = await db.select({ count: count() }).from(jobs);
+    return result[0].count;
+  }
+
+  async getCompanyCount(): Promise<number> {
+    const result = await db.select({ count: count() }).from(companies);
+    return result[0].count;
+  }
+
+  async getApplicationCount(): Promise<number> {
+    const result = await db.select({ count: count() }).from(applications);
+    return result[0].count;
+  }
+
+  async getUserCountByRole(): Promise<{role: string, count: number}[]> {
+    const result = await db
+      .select({
+        role: users.role,
+        count: count()
+      })
+      .from(users)
+      .groupBy(users.role);
+    
+    return result;
+  }
+
+  async getRecentJobs(limit: number): Promise<Job[]> {
+    return await db.select()
+      .from(jobs)
+      .orderBy(desc(jobs.createdAt))
+      .limit(limit);
+  }
+
+  async getRecentApplications(limit: number): Promise<Application[]> {
+    return await db.select()
+      .from(applications)
+      .orderBy(desc(applications.appliedAt))
+      .limit(limit);
+  }
 }

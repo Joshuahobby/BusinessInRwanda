@@ -589,9 +589,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all companies
   app.get("/api/admin/companies", isAdmin, async (req, res) => {
     try {
-      // This would need to be implemented in the storage interface
       const companies = await storage.getAllCompanies();
       res.json(companies);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Get all jobs (admin)
+  app.get("/api/admin/jobs", isAdmin, async (req, res) => {
+    try {
+      const jobs = await storage.getRecentJobs(100); // Get the most recent 100 jobs
+      res.json(jobs);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
