@@ -460,18 +460,18 @@ const JobSeekerDashboard = () => {
                                         <div className="flex items-center text-sm text-neutral-500 mt-1 space-x-2">
                                           <span className="flex items-center">
                                             <MapPin className="h-3 w-3 mr-1" />
-                                            {job.location}
+                                            {job && job.location ? job.location : 'Location'}
                                           </span>
                                           <span>•</span>
                                           <span className="flex items-center">
                                             <Building className="h-3 w-3 mr-1" />
-                                            {job.type}
+                                            {job && job.type ? job.type : 'Job Type'}
                                           </span>
                                         </div>
                                       </div>
                                     </div>
                                     <Button variant="outline" size="sm" asChild>
-                                      <Link href={`/jobs/${job.id}`}>
+                                      <Link href={job && job.id ? `/jobs/${job.id}` : '/jobs'}>
                                         View
                                       </Link>
                                     </Button>
