@@ -194,7 +194,7 @@ export class DatabaseStorage implements IStorage {
     
     // Filter by currency if provided
     if (currency) {
-      conditions.push(eq(jobs.currency, currency));
+      conditions.push(eq(jobs.currency, currency as any));
     }
 
     // Active jobs only

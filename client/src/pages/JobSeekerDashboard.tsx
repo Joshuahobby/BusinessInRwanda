@@ -32,7 +32,7 @@ import {
 } from "lucide-react";
 import { ApplicationStatus } from "@/lib/types";
 import { Application, Job } from "@shared/schema";
-import { format } from "date-fns";
+import { format, addDays } from "date-fns";
 import AccountSettings from "@/components/AccountSettings";
 
 // Extended types with additional details
@@ -50,6 +50,7 @@ const JobSeekerDashboard = () => {
   const { currentUser } = useFirebaseAuth();
   const [, navigate] = useLocation();
   const [activeTab, setActiveTab] = useState("overview");
+  const [applicationFilter, setApplicationFilter] = useState<string>('all');
 
   // Redirect if not authenticated - check before any hooks
   useEffect(() => {
@@ -109,6 +110,11 @@ const JobSeekerDashboard = () => {
   
   // Get recent applications
   const recentApplications = applications.slice(0, 3);
+  
+  // Filter applications based on selected filter
+  const filteredApplications = applications.filter(app => 
+    applicationFilter === 'all' || app.status === applicationFilter
+  );
   
   // Count applications by status
   const applicationStatusCounts = applications.reduce((acc, app) => {
@@ -557,10 +563,54 @@ const JobSeekerDashboard = () => {
                             </Card>
                           </div>
                           
+                          {/* Filter Controls */}
+                          <div className="flex flex-wrap gap-3 mb-4">
+                            <Button 
+                              variant={applicationFilter === 'all' ? 'default' : 'outline'} 
+                              size="sm"
+                              onClick={() => setApplicationFilter('all')}
+                            >
+                              All Applications
+                            </Button>
+                            <Button 
+                              variant={applicationFilter === 'interview_scheduled' ? 'default' : 'outline'} 
+                              size="sm"
+                              onClick={() => setApplicationFilter('interview_scheduled')}
+                              className={applicationStatusCounts['interview_scheduled'] ? '' : 'opacity-50'}
+                              disabled={!applicationStatusCounts['interview_scheduled']}
+                            >
+                              Interviews
+                              {applicationStatusCounts['interview_scheduled'] ? 
+                                <Badge variant="secondary" className="ml-2">{applicationStatusCounts['interview_scheduled']}</Badge> : null}
+                            </Button>
+                            <Button 
+                              variant={applicationFilter === 'hired' ? 'default' : 'outline'} 
+                              size="sm"
+                              onClick={() => setApplicationFilter('hired')}
+                              className={applicationStatusCounts['hired'] ? '' : 'opacity-50'}
+                              disabled={!applicationStatusCounts['hired']}
+                            >
+                              Offers
+                              {applicationStatusCounts['hired'] ? 
+                                <Badge variant="secondary" className="ml-2">{applicationStatusCounts['hired']}</Badge> : null}
+                            </Button>
+                            <Button 
+                              variant={applicationFilter === 'rejected' ? 'default' : 'outline'} 
+                              size="sm"
+                              onClick={() => setApplicationFilter('rejected')}
+                              className={applicationStatusCounts['rejected'] ? '' : 'opacity-50'}
+                              disabled={!applicationStatusCounts['rejected']}
+                            >
+                              Rejected
+                              {applicationStatusCounts['rejected'] ? 
+                                <Badge variant="secondary" className="ml-2">{applicationStatusCounts['rejected']}</Badge> : null}
+                            </Button>
+                          </div>
+
                           {/* Applications List */}
                           <div className="space-y-4">
-                            {applications.map((application) => (
-                              <Card key={application.id}>
+                            {filteredApplications.map((application) => (
+                              <Card key={application.id} className={application.status === 'interview_scheduled' ? 'border-2 border-purple-200' : ''}>
                                 <CardContent className="p-4">
                                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                     <div className="flex items-start space-x-4">
@@ -581,7 +631,7 @@ const JobSeekerDashboard = () => {
                                           <span>•</span>
                                           <span className="flex items-center">
                                             <Building className="h-3 w-3 mr-1" />
-                                            {application.job.type}
+                                            {application.job.type.replace('_', ' ')}
                                           </span>
                                           <span>•</span>
                                           <span className="flex items-center">
@@ -589,9 +639,71 @@ const JobSeekerDashboard = () => {
                                             Applied {format(new Date(application.appliedAt), 'MMM d, yyyy')}
                                           </span>
                                         </div>
+                                        
+                                        {/* Interview Info - Shown only if interview is scheduled */}
+                                        {application.status === 'interview_scheduled' && (
+                                          <div className="mt-2 bg-purple-50 p-2 rounded-md">
+                                            <p className="text-sm font-medium text-purple-800 flex items-center">
+                                              <Calendar className="h-3.5 w-3.5 mr-1.5" />
+                                              Interview Scheduled
+                                            </p>
+                                            <p className="text-sm text-purple-700 mt-1">
+                                              {/* This would come from the database in a real app */}
+                                              {format(addDays(new Date(), Math.floor(Math.random() * 7) + 1), 'EEEE, MMM d, yyyy')} at {format(new Date().setHours(10 + Math.floor(Math.random() * 7), 0), 'h:mm a')}
+                                            </p>
+                                            <div className="flex gap-2 mt-2">
+                                              <Button size="sm" variant="outline" className="h-7 text-xs">
+                                                Add to Calendar
+                                              </Button>
+                                              <Button size="sm" variant="outline" className="h-7 text-xs">
+                                                Reschedule
+                                              </Button>
+                                            </div>
+                                          </div>
+                                        )}
+                                        
+                                        {/* Feedback - Shown for reviewed or rejected applications */}
+                                        {(application.status === 'reviewed' || application.status === 'rejected') && (
+                                          <div className={`mt-2 ${application.status === 'rejected' ? 'bg-red-50' : 'bg-yellow-50'} p-2 rounded-md`}>
+                                            <p className={`text-sm font-medium ${application.status === 'rejected' ? 'text-red-800' : 'text-yellow-800'} flex items-center`}>
+                                              {application.status === 'rejected' ? 
+                                                <XCircle className="h-3.5 w-3.5 mr-1.5" /> :
+                                                <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
+                                              }
+                                              {application.status === 'rejected' ? 'Feedback from Employer' : 'Application Reviewed'}
+                                            </p>
+                                            <p className={`text-sm ${application.status === 'rejected' ? 'text-red-700' : 'text-yellow-700'} mt-1`}>
+                                              {application.status === 'rejected' ? 
+                                                "Thank you for your interest. We've decided to move forward with other candidates at this time." :
+                                                "Your application is being considered. We'll be in touch soon about next steps."
+                                              }
+                                            </p>
+                                          </div>
+                                        )}
+                                        
+                                        {/* Offer - Shown for hired status */}
+                                        {application.status === 'hired' && (
+                                          <div className="mt-2 bg-green-50 p-2 rounded-md">
+                                            <p className="text-sm font-medium text-green-800 flex items-center">
+                                              <CheckCircle2 className="h-3.5 w-3.5 mr-1.5" />
+                                              Offer Received
+                                            </p>
+                                            <p className="text-sm text-green-700 mt-1">
+                                              Congratulations! You've received a job offer.
+                                            </p>
+                                            <div className="flex gap-2 mt-2">
+                                              <Button size="sm" variant="outline" className="h-7 text-xs">
+                                                View Offer Details
+                                              </Button>
+                                              <Button size="sm" variant="outline" className="h-7 text-xs">
+                                                Accept Offer
+                                              </Button>
+                                            </div>
+                                          </div>
+                                        )}
                                       </div>
                                     </div>
-                                    <div className="flex flex-col md:flex-row md:items-center gap-3 self-end md:self-auto">
+                                    <div className="flex flex-col md:items-end gap-3 self-end md:self-auto">
                                       {getStatusBadge(application.status)}
                                       <div className="flex gap-2">
                                         <Button variant="outline" size="sm" asChild>
