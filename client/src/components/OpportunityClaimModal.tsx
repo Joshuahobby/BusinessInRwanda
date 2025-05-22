@@ -86,9 +86,9 @@ const OpportunityClaimModal = ({ isOpen, onClose, opportunity }: OpportunityClai
       },
       bid: {
         icon: <Gavel className="w-6 h-6" />,
-        title: "Place Your Bid",
-        description: "Submit your competitive bid for this auction",
-        actionText: "Place Bid",
+        title: "Join Auction",
+        description: "Register your interest to participate in this auction",
+        actionText: "Register Interest",
         color: "bg-purple-50 border-purple-200 text-purple-800"
       },
       proposal: {
@@ -137,20 +137,14 @@ const OpportunityClaimModal = ({ isOpen, onClose, opportunity }: OpportunityClai
           break;
           
         case "bid":
-          if (!bidAmount || parseFloat(bidAmount) <= 0) {
-            toast({
-              title: "Invalid Bid",
-              description: "Please enter a valid bid amount",
-              variant: "destructive"
-            });
-            return;
-          }
-          endpoint = `/api/jobs/${opportunity.id}/bid`;
+          endpoint = `/api/jobs/${opportunity.id}/interest`;
           payload = {
-            bidAmount: parseFloat(bidAmount),
-            currency,
-            message,
-            documentsUrl
+            message: message || `I'm interested in participating in this auction. ${bidAmount ? `Estimated interest range: ${bidAmount} ${currency}` : ''}`,
+            contactPreference: "email",
+            notifyUpdates: true,
+            auctionInterest: true,
+            estimatedBudget: bidAmount ? parseFloat(bidAmount) : null,
+            currency: currency
           };
           break;
           
@@ -277,12 +271,12 @@ const OpportunityClaimModal = ({ isOpen, onClose, opportunity }: OpportunityClai
                     </div>
                   )}
                   
-                  {opportunity.salaryMin && opportunity.salaryMax && (
+                  {opportunity.salary && (
                     <div className="flex items-center gap-2">
                       <DollarSign className="w-4 h-4 text-green-500" />
                       <span className="font-medium">Range:</span>
                       <span>
-                        {opportunity.salaryMin.toLocaleString()} - {opportunity.salaryMax.toLocaleString()} {opportunity.currency}
+                        {opportunity.salary} {opportunity.currency}
                       </span>
                     </div>
                   )}
@@ -331,18 +325,30 @@ const OpportunityClaimModal = ({ isOpen, onClose, opportunity }: OpportunityClai
 
             {claimType === "bid" && (
               <div className="space-y-4">
+                <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 mb-4">
+                  <div className="flex items-center gap-2 text-amber-800">
+                    <Info className="w-5 h-5" />
+                    <span className="font-medium">Auction Interest Registration</span>
+                  </div>
+                  <p className="text-sm text-amber-700 mt-1">
+                    This registers your interest to participate when the auction goes live. You'll be notified with details about the actual bidding process.
+                  </p>
+                </div>
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="bid-amount">Bid Amount *</Label>
+                    <Label htmlFor="bid-amount">Estimated Budget (optional)</Label>
                     <Input
                       id="bid-amount"
                       type="number"
                       value={bidAmount}
                       onChange={(e) => setBidAmount(e.target.value)}
-                      placeholder="Enter your bid"
+                      placeholder="Your estimated budget range"
                       className="mt-1"
-                      required
                     />
+                    <p className="text-xs text-neutral-500 mt-1">
+                      This helps organizers understand participant capacity
+                    </p>
                   </div>
                   
                   <div>
@@ -361,26 +367,26 @@ const OpportunityClaimModal = ({ isOpen, onClose, opportunity }: OpportunityClai
                 </div>
                 
                 <div>
-                  <Label htmlFor="bid-message">Additional Message (optional)</Label>
+                  <Label htmlFor="bid-message">Message (optional)</Label>
                   <Textarea
                     id="bid-message"
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
-                    placeholder="Any additional information about your bid..."
+                    placeholder="Tell them about your interest in this auction..."
                     rows={4}
                     className="mt-1"
                   />
                 </div>
 
-                <div>
-                  <Label htmlFor="bid-docs">Supporting Documents (optional)</Label>
-                  <Input
-                    id="bid-docs"
-                    value={documentsUrl}
-                    onChange={(e) => setDocumentsUrl(e.target.value)}
-                    placeholder="https://drive.google.com/file/your-documents"
-                    className="mt-1"
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="auction-updates"
+                    checked={notifyUpdates}
+                    onCheckedChange={(checked) => setNotifyUpdates(checked === true)}
                   />
+                  <Label htmlFor="auction-updates" className="text-sm">
+                    Notify me when the auction starts and about important updates
+                  </Label>
                 </div>
               </div>
             )}
