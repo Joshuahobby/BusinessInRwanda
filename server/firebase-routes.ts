@@ -104,7 +104,8 @@ export function setupFirebaseRoutes(app: Express) {
             }
             
             // Update role if provided and different from current role
-            if (role && user.role !== role) {
+            // But never change admin role to anything else
+            if (role && user.role !== role && user.role !== "admin") {
               console.log(`Updating user role from ${user.role} to ${role}`);
               updateData.role = role;
             }
