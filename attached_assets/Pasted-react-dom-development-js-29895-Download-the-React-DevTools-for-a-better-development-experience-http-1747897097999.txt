@@ -1,0 +1,264 @@
+react-dom.development.js:29895 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+FirebaseAuthContext.tsx:61 Firebase auth change detected, syncing user: kizereinc@gmail.com UID: dvY8xobnSZb38xCFTukJcKUeIqC2
+FirebaseAuthContext.tsx:90 User data synced successfully: kizereinc@gmail.com
+FirebaseAuthContext.tsx:115  Warning: Use the `defaultValue` or `value` props on <select> instead of setting `selected` on <option>.
+    at option
+    at select
+    at div
+    at div
+    at div
+    at _c3 (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/card.tsx:45:12)
+    at div
+    at _c (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/card.tsx:20:11)
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=76866ea0:42:13
+    at Presence (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=76866ea0:24:11)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=76866ea0:174:13
+    at _c5 (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/components/ui/tabs.tsx:72:12)
+    at div
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=76866ea0:42:13
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=76866ea0:38:15)
+    at https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=76866ea0:52:7
+    at div
+    at div
+    at div
+    at div
+    at EmployerDashboard (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/pages/EmployerDashboard.tsx:59:27)
+    at Route (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76866ea0:323:16)
+    at Switch (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=76866ea0:379:17)
+    at main
+    at div
+    at AppRoutes
+    at FirebaseAuthProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/src/context/FirebaseAuthContext.tsx:31:40)
+    at Provider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=76866ea0:38:15)
+    at TooltipProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=76866ea0:62:5)
+    at QueryClientProvider (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=76866ea0:2805:3)
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=76866ea0:624:5)
+    at App
+    at _a (https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/react-helmet-async.js?v=76866ea0:624:5)
+printWarning @ react-dom.development.js:86
+error @ react-dom.development.js:60
+validateProps @ react-dom.development.js:2045
+setInitialProperties @ react-dom.development.js:9896
+finalizeInitialChildren @ react-dom.development.js:10950
+completeWork @ react-dom.development.js:22232
+completeUnitOfWork @ react-dom.development.js:26635
+performUnitOfWork @ react-dom.development.js:26607
+workLoopSync @ react-dom.development.js:26505
+renderRootSync @ react-dom.development.js:26473
+performSyncWorkOnRoot @ react-dom.development.js:26124
+flushSyncCallbacks @ react-dom.development.js:12042
+(anonymous) @ react-dom.development.js:25690
+setTimeout
+(anonymous) @ FirebaseAuthContext.tsx:115
+await in (anonymous)
+(anonymous) @ auth_impl.ts:755
+Promise.then
+registerStateListener @ auth_impl.ts:751
+onAuthStateChanged @ auth_impl.ts:558
+onAuthStateChanged @ index.ts:198
+onAuthChange @ firebase-auth.ts:71
+(anonymous) @ FirebaseAuthContext.tsx:54
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+[NEW] Explain Console errors by using Copilot in Edge: click
+         
+         to explain an error. 
+        Learn more
+        Don't show again
+queryClient.ts:46 
+            
+            
+            GET https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/api/employer/company 404 (Not Found)
+(anonymous) @ queryClient.ts:46
+fetchFn @ query.ts:429
+run @ retryer.ts:153
+start @ retryer.ts:218
+fetch @ query.ts:540
+executeFetch_fn @ queryObserver.ts:346
+onSubscribe @ queryObserver.ts:108
+subscribe @ subscribable.ts:11
+(anonymous) @ useBaseQuery.ts:92
+subscribeToStore @ react-dom.development.js:16139
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+commitRootImpl @ react-dom.development.js:26974
+commitRoot @ react-dom.development.js:26721
+performSyncWorkOnRoot @ react-dom.development.js:26156
+flushSyncCallbacks @ react-dom.development.js:12042
+(anonymous) @ react-dom.development.js:25690
+setTimeout
+(anonymous) @ FirebaseAuthContext.tsx:115
+await in (anonymous)
+(anonymous) @ auth_impl.ts:755
+Promise.then
+registerStateListener @ auth_impl.ts:751
+onAuthStateChanged @ auth_impl.ts:558
+onAuthStateChanged @ index.ts:198
+onAuthChange @ firebase-auth.ts:71
+(anonymous) @ FirebaseAuthContext.tsx:54
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+performSyncWorkOnRoot @ react-dom.development.js:26115
+flushSyncCallbacks @ react-dom.development.js:12042
+commitRootImpl @ react-dom.development.js:26998
+commitRoot @ react-dom.development.js:26721
+finishConcurrentRender @ react-dom.development.js:26020
+performConcurrentWorkOnRoot @ react-dom.development.js:25848
+workLoop @ scheduler.development.js:266
+flushWork @ scheduler.development.js:239
+performWorkUntilDeadline @ scheduler.development.js:533
+queryClient.ts:46 
+            
+            
+            GET https://f42ca20c-c5d2-4bf0-8185-a4b22b33fa4b-00-g9tluijc20ow.picard.replit.dev/api/employer/company 404 (Not Found)
+(anonymous) @ queryClient.ts:46
+fetchFn @ query.ts:429
+run @ retryer.ts:153
+start @ retryer.ts:218
+fetch @ query.ts:540
+executeFetch_fn @ queryObserver.ts:346
+onSubscribe @ queryObserver.ts:108
+subscribe @ subscribable.ts:11
+(anonymous) @ useBaseQuery.ts:92
+subscribeToStore @ react-dom.development.js:16139
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+commitRootImpl @ react-dom.development.js:26974
+commitRoot @ react-dom.development.js:26721
+performSyncWorkOnRoot @ react-dom.development.js:26156
+flushSyncCallbacks @ react-dom.development.js:12042
+flushSync @ react-dom.development.js:26240
+scheduleRefresh @ react-dom.development.js:27834
+(anonymous) @ @react-refresh:267
+performReactRefresh @ @react-refresh:256
+(anonymous) @ @react-refresh:677
+setTimeout
+(anonymous) @ @react-refresh:666
+validateRefreshBoundaryAndEnqueueUpdate @ @react-refresh:728
+(anonymous) @ EmployerDashboard.tsx:2089
+(anonymous) @ client:34
+(anonymous) @ client:218
+(anonymous) @ client:193
+queueUpdate @ client:193
+await in queueUpdate
+(anonymous) @ client:642
+handleMessage @ client:640
+(anonymous) @ client:550
+gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg:1 
+            
+            
+            GET https://pixabay.com/get/gf4d729d1eefce0587362410854ccd1ae81e1cdd601a62dd8463c1c753f71c3e3e88705300dfc5886d438f26be2bda6d92830621afd29d56a50938b06c001a709_1280.jpg 400 (Bad Request)
+
+                
+          
+          
+          
+         Microsoft Edge is moving towards a new experience that allows users to choose to browse without third-party cookies.
+firebase-auth.ts:34  Error signing in with Google: FirebaseError: Firebase: Error (auth/popup-blocked).
+    at createErrorInternal (assert.ts:146:55)
+    at _assert (assert.ts:177:11)
+    at _open (popup.ts:104:3)
+    at BrowserPopupRedirectResolver._openPopup (popup_redirect.ts:85:12)
+    at async _PopupOperation.onExecution (popup.ts:247:23)
+    at async abstract_popup_redirect_operation.ts:76:11
+signInWithGoogle @ firebase-auth.ts:34
+await in signInWithGoogle
+loginWithGoogle @ FirebaseAuthContext.tsx:257
+(anonymous) @ AccountSettings.tsx:52
+setTimeout
+handleRoleChange @ AccountSettings.tsx:46
+await in handleRoleChange
+onValueChange @ AccountSettings.tsx:138
+(anonymous) @ use-callback-ref.tsx:15
+(anonymous) @ use-controllable-state.tsx:49
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+commitRootImpl @ react-dom.development.js:26974
+commitRoot @ react-dom.development.js:26721
+performSyncWorkOnRoot @ react-dom.development.js:26156
+flushSyncCallbacks @ react-dom.development.js:12042
+(anonymous) @ react-dom.development.js:25690
+FirebaseAuthContext.tsx:180  Authentication error: auth/popup-blocked Firebase: Error (auth/popup-blocked).
+handleAuthError @ FirebaseAuthContext.tsx:180
+loginWithGoogle @ FirebaseAuthContext.tsx:306
+await in loginWithGoogle
+(anonymous) @ AccountSettings.tsx:52
+setTimeout
+handleRoleChange @ AccountSettings.tsx:46
+await in handleRoleChange
+onValueChange @ AccountSettings.tsx:138
+(anonymous) @ use-callback-ref.tsx:15
+(anonymous) @ use-controllable-state.tsx:49
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+commitRootImpl @ react-dom.development.js:26974
+commitRoot @ react-dom.development.js:26721
+performSyncWorkOnRoot @ react-dom.development.js:26156
+flushSyncCallbacks @ react-dom.development.js:12042
+(anonymous) @ react-dom.development.js:25690
+AccountSettings.tsx:75  Error during role change: FirebaseError: Firebase: Error (auth/popup-blocked).
+    at createErrorInternal (assert.ts:146:55)
+    at _assert (assert.ts:177:11)
+    at _open (popup.ts:104:3)
+    at BrowserPopupRedirectResolver._openPopup (popup_redirect.ts:85:12)
+    at async _PopupOperation.onExecution (popup.ts:247:23)
+    at async abstract_popup_redirect_operation.ts:76:11
+(anonymous) @ AccountSettings.tsx:75
+setTimeout
+handleRoleChange @ AccountSettings.tsx:46
+await in handleRoleChange
+onValueChange @ AccountSettings.tsx:138
+(anonymous) @ use-callback-ref.tsx:15
+(anonymous) @ use-controllable-state.tsx:49
+commitHookEffectListMount @ react-dom.development.js:23189
+commitPassiveMountOnFiber @ react-dom.development.js:24965
+commitPassiveMountEffects_complete @ react-dom.development.js:24930
+commitPassiveMountEffects_begin @ react-dom.development.js:24917
+commitPassiveMountEffects @ react-dom.development.js:24905
+flushPassiveEffectsImpl @ react-dom.development.js:27078
+flushPassiveEffects @ react-dom.development.js:27023
+commitRootImpl @ react-dom.development.js:26974
+commitRoot @ react-dom.development.js:26721
+performSyncWorkOnRoot @ react-dom.development.js:26156
+flushSyncCallbacks @ react-dom.development.js:12042
+(anonymous) @ react-dom.development.js:25690

@@ -581,16 +581,20 @@ const EmployerDashboard = () => {
                           />
                         </div>
                         <div className="flex items-center gap-2">
-                          <select 
-                            className="border rounded-md px-3 py-2 text-sm bg-white w-full md:w-auto"
+                          <Select 
                             value={jobFilter === "all" ? "all" : jobFilter.toString()}
-                            onChange={(e) => setJobFilter(e.target.value === "all" ? "all" : Number(e.target.value))}
+                            onValueChange={(value) => setJobFilter(value === "all" ? "all" : Number(value))}
                           >
-                            <option value="all">All Jobs</option>
-                            {jobs.map(job => (
-                              <option key={job.id} value={job.id}>{job.title}</option>
-                            ))}
-                          </select>
+                            <SelectTrigger className="w-full md:w-auto">
+                              <SelectValue placeholder="Select Job" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="all">All Jobs</SelectItem>
+                              {jobs.map(job => (
+                                <SelectItem key={job.id} value={job.id.toString()}>{job.title}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                       </div>
                       
