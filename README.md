@@ -1,5 +1,5 @@
 
-# Rwanda Job Portal
+# Business in Rwanda Job Portal
 
 A modern job portal platform built with React, Express, and TypeScript, designed to connect job seekers and employers in Rwanda.
 
