@@ -9,6 +9,19 @@ import session from "express-session";
 import { setupSocialAuth, getSessionConfig } from "./socialAuth";
 import { setupFirebaseRoutes } from "./firebase-routes";
 import { setupAdminRoutes } from "./admin-routes";
+import { 
+  globalErrorHandler, 
+  notFoundHandler, 
+  asyncHandler, 
+  CustomError,
+  ValidationError,
+  NotFoundError,
+  AuthenticationError,
+  AuthorizationError,
+  ConflictError,
+  validateId,
+  validateAndFormatDate
+} from "./error-handler";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Set up session middleware with PostgreSQL
@@ -89,28 +102,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     if (req.isAuthenticated()) {
       return next();
     }
-    res.status(401).json({ message: "Unauthorized: Please log in" });
+    next(new AuthenticationError("Please log in to access this resource"));
   };
 
   const isEmployer = (req: any, res: any, next: any) => {
-    if (req.isAuthenticated() && req.user.role === "employer") {
-      return next();
+    if (!req.isAuthenticated()) {
+      return next(new AuthenticationError("Please log in to access this resource"));
     }
-    res.status(403).json({ message: "Forbidden: Employer access required" });
+    if (req.user.role !== "employer") {
+      return next(new AuthorizationError("Employer access required"));
+    }
+    next();
   };
 
   const isJobSeeker = (req: any, res: any, next: any) => {
-    if (req.isAuthenticated() && req.user.role === "job_seeker") {
-      return next();
+    if (!req.isAuthenticated()) {
+      return next(new AuthenticationError("Please log in to access this resource"));
     }
-    res.status(403).json({ message: "Forbidden: Job seeker access required" });
+    if (req.user.role !== "job_seeker") {
+      return next(new AuthorizationError("Job seeker access required"));
+    }
+    next();
   };
 
   const isAdmin = (req: any, res: any, next: any) => {
-    if (req.isAuthenticated() && req.user.role === "admin") {
-      return next();
+    if (!req.isAuthenticated()) {
+      return next(new AuthenticationError("Please log in to access this resource"));
     }
-    res.status(403).json({ message: "Forbidden: Admin access required" });
+    if (req.user.role !== "admin") {
+      return next(new AuthorizationError("Admin access required"));
+    }
+    next();
   };
 
   // ===== AUTH ROUTES =====
@@ -226,14 +248,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ===== CATEGORIES ROUTES =====
   
   // Get all categories
-  app.get("/api/categories", async (req, res) => {
-    try {
-      const categories = await storage.getAllCategories();
-      res.json(categories);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  });
+  app.get("/api/categories", asyncHandler(async (req, res) => {
+    const categories = await storage.getAllCategories();
+    res.json(categories);
+  }));
 
   // ===== JOBS ROUTES =====
   
@@ -285,33 +303,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Create a job (employer only)
-  app.post("/api/jobs", isEmployer, async (req, res) => {
-    try {
-      const jobData = req.body;
-      
-      // Ensure the company belongs to the current user
-      const company = await storage.getCompany(jobData.companyId);
-      if (!company || company.userId !== (req.user as any).id) {
-        return res.status(403).json({ message: "You can only post jobs for your own company" });
-      }
-      
-      // Clean the job data to ensure date fields are properly handled
-      const cleanedJobData = {
-        ...jobData,
-        // Ensure date fields remain as strings since schema expects text
-        deadline: jobData.deadline || null,
-        auctionDate: jobData.auctionDate || null,
-        tenderDeadline: jobData.submissionDeadline || jobData.tenderDeadline || null,
-        eventDate: jobData.eventDate || null,
-      };
-      
-      const newJob = await storage.createJob(cleanedJobData);
-      res.status(201).json(newJob);
-    } catch (error: any) {
-      console.error("Job creation error:", error);
-      res.status(500).json({ message: error.message });
+  app.post("/api/jobs", isEmployer, asyncHandler(async (req, res) => {
+    const jobData = req.body;
+    
+    // Validate company ownership
+    if (!jobData.companyId) {
+      throw new ValidationError("Company ID is required");
     }
-  });
+    
+    const company = await storage.getCompany(jobData.companyId);
+    if (!company) {
+      throw new NotFoundError("Company");
+    }
+    
+    if (company.userId !== (req.user as any).id) {
+      throw new AuthorizationError("You can only post jobs for your own company");
+    }
+    
+    // Clean and validate date fields
+    const cleanedJobData = {
+      ...jobData,
+      deadline: validateAndFormatDate(jobData.deadline),
+      auctionDate: validateAndFormatDate(jobData.auctionDate),
+      tenderDeadline: validateAndFormatDate(jobData.submissionDeadline || jobData.tenderDeadline),
+      eventDate: validateAndFormatDate(jobData.eventDate),
+    };
+    
+    const newJob = await storage.createJob(cleanedJobData);
+    res.status(201).json(newJob);
+  }));
 
   // Apply for a job (job seeker only)
   app.post("/api/jobs/:id/apply", isJobSeeker, async (req, res) => {
@@ -786,6 +806,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: error.message });
     }
   });
+
+  // Add error handling middleware (must be last)
+  app.use(notFoundHandler);
+  app.use(globalErrorHandler);
 
   // Create the HTTP server
   const httpServer = createServer(app);
