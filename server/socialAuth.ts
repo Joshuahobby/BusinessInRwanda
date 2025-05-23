@@ -25,6 +25,7 @@ export function getSessionConfig() {
     resave: false,
     saveUninitialized: false,
     rolling: false, // Prevent session refresh on every request
+    touchAfter: 24 * 3600, // Lazy session update (24 hours)
     cookie: {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -186,24 +187,43 @@ export function setupSocialAuth(app: Express) {
   }
 
   // Set up user serialization/deserialization for sessions
+  // Cache user data to avoid constant database hits
+  const userCache = new Map<number, any>();
+  const CACHE_TTL = 5 * 60 * 1000; // 5 minutes cache
+  
   passport.serializeUser((user: any, done) => {
-    // Log user serialization for debugging
-    console.log('Serializing user:', user.id);
+    // Cache the user data to avoid database lookups
+    userCache.set(user.id, {
+      data: user,
+      timestamp: Date.now()
+    });
     done(null, user.id);
   });
 
   passport.deserializeUser(async (id: number, done) => {
     try {
-      console.log('Deserializing user:', id);
+      // Check cache first to avoid database hit
+      const cached = userCache.get(id);
+      if (cached && (Date.now() - cached.timestamp) < CACHE_TTL) {
+        return done(null, cached.data);
+      }
+      
+      // Only hit database if not in cache or expired
       const user = await storage.getUser(id);
       if (!user) {
-        console.log('User not found in database:', id);
+        userCache.delete(id); // Remove invalid cache entry
         return done(null, false);
       }
       
       // Remove password from user object
       const { password: _, ...userWithoutPassword } = user;
-      console.log('User deserialized successfully:', id);
+      
+      // Update cache
+      userCache.set(id, {
+        data: userWithoutPassword,
+        timestamp: Date.now()
+      });
+      
       done(null, userWithoutPassword);
     } catch (error) {
       console.error('Error deserializing user:', error);

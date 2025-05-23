@@ -114,8 +114,19 @@ export async function setupReplitAuth(app: Express) {
     passport.use(strategy);
   }
 
-  passport.serializeUser((user: Express.User, cb) => cb(null, user));
-  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
+  // Optimize session handling to avoid excessive serialization
+  passport.serializeUser((user: Express.User, cb) => {
+    cb(null, (user as any).id || user);
+  });
+  
+  passport.deserializeUser((user: any, cb) => {
+    // If it's already a user object, return it directly
+    if (typeof user === 'object' && user.id) {
+      return cb(null, user);
+    }
+    // Otherwise return the user ID for lookup
+    cb(null, user);
+  });
 
   app.get("/api/auth/replit", (req, res, next) => {
     passport.authenticate(`replitauth:${req.hostname}`, {

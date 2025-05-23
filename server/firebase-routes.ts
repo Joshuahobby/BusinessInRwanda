@@ -106,13 +106,16 @@ export function setupFirebaseRoutes(app: Express) {
             // Update role if provided and different from current role
             // But never change admin role to anything else
             if (role && user.role !== role && user.role !== "admin") {
-              console.log(`Updating user role from ${user.role} to ${role}`);
               updateData.role = role;
             }
             
-            // Update profile picture and display name if available
-            if (photoURL) updateData.profilePicture = photoURL;
-            if (displayName) updateData.fullName = displayName;
+            // Only update profile info if it's actually different to avoid unnecessary updates
+            if (photoURL && photoURL !== user.profilePicture) {
+              updateData.profilePicture = photoURL;
+            }
+            if (displayName && displayName !== user.fullName) {
+              updateData.fullName = displayName;
+            }
             
             // Only update if we have changes to make
             if (Object.keys(updateData).length > 0) {
