@@ -692,7 +692,7 @@ const EmployerDashboard = () => {
                                         </div>
                                         <div className="flex mb-2">
                                           <Select 
-                                            defaultValue={application && application.status ? application.status : 'applied'}
+                                            value={application && application.status ? application.status : 'applied'}
                                             onValueChange={(value) => {
                                               toast({
                                                 title: "Status Updated",

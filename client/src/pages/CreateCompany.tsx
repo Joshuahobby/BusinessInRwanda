@@ -194,7 +194,7 @@ const CreateCompany = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Industry*</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                   <FormControl>
                                     <SelectTrigger>
                                       <SelectValue placeholder="Select industry" />
@@ -296,7 +296,7 @@ const CreateCompany = () => {
                             render={({ field }) => (
                               <FormItem>
                                 <FormLabel>Number of Employees*</FormLabel>
-                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                <Select onValueChange={field.onChange} value={field.value}>
                                   <FormControl>
                                     <SelectTrigger>
                                       <SelectValue placeholder="Select company size" />
