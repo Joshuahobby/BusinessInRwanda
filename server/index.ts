@@ -48,13 +48,10 @@ app.use((req, res, next) => {
     serveStatic(app);
   }
 
-  app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
-    const status = err.status || err.statusCode || 500;
-    const message = err.message || "Internal Server Error";
-
-    res.status(status).json({ message });
-    throw err;
-  });
+  // Add error handlers after Vite is set up
+  const { notFoundHandler, globalErrorHandler } = await import("./error-handler");
+  app.use(notFoundHandler);
+  app.use(globalErrorHandler);
 
   // ALWAYS serve the app on port 5000
   // this serves both the API and the client.

@@ -807,10 +807,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Add error handling middleware (must be last)
-  app.use(notFoundHandler);
-  app.use(globalErrorHandler);
-
   // Create the HTTP server
   const httpServer = createServer(app);
 
