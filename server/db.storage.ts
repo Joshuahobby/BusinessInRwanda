@@ -150,13 +150,12 @@ export class DatabaseStorage implements IStorage {
         return;
       }
       
-      // Handle date fields as text (not timestamp)
+      // Handle date fields as text (not timestamp) - COMPLETELY REMOVE empty ones
       if (['deadline', 'auctionDate', 'tenderDeadline', 'eventDate', 'submissionDeadline'].includes(key)) {
         if (value && typeof value === 'string' && value.trim() !== '' && value !== 'null' && value !== 'undefined') {
           sanitizedData[key] = value.trim();
-        } else {
-          sanitizedData[key] = null;
         }
+        // Don't include the field at all if it's empty - this prevents Drizzle from trying to process it
         return;
       }
       
